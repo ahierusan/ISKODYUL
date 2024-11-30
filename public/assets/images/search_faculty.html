@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+    @font-face {
+        font-family: "FONTSPRING DEMO - Proxima Nova-Bold";
+        src: url("proxima-nova/Proxima-Nova-Alt-Bold.otf") format("opentype");
+    }
+
+    @font-face {
+        font-family: "FONTSPRING DEMO - Proxima Nova Alt Regular";
+        src: url("proxima-nova/Proxima Nova Alt Regular.otf") format("opentype");
+    }
+
+    @font-face {
+        font-family: "FONTSPRING DEMO - Proxima Nova Black";
+        src: url("proxima-nova/Proxima Nova Black.otf") format("opentype");
+    }
+
+    @font-face {
+        font-family: "Montserrat-Medium";
+        src: url("montserrat/Montserrat-Medium.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Montserrat-Regular";
+        src: url("montserrat/Montserrat-SemiBold.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "FONTSPRING DEMO - Proxima Nova Alt Semibold";
+        src: url("proxima-nova/Proxima Nova Alt Semibold.otf") format("opentype");
+    }
+
+    @font-face {
+        font-family: "Futura Hv BT";
+        src: url("futura/Futura\ Heavy\ font.ttf") format("truetype");
+    }
+
+
+.appointment-facultysearch {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+.appointment-facultysearch .overlap-wrapper-fs {
+    background-color: #ffffff;
+    background-image: url(wavy.png);
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: stretch;
+    overflow: hidden;
+}
+.appointment-facultysearch .overlap-fs {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        -25deg,
+        rgba(255, 255, 255, 0.7) 30%, 
+        rgba(49, 87, 44, 1) 110%    
+    );
+    display: flex;
+    z-index: 0;
+}
+
+.appointment-facultysearch .select-college {  /* BOX NG COLLEGE SELECTION, DITO MAGLALAGAY NG DROPDOWN */
+    position: absolute;
+    width: 3450px;
+    height: 450px;
+    top: 270px;
+    left: 80px;
+    box-shadow: 0px 5px 7px rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+}
+
+.appointment-facultysearch .colleges-section-wrapper {
+    position: absolute;
+    width: 599px;
+    height: 965px;
+    top: 1380px;
+    left: 1580px;
+    z-index: 0;
+    overflow: visible;
+}
+
+.appointment-facultysearch .faculty-list {
+    position: relative;
+    width: 3470px;
+    height: 1965px;
+    top: -383px;
+    left: -1505px;
+    z-index: 0;
+    overflow: visible;
+}
+
+/* Dropdown styling */
+.appointment-facultysearch .dropdown {
+    position: absolute;
+    display: inline-block;
+    width: 1700px;
+    top: 740px;
+    left: 160px;
+    z-index: 90;
+
+}
+
+.appointment-facultysearch .dropdown-button {
+    background-color: #ffffff00;
+    font-family: "Futura Hv BT", Helvetica;
+    color: #31572c;
+    padding: 10px 20px;
+    font-size: 50px;
+    border: 2px solid #31572c;
+    border-radius: 20px;
+    cursor: pointer;
+    width: 195%;
+    text-align: left;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    height: 110px;
+    z-index: 50;
+}
+
+.appointment-facultysearch .arrow-down {
+    font-size: 50px;
+    margin-left: 10px; 
+}
+
+.appointment-facultysearch .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    font-family: "Futura Hv BT", Helvetica;
+    font-size: 45px;
+    color: #4f772d;
+    width: 195%; 
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 90;
+    border-radius: 25px;
+    overflow: visible;
+    margin-top: 5px;
+    height: 500px;
+    display: block;
+    z-index: 50;
+
+}
+
+.appointment-facultysearch .dropdown-item {
+    padding: 32px 20px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+}
+
+.appointment-facultysearch .dropdown-item:hover {
+    background-color: #ddd;
+}
+.appointment-facultysearch .college-selection {
+    position: absolute;
+    width: 1069px;
+    height: 55px;
+    top: 50px;
+    left: 30px;
+}
+
+.appointment-facultysearch .faculty-wrapper-1 { /* COLLEGE SELECTION TEXT */
+    position: absolute;
+    width: 567px;
+    top: 240px;
+    left: 85px;
+    font-family: "Futura Hv BT", Helvetica;
+    font-weight: 400;
+    color: #31572c;
+    font-size: 65px;
+    letter-spacing: 0;
+    line-height: normal;
+}
+
+.appointment-facultysearch .college-selection-caption {
+    position: absolute;
+    width: 1069px;
+    height: 55px;
+    top: 50px;
+    left: 30px;
+}
+
+.appointment-facultysearch .caption { 
+    position: absolute;
+    width: 2067px;
+    top: 410px;
+    left: 150px;
+    font-family: "Futura Hv BT", Helvetica;
+    font-weight: 400;
+    color: #31572c;
+    font-size: 55px;
+    letter-spacing: 0;
+    line-height: normal;
+}
+
+.appointment-facultysearch .overlap-group-fs { 
+    position: absolute;
+    width: 615px;
+    height: 398px;
+    top: 470px;
+    left: 3600px;
+}
+.appointment-facultysearch .faculty-schedule { /* SIZE NG BOX FACULTY SCHEDULE */
+    width: 2300px;
+    height: 1250px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.appointment-facultysearch .colleges-section {
+    position: absolute;
+    width: 300px;
+    height: 55px;
+    top: 50px;
+    left: 50px;
+}
+
+.appointment-facultysearch .faculty-wrapper {
+    position: absolute;
+    width: 1067px;
+    top: 15px;
+    left: 50px;
+    font-family: "Futura Hv BT", Helvetica;
+    font-weight: 400;
+    color: #31572c;
+    font-size: 65px;
+    letter-spacing: 0;
+    line-height: normal;
+}
+.appointment-facultysearch .div-fs { /* POSITION NG BOX FACULTY INFORMATION */
+    position: absolute;
+    width: 599px;
+    height: 365px;
+    top: 1770px;
+    left: 3595px;
+}
+.appointment-facultysearch .faculty-information { /* SIZE NG BOX FACULTY INFORMATION */
+    width: 2300px;
+    height: 1190px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.appointment-facultysearch .div-wrapper-fs {
+    position: absolute;
+    width: 569px;
+    height: 55px;
+    top: 50px;
+    left: 50px;
+}
+.appointment-facultysearch .book-button {
+    position: absolute;
+    width: 470px;
+    height: 120px;
+    top: 980px;
+    left: 950px;
+    background-color: #31572c;
+    border-radius: 35px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-family: "FONTSPRING DEMO - Proxima Nova Alt Regular", Helvetica;
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 50px;
+    text-align: center;
+    letter-spacing: 1px;
+    line-height: 30px;
+    white-space: nowrap;
+    
+}
+
+.appointment-facultysearch .book-button:hover {
+    background-color: #5b715c;
+}
+
+.appointment-facultysearch .colleges-section-2 {
+    position: absolute;
+    width: 569px;
+    height: 55px;
+    top: -330px;
+    left: -1460px;
+}
+.appointment-facultysearch .overlap-fs-2 { /* reposition ng menu panel */
+    position: absolute;
+    width: 1768px;
+    height: 198px;
+    top: 43px;
+    left: 80px;
+}
+.appointment-facultysearch .rectangle-fs { /* resizing at pinaka background ng menu panel */
+    width: 5825px;
+    height: 383px;
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
+.appointment-facultysearch .iskodyul-logo {
+    position: absolute;
+    width: 266px;
+    height: 96px;
+    top: 89px;
+    left: 98px;
+}
+.appointment-facultysearch .overlap-group-2-fs {
+    position: relative;
+    width: 232px;
+    height: 66px;
+    
+}
+.appointment-facultysearch .dyul-fs {
+    position: absolute;
+    width: 130px;
+    top: 0;
+    left: 258px;
+    font-family: "FONTSPRING DEMO - Proxima Nova Black", Helvetica;
+    font-weight: 400;
+    color: #4f772d;
+    font-size: 120px;
+    letter-spacing: 0;
+    line-height: 60px;
+    white-space: nowrap;
+    margin-right: -75px;
+}
+.appointment-facultysearch .isko-fs {
+    position: absolute;
+    width: 130px;
+    top: 0;
+    left: 0;
+    font-family: "FONTSPRING DEMO - Proxima Nova Black", Helvetica;
+    font-weight: 400;
+    color: #31572c;
+    font-size: 120px;
+    letter-spacing: 0;
+    line-height: 60px;
+    white-space: nowrap;
+}
+.appointment-facultysearch .menu-group { /* REPOSITIONING NG DASHBOARD, APTMT, ABT, LOGOUT */
+    position: absolute;
+    top: 50px;
+    left: 900px;
+}
+
+
+
+
+
+.appointment-facultysearch .line-fs {
+    position: absolute;
+    width: 5808px;
+    height: 1px;
+    top: 220px;
+    left: 4px;
+    object-fit: cover;
+    z-index: 2;
+}
+.appointment-facultysearch .group-fs { /* REPOSITION BUONG SELECT SCHEDULE PATI ELEMENTS */
+    position: absolute;
+    width: 492px;
+    height: 83px;
+    top: 113px;
+    left: 1180px;
+}
+.appointment-facultysearch .overlap-fs-3 { /* REPOSITION FACULTY SEARCH AT SELECT SCHEDULE WITH ELEMENTS */
+    position: relative;
+    height: 2px;
+    top: 150px;
+}
+.appointment-facultysearch .img-fs-2 { /* TRIANGLE SA FACULTY SEARCH */
+    position: absolute;
+    width: 101px;
+    height: 141px;
+    top: -41px;
+    left: 1420px;
+    z-index: 3;
+}
+
+.appointment-facultysearch .frame-fs-2 { /* RECTANGLE SA FACULTY SEARCH BOX */
+    width: 1420px;
+    height: 115px;
+    position: absolute;
+    left: -6px;
+    background-color: #ecf39e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    top: -39px;
+    border-radius: 0px 0px 0px 35px;
+}
+.appointment-facultysearch .img-fs-3 { /* TRIANGLE SA SELECT SCHEDULE */
+    position: absolute;
+    width: 101px;
+    height: 145px;
+    top: -45px;
+    left: 1700px;
+    z-index: 3;
+}
+
+.appointment-facultysearch .rectangle-fs-2 { /* RECTANGLE SA SELECT SCHEDULE */
+    width: 1450px;
+    height: 135px;
+    background-color: #ffffff;
+    position: absolute;
+    top: -39px;
+    left: 265px;
+    z-index: 1;
+}
+
+.appointment-facultysearch .img-fs-4 { /* TRIANGLE SA INFORMATION */
+    position: absolute;
+    width: 101px;
+    height: 143px;
+    top: -42px;
+    left: 1933px;
+    z-index: 3;
+}
+.appointment-facultysearch .rectangle-fs-3 { /* RECTANGLE SA INFORMATION */
+    width: 1450px;
+    height: 138px;
+    background-color: #ffffff;
+    position: absolute;
+    top: -39px;
+    left: 483px;
+    z-index: 1;
+}
+
+.appointment-facultysearch .group-2-fs { /* BUONG INFORMATION INCL. ELEMENTS */
+    position: absolute;
+    width: 492px;
+    height: 83px;
+    top: 260px;
+    left: 2414px;
+}
+.appointment-facultysearch .information-fs { /*information text */
+    position: relative;
+    width: fit-content;
+    margin-top: -1.00px;
+    font-family: "Futura Hv BT", Helvetica;
+    font-weight: 400;
+    color: #31572c;
+    font-size: 55px;
+    letter-spacing: 0;
+    line-height: normal;
+    top: -20px;
+    left: 100px;
+}
+
+
+.appointment-facultysearch .frame-fs { /* SELECT SCHEDULE FRAME , REPOSITION NG TEXT*/
+    display: flex;
+    width: 162px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    position: absolute;
+    top: -10px;
+    left: 874px;
+    background-color: #ffffff;
+    z-index: 2;
+    
+} 
+
+.appointment-facultysearch .frame-fs-3 { /* REPOSITION OF  INFORMATION TEXT */
+    display: flex;
+    width: 162px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    position: absolute;
+    top: 10px;
+    left: 1054px;
+    background-color: #ffffff;
+    z-index: 2;
+    
+} 
+.appointment-facultysearch .select-schedule {
+    position: relative;
+    width: fit-content;
+    margin-top: -1.00px;
+    margin-left: -17.60px;
+    margin-right: -17.60px;
+    font-family: "Futura Hv BT", Helvetica;
+    font-weight: 400;
+    color: #31572c;
+    font-size: 55px;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+}
+.appointment-facultysearch .overlap-group-wrapper-fs { /* BUONG FACULTY SEARCH BAR INCL. ELEMENTS */
+    position: absolute;
+    width: 492px;
+    height: 103px;
+    top: 113px;
+    left: 20px;
+}
+
+/* .appointment-facultysearch .faculty-search-fs {
+    width: 451px;
+    height: 71px;
+    background-color: #ecf39e;
+    border-radius: 0px 0px 0px 15px;
+    position: absolute;
+    top: 0;
+    left: 0;
+} */
+
+.appointment-facultysearch .faculty-search-text {
+    position: relative;
+    width: fit-content;
+    margin-top: -1.00px;
+    margin-left: -11.60px;
+    margin-right: -11.60px;
+    font-family: "Futura Hv BT", Helvetica;
+    font-weight: 400;
+    color: #31572c;
+    font-size: 55px;
+    letter-spacing: 0;
+    line-height: normal;
+}
+
+.appointment-facultysearch .frame-wrapper-fs { /* RECTANGLE NG CONFIRMATION */
+    position: absolute;
+    width: 1460px;
+    height: 140px;
+    top: 220px;
+    left: 4350px;
+    background-color: #ffffff;
+    border-radius: 0px 0px 35px 0px;
+}
+.appointment-facultysearch .frame-fs-4 { /* CONFIRMATION TEXT */
+    width: 156px;
+    position: relative;
+    left: 700px;
+    background-color: #ffffff;
+    border-radius: 0px 0px 15px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    top: 25px;
+}
+.appointment-facultysearch .confirmation-fs {
+    position: relative;
+    width: fit-content;
+    margin-top: -1.00px;
+    margin-left: -7.89px;
+    margin-right: -7.89px;
+    font-family: "Futura Hv BT", Helvetica;
+    font-weight: 400;
+    color: #31572c;
+    font-size: 55px;
+    letter-spacing: 0;
+    line-height: normal;
+    top: 0px;
+    z-index: 4;
+
+}
+.appointment-facultysearch .college-selection-group {
+    position: absolute;
+    top: 200px;
+    left: 10px;
+}
+
+.appointment-facultysearch .menu-group {
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    font-family: "Futura Hv BT", Helvetica;
+    gap: 350px;
+}
+
+.appointment-facultysearch .menu-group a {
+    text-decoration: none;
+    color: #31572c;
+    font-size: 65px;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    background-size: 500% 120%;
+
+}
+.appointment-facultysearch .menu-group .appointment {
+    position: relative;
+    background-size: 120% 120%;
+    background-color: rgba(211, 218, 203, 0.6);
+    border-radius: 15px
+}
+
+.appointment-facultysearch .menu-group a:hover {
+    background-color: rgba(211, 218, 203, 0.6);
+    background-size: 520% 120%;
+    border-radius: 15px;
+    color: #31572c;
+    transform: scale(1.1);
+}
+
+.appointment-facultysearch .menu-group .logout-fs {
+    position: relative;
+    margin-left: 2200px; 
+    margin-right: 50px; 
+    font-size: 65px; 
+}
+
+
+</style>
+  </head>
+  <body>
+    <div class="appointment-facultysearch">
+      <div class="overlap-wrapper-fs">
+                  <div class="dropdown">
+            <button class="dropdown-button" id="selected-college" onclick="toggleDropdown()">
+                Select College
+                <span class="arrow-down">&#9662;</span> <!-- arrow -->
+            </button>
+            <div class="dropdown-content" id="dropdown-content">
+                <div class="dropdown-item" onclick="updateSelected('College of Engineering and Information Technology')">COLLEGE OF ENGINEERING AND INFORMATION TECHNOLOGY</div>
+                <div class="dropdown-item" onclick="updateSelected('College of Arts and Sciences')">COLLEGE OF ARTS AND SCIENCES</div>
+                <div class="dropdown-item" onclick="updateSelected('College of Sports, Physical Education and Recreation')">COLLEGE OF SPORTS, PHYSICAL EDUCATION AND RECREATION</div>
+                <div class="dropdown-item" onclick="updateSelected('College of Education')">COLLEGE OF EDUCATION</div>
+                <div class="dropdown-item" onclick="updateSelected('College of Criminal Justice')">COLLEGE OF CRIMINAL JUSTICE</div>
+                <div class="dropdown-item" onclick="updateSelected('College of Veterinary Medicine and Biomedical Sciences')">COLLEGE OF VETERINARY MEDICINE AND BIOMEDICAL SCIENCES</div>
+                <div class="dropdown-item" onclick="updateSelected('College of Economics, Management and Development Studies')">COLLEGE OF ECONOMICS, MANAGEMENT AND DEVELOPMENT STUDIES</div>
+                <div class="dropdown-item" onclick="updateSelected('College of Agriculture, Food, Environment and Natural Resources')">COLLEGE OF AGRICULTURE, FOOD, ENVIRIONMENT AND NATURAL RESOURCES</div>
+                <div class="dropdown-item" onclick="updateSelected('College of Nursing')">COLLEGE OF NURSING</div>
+            </div>
+        </div>
+    
+        <script src="script-fs.js"></script>
+        <div class="overlap-fs">
+
+          
+        </div>
+        <div class="college-selection-group">
+            <img class="select-college" src="college selection.png" />
+            <div class="college-selection"><div class="faculty-wrapper-1">College Selection</div></div>
+            <div class="college-selection-caption"><div class="caption">Find Professors in their respective colleges</div></div>
+        </div>
+          <div class="overlap-group-fs">
+            <img class="faculty-schedule" src="faculty schedule.png" />
+            <div class="colleges-section"><div class="faculty-wrapper">Faculty Schedule</div></div>
+          </div>
+          <div class="div-fs">
+            <img class="faculty-information" src="faculty information.png" />
+            <div class="div-wrapper-fs"><div class="faculty-wrapper">Faculty Information</div></div>
+            <button class="book-button" onclick="window.location.href='selectschedule.html'">Book Here</button>
+          </div>
+          <div class="colleges-section-wrapper">
+            <img class="faculty-list" src="faculty list.png"/>
+            <div class="colleges-section-2"><div class="faculty-wrapper">Faculty List</div></div>
+          </div>
+          <div class="overlap-fs-2">
+            <img class="rectangle-fs" src="Rectangle 39912.png" />
+            <div class="iskodyul-logo">
+              <div class="overlap-group-2-fs">
+                <div class="dyul-fs">DYUL</div>
+                <div class="isko-fs">ISKO</div>
+              </div>
+            </div>
+            <nav class="menu-group">
+                <a href="dashboard.html">DASHBOARD</a>
+                <a href="search_faculty.html" class="appointment">APPOINTMENT</a>
+                <a href="about.html">ABOUT</a>
+                <a href="login.html" class="logout-fs">LOGOUT</a>
+            </nav>
+
+            <img class="line-fs" src="line.png" />
+            <div class="group-fs">
+              <div class="overlap-fs-3">
+                <img class="img-fs-3" src="triangle select sched.png" />
+                <div class="rectangle-fs-2"></div>
+                <div class="frame-fs"><div class="select-schedule">Select Schedule</div></div>
+              </div>
+            </div>
+            <div class="overlap-group-wrapper-fs">
+              <div class="overlap-fs-3">
+                <img class="img-fs-2" src="triangle selected (fs).png" />
+                <div class="faculty-search-fs"></div>
+                <div class="frame-fs-2"><div class="faculty-search-text">Faculty Search</div></div>
+              </div>
+            </div>
+            <div class="group-2-fs">
+              <div class="overlap-3">
+                <img class="img-fs-4" src="triangle info.png" />
+                <div class="rectangle-fs-3"></div>
+                <div class="frame-fs-3"><div class="information-fs">Information</div></div>
+              </div>
+            </div>
+            <div class="frame-wrapper-fs">
+              <div class="frame-fs-4"><div class="confirmation-fs">Confirmation</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

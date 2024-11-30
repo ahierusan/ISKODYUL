@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rounded Square Calendar</title>
+    <style>
+        /* Basic styling for calendar */
+        .calendar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            margin-top: 20px;
+        }
+
+        .calendar-header, .calendar-days {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .calendar-header select, .calendar-header input {
+            margin: 5px;
+            padding: 8px;
+            font-size: 1em;
+        }
+
+        /* Calendar square outline with rounded corners */
+        .calendar-days-container {
+            width: 300px;
+            padding: 10px;
+            border: 2px solid #4CAF50; /* Green border for calendar outline */
+            border-radius: 15px; /* Rounded corners */
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Calendar days layout */
+        .calendar-days {
+            width: 100%; /* Ensures calendar days take full width within container */
+            display: grid;
+            grid-template-columns: repeat(7, 1fr); /* 7 columns for each day of the week */
+            gap: 5px;
+        }
+
+        .calendar-days div {
+            width: 100%;
+            padding-top: 100%; /* Creates a square by making height equal to width */
+            position: relative;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .calendar-days div span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .calendar-days div.selected {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar-container">
+        <div class="calendar-header">
+            <select id="year-select"></select>
+            <select id="month-select"></select>
+            <input type="time" id="time-input">
+        </div>
+        
+        <!-- Container with rounded square outline -->
+        <div class="calendar-days-container">
+            <div class="calendar-days" id="calendar-days"></div>
+        </div>
+
+        <div>
+            <p id="selected-date">Selected Date & Time: None</p>
+        </div>
+    </div>
+
+    <script>
+        const yearSelect = document.getElementById('year-select');
+        const monthSelect = document.getElementById('month-select');
+        const timeInput = document.getElementById('time-input');
+        const calendarDays = document.getElementById('calendar-days');
+        const selectedDateDisplay = document.getElementById('selected-date');
+        let selectedDay = null;
+
+        // Populate year and month dropdowns
+        const currentYear = new Date().getFullYear();
+        for (let i = currentYear - 10; i <= currentYear + 10; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            if (i === currentYear) option.selected = true;
+            yearSelect.appendChild(option);
+        }
+
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        months.forEach((month, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = month;
+            if (index === new Date().getMonth()) option.selected = true;
+            monthSelect.appendChild(option);
+        });
+
+        // Generate days based on month and year
+        function generateCalendarDays() {
+            calendarDays.innerHTML = '';
+            const year = parseInt(yearSelect.value);
+            const month = parseInt(monthSelect.value);
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                const daySpan = document.createElement('span');
+                daySpan.textContent = day;
+                dayElement.appendChild(daySpan);
+                dayElement.onclick = () => selectDay(day);
+                calendarDays.appendChild(dayElement);
+            }
+        }
+
+        function selectDay(day) {
+            if (selectedDay) selectedDay.classList.remove('selected');
+            const days = calendarDays.children;
+            days[day - 1].classList.add('selected');
+            selectedDay = days[day - 1];
+            updateSelectedDate();
+        }
+
+        function updateSelectedDate() {
+            const year = yearSelect.value;
+            const month = monthSelect.options[monthSelect.selectedIndex].text;
+            const day = selectedDay ? selectedDay.textContent : '';
+            const time = timeInput.value;
+            selectedDateDisplay.textContent = `Selected Date & Time: ${month} ${day}, ${year} at ${time}`;
+        }
+
+        // Event listeners
+        yearSelect.addEventListener('change', generateCalendarDays);
+        monthSelect.addEventListener('change', generateCalendarDays);
+        timeInput.addEventListener('change', updateSelectedDate);
+
+        // Initial calendar setup
+        generateCalendarDays();
+    </script>
+</body>
+</html>
