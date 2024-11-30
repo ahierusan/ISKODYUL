@@ -71,23 +71,22 @@ class GoogleAuthController extends Controller
 
             $user = User::where('google_id', $googleUser->id)->first();
 
-            \Log::debug("Google Email: {$googleUser->email}");
-            \Log::debug("Admin Email: " . env('ADMIN_EMAIL'));
-
 
             if ($user) {
-                
+                if ($user->email === env('ADMIN_EMAIL')) {
+                    $user->role = 'admin';
+                    $user->save();
+                } else {
+                // Role mismatch validation
                 if (strtolower(trim($role)) !== strtolower(trim($user->role))) {
                     return redirect('/login')->withErrors(['role' => 'Invalid role provided. Please try again.']);
+                    }
                 }
+
 
                 $user->update(['google_access_token' => $googleUser->token]);
                 $user->update(['google_refresh_token' => $googleUser->refreshToken]);
 
-                if ($user->email === env('ADMIN_EMAIL')) {
-                    $user->role = 'admin';
-                    $user->save();
-                }
 
                 Auth::login($user);
 
