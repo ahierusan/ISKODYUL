@@ -1,3 +1,4 @@
+// faculty availability controller
 <?php
 
 namespace App\Http\Controllers;
