@@ -1,8 +1,5 @@
-// google calendar controller
 <?php
-
 namespace App\Http\Controllers;
-
 use Google_Client;
 use Google_Service_Calendar;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +8,7 @@ use Carbon\Carbon;
 class GoogleCalendarController extends Controller
 {
     protected $client;
+    protected $calendarService;
 
     public function __construct()
     {
@@ -20,27 +18,27 @@ class GoogleCalendarController extends Controller
         
         $user = Auth::user();
         $this->client->setAccessToken($user->google_access_token);
-
+        
         if ($this->client->isAccessTokenExpired()) {
             $this->client->fetchAccessTokenWithRefreshToken($user->google_refresh_token);
             $newAccessToken = $this->client->getAccessToken();
-
-            // Update the tokens in the database
-            $user->update(['google_access_token' => $newAccessToken['access_token']]);
+            $user->update([
+                'google_access_token' => $newAccessToken['access_token']
+            ]);
         }
+
+        $this->calendarService = new Google_Service_Calendar($this->client);
     }
 
     public function createEvent($availability)
     {
-        $calendarService = new Google_Service_Calendar($this->client);
-
         $nextEventDate = $this->getNextEventDate($availability->day_of_week);
-
         $startDateTime = $nextEventDate . 'T' . $availability->start_time . ':00';
         $endDateTime = $nextEventDate . 'T' . $availability->end_time . ':00';
 
         $event = new \Google_Service_Calendar_Event([
             'summary' => 'Faculty Availability: ' . $availability->day_of_week,
+            'description' => 'Available for consultations',
             'start' => [
                 'dateTime' => $startDateTime,
                 'timeZone' => 'Asia/Manila',
@@ -52,9 +50,27 @@ class GoogleCalendarController extends Controller
             'recurrence' => [
                 'RRULE:FREQ=WEEKLY;BYDAY=' . strtoupper(substr($availability->day_of_week, 0, 2)),
             ],
+            'reminders' => [
+                'useDefault' => false,
+                'overrides' => [
+                    ['method' => 'popup', 'minutes' => 10],
+                ],
+            ],
         ]);
 
-        $calendarService->events->insert('primary', $event);
+        $createdEvent = $this->calendarService->events->insert('primary', $event);
+        return $createdEvent->getId();
+    }
+
+    public function deleteEvent($eventId)
+    {
+        try {
+            $this->calendarService->events->delete('primary', $eventId);
+            return true;
+        } catch (\Exception $e) {
+            \Log::error('Failed to delete Google Calendar event: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
     private function getNextEventDate($dayOfWeek)

@@ -12,6 +12,7 @@ class CreateFacultyAvailabilitiesTable extends Migration
             $table->id();
             $table->foreignId('faculty_id')->constrained()->onDelete('cascade');
             $table->enum('day_of_week', ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']); 
+            $table->string('google_event_id')->nullable();
             $table->time('start_time');
             $table->time('end_time');
             $table->timestamps();

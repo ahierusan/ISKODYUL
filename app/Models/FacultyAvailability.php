@@ -9,5 +9,11 @@ class FacultyAvailability extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['faculty_id', 'day_of_week', 'start_time', 'end_time'];
+    protected $fillable = [
+    'faculty_id',
+    'day_of_week',
+    'start_time',
+    'end_time',
+    'google_event_id'
+];
 }

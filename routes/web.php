@@ -50,13 +50,21 @@ Route::get('/faculty-setup', function () {
 Route::post('/faculty-setup', [FacultyController::class, 'store'])
     ->middleware('auth');
 
-Route::get('/faculty-availability', function () {
-    return view('faculty.availability')->with('user', Auth::user());
-})->middleware('auth');
+// Replace your current GET route with this
+Route::get('/faculty-availability', [FacultyAvailabilityController::class, 'index'])
+    ->name('faculty.availability')
+    ->middleware('auth');
 
+// Keep these routes as they are
 Route::post('/faculty-availability', [FacultyAvailabilityController::class, 'store'])
     ->name('faculty.availability.store')
     ->middleware('auth');
+
+Route::delete('/faculty-availability/{id}', [FacultyAvailabilityController::class, 'destroy'])
+    ->name('faculty.availability.destroy')
+    ->middleware('auth');
+
+
 
 // student
 
