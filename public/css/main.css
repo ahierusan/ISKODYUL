@@ -1963,7 +1963,7 @@
 
 .appointment-facultysearch .container {
     position: relative;
-    left: 1350px;
+    left: 1000px;
     top: 80px;
     width: 300%;
     height: 2250px;
@@ -1971,9 +1971,16 @@
     padding: 40px;
     background-color: #f9f9f9;
     border-radius: 35px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 5px 15px 15px rgba(0, 0, 0, 0.3);
     font-size: 55px;
-    font-family: "Futura Hv BT", Helvetica; ;
+    font-family: "Futura Hv BT", Helvetica;
+}
+
+.appointment-facultysearch .container h1 {
+    position: relative;
+    left: 50px; 
+    text-align: left; 
+    margin-bottom: 40px; 
 }
 
 .appointment-facultysearch .form-label {
@@ -1992,14 +1999,6 @@
     margin-bottom: 30px; 
 }
 
-.appointment-facultysearch .btn-success {
-    position: relative;
-    height: 80px;
-    width: 350px;
-    left: 1100px;
-    font-size: 35px;
-}
-
 .appointment-facultysearch .logout-fs {
     position: relative;
     left: -370px;
@@ -2013,13 +2012,15 @@
 }
 
 .appointment-facultysearch .btn-success {
-    background-color: #2d592b; 
-    height: 120px;
-    width: 420px;
+    position: relative;
+    background-color: #2d592b;
+    height: 130px !important;
+    width: 650px !important;
     color: white; 
     border: none; 
-    border-radius: 20px; 
-    font-size: 45px; 
+    border-radius: 40px; 
+    font-size: 60px !important;
+    font-family: "Futura Hv BT", Helvetica;
     font-weight: bold; 
     padding: 10px 30px; 
     text-align: center;
@@ -2029,8 +2030,14 @@
     text-wrap: nowrap;
 }
 
+.appointment-facultysearch .save-btn-container {
+    position: relative;
+    bottom: 120px;
+    left: 1610px;
+}
+
 .appointment-facultysearch .btn-success:hover {
-    background-color: #255023; 
+    background-color: #1e3f1c; 
     box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15); 
     transform: translateY(-2px); 
 }
@@ -2041,41 +2048,55 @@
     left: 210px;    
 }
 
-.appointment-facultysearch .current-availabilities-mb-4 {
+.appointment-facultysearch .add-availability h2 {
+    position: relative;
+    color:#31572c;
+    font-size: 80px;
+    
+}
+
+.appointment-facultysearch .mb-4 {
     position: relative;
     top: 100px;
-    margin-top: 20px; /* Add space above the table */
-    margin-bottom: 40px; /* Add space below the table */
+    color:#31572c;
 }
+
+.appointment-facultysearch .mb-4 h2 {
+    position: relative;
+    left: 180px;
+}
+
+
+
 
 .appointment-facultysearch .table-responsive {
     width: 90%;
-    overflow-x: auto; /* Ensure table scrolls horizontally if needed */
+    overflow-x: auto; 
     margin: 0 auto;
 }
 
 .appointment-facultysearch .table {
-    width: 100%; /* Full width of the container */
-    border-collapse: collapse; /* Clean border appearance */
-    font-size: 50px; /* Increased font size for readability */
-    text-align: center; /* Center align text */
-    margin-top: 20px; /* Space above the table */
+    width: 100%;
+    border-collapse: collapse; 
+    font-size: 50px; 
+    text-align: center; 
+    margin-top: 20px; 
 }
 
 .appointment-facultysearch .table th, .table td {
-    padding: 30px 20px; /* Increased padding for larger cells */
-    background-color: #f9f9f9; /* Light background color for cells */
-    vertical-align: middle; /* Vertically center the text */
+    padding: 30px 20px; 
+    background-color: #f9f9f9; 
+    vertical-align: middle; 
 }
 
 .appointment-facultysearch .table th {
-    background-color: #4f772d; /* Dark green header background */
-    color: #fff; /* White text color in header */
-    font-weight: bold;
+    background-color: #4f772d; 
+    color: #fff;
+    font-weight: lighter;
 }
 
 .appointment-facultysearch .table td {
-    background-color: #ffffff; /* White background for rows */
+    background-color: #ffffff; 
 }
 
 /* .appointment-facultysearch .table tr:nth-child(even) {

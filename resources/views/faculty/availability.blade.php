@@ -71,8 +71,10 @@
                         @endfor
                     </select>
                 </div>
-                <button type="submit" class="btn-success">Save Availability</button>
             </form>
+            <div class="save-btn-container">
+                <button type="submit" class="btn-success">Save Availability</button>
+            </div>
         </div>
     </div>
 
