@@ -26,7 +26,7 @@
                                           class="delete-form" onsubmit="return confirm('Are you sure you want to delete this availability?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                        <button type="submit" class="btn btn-danger" style="font-size: 50px;">Delete</button>
                                     </form>
                                 </td>
                             </tr>
