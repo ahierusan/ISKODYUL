@@ -1908,7 +1908,7 @@
 
 .dashboard-faculty .no-schedule {
     position: absolute;
-    top: 1850px; // change if ibabalik
+    top: 1850px; 
     background-color: #fff;
     border-radius: 35px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -1963,12 +1963,11 @@
 
 .appointment-facultysearch .container {
     position: relative;
-    left: 2100px;
-    top: 700px;
-    width: 100%;
-    height: 90%;
-    max-height: 850px;
-    max-width: 1550px;
+    left: 1350px;
+    top: 80px;
+    width: 300%;
+    height: 2250px;
+    max-width: 3750px;
     padding: 40px;
     background-color: #f9f9f9;
     border-radius: 35px;
@@ -1986,6 +1985,11 @@
     height: 120px;
     width: 450px;
     border-radius: 25px;
+}
+
+.appointment-facultysearch .mb-3 {
+    position: relative;
+    margin-bottom: 30px; 
 }
 
 .appointment-facultysearch .btn-success {
@@ -2029,4 +2033,67 @@
     background-color: #255023; 
     box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15); 
     transform: translateY(-2px); 
+}
+
+.appointment-facultysearch .add-availability {
+    position: relative;
+    top: 800px;
+    left: 210px;    
+}
+
+.appointment-facultysearch .current-availabilities-mb-4 {
+    position: relative;
+    top: 100px;
+    margin-top: 20px; /* Add space above the table */
+    margin-bottom: 40px; /* Add space below the table */
+}
+
+.appointment-facultysearch .table-responsive {
+    width: 90%;
+    overflow-x: auto; /* Ensure table scrolls horizontally if needed */
+    margin: 0 auto;
+}
+
+.appointment-facultysearch .table {
+    width: 100%; /* Full width of the container */
+    border-collapse: collapse; /* Clean border appearance */
+    font-size: 50px; /* Increased font size for readability */
+    text-align: center; /* Center align text */
+    margin-top: 20px; /* Space above the table */
+}
+
+.appointment-facultysearch .table th, .table td {
+    padding: 30px 20px; /* Increased padding for larger cells */
+    background-color: #f9f9f9; /* Light background color for cells */
+    vertical-align: middle; /* Vertically center the text */
+}
+
+.appointment-facultysearch .table th {
+    background-color: #4f772d; /* Dark green header background */
+    color: #fff; /* White text color in header */
+    font-weight: bold;
+}
+
+.appointment-facultysearch .table td {
+    background-color: #ffffff; /* White background for rows */
+}
+
+/* .appointment-facultysearch .table tr:nth-child(even) {
+    background-color: #f2f2f2; /* Light gray background for alternating rows */
+ 
+
+.appointment-facultysearch .btn-danger {
+    background-color: transparent; /* Remove background */
+    border: none; /* Remove border */
+    color: #e74c3c; /* Set text color */
+    font-size: 155px;
+    font-family: "Futura Hv BT", Helvetica; ;
+    cursor: pointer; /* Indicate clickable */
+    padding: 0; /* Remove extra padding */
+    text-decoration: none; /* Ensure no underline */
+}
+
+.appointment-facultysearch .btn-danger:hover {
+    color: #c0392b; /* Darker red on hover */
+    text-decoration: underline; /* Optional: underline on hover */
 }
