@@ -2,6 +2,10 @@
 <html>
 <head>
     <x-heading-preset />
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet' />
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
 </head>
 <body>
     <div class="appointment-facultysearch">
@@ -71,19 +75,99 @@
 
                 // Display faculty information when clicked
                 function displayFacultyInformation(faculty) {
-                    // Update the faculty details section with the selected faculty's data
-                    document.querySelector(".faculty-details p:nth-child(1)").innerText = `College: ${faculty.college_name}`;
-                    document.querySelector(".faculty-details p:nth-child(2)").innerText = `Name: ${faculty.first_name} ${faculty.last_name}`;
-                    document.querySelector(".faculty-details p:nth-child(3)").innerText = `Department: ${faculty.department}`;
-                    document.querySelector(".faculty-details p:nth-child(4)").innerText = `Email: ${faculty.email}`;
-                    document.querySelector(".faculty-details p:nth-child(5)").innerText = `Bldg. & Room Code: ${faculty.bldg_no}`;
+            // Existing faculty details code
+            document.querySelector(".faculty-details p:nth-child(1)").innerText = `College: ${faculty.college_name}`;
+            document.querySelector(".faculty-details p:nth-child(2)").innerText = `Name: ${faculty.first_name} ${faculty.last_name}`;
+            document.querySelector(".faculty-details p:nth-child(3)").innerText = `Department: ${faculty.department}`;
+            document.querySelector(".faculty-details p:nth-child(4)").innerText = `Email: ${faculty.email}`;
+            document.querySelector(".faculty-details p:nth-child(5)").innerText = `Bldg. & Room Code: ${faculty.bldg_no}`;
 
-                    const bookButton = document.querySelector(".book-button");
-                    bookButton.onclick = function() {
-                        //window.location.href = `/appointment/book/${faculty.id}`;
-                        window.location.href = `/select-schedule`;
-                    };
-                }
+            // Add this to initialize calendar when faculty is selected
+            initializeFacultyCalendar(faculty.id);
+
+            const bookButton = document.querySelector(".book-button");
+            bookButton.onclick = function() {
+                window.location.href = `/select-schedule`;
+            };
+        }
+
+        // Add this new function for calendar initialization
+        function initializeFacultyCalendar(facultyId) {
+            // Destroy existing calendar if it exists
+            if ($('#faculty-calendar').hasClass('fc')) {
+                $('#faculty-calendar').fullCalendar('destroy');
+            }
+
+            // Fetch faculty availability
+            fetch(`/appointment/faculty-availability/${facultyId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const events = [];
+                    const currentDate = moment().startOf('day');
+                    const startOfWeek = currentDate.clone().startOf('week');
+                    
+                    // Convert availabilities to calendar events
+                    data.availabilities.forEach(function(availability) {
+                        const dayMap = {
+                            'Monday': 1, 'Tuesday': 2, 'Wednesday': 3,
+                            'Thursday': 4, 'Friday': 5, 'Saturday': 6
+                        };
+                        const dayIndex = dayMap[availability.day_of_week];
+                        
+                        // Create events for the next 4 weeks
+                        for (let week = 0; week < 4; week++) {
+                            const eventDate = startOfWeek.clone().add(week, 'weeks').add(dayIndex, 'days');
+                            
+                            // Only add events for current and future dates
+                            if (eventDate.isSameOrAfter(currentDate)) {
+                                events.push({
+                                    title: 'Available',
+                                    start: eventDate.format('YYYY-MM-DD') + 'T' + availability.start_time,
+                                    end: eventDate.format('YYYY-MM-DD') + 'T' + availability.end_time,
+                                    className: 'availability-event',
+                                    rendering: 'background'
+                                });
+                            }
+                        }
+                    });
+
+                    // Initialize calendar
+                    $('#faculty-calendar').fullCalendar({
+                        header: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'agendaWeek,agendaDay'
+                        },
+                        defaultView: 'agendaWeek',
+                        height: 'auto',
+                        slotDuration: '00:30:00',
+                        slotLabelFormat: 'h:mm A',
+                        minTime: '07:00:00',
+                        maxTime: '19:00:00',
+                        allDaySlot: false,
+                        events: events,
+                        validRange: {
+                            start: currentDate.format('YYYY-MM-DD'),
+                            end: currentDate.clone().add(2, 'weeks').format('YYYY-MM-DD')
+                        },
+                        eventRender: function(event, element) {
+                            if (event.className.includes('availability-event')) {
+                                element.css('opacity', '0.7');
+                            }
+                        },
+                        businessHours: {
+                            dow: [1,2,3,4,5,6], // Monday - Saturday
+                            start: '07:00',
+                            end: '19:00',
+                        },
+                        viewRender: function(view, element) {
+                            // Disable the prev button if the view's start date is before today
+                            const viewStart = view.start.clone().startOf('day');
+                            $('.fc-prev-button').prop('disabled', viewStart.isSameOrBefore(currentDate));
+                        }
+                    });
+                });
+        }
 
                 window.onclick = function(event) {
                     if (!event.target.closest('.dropdown')) {
@@ -109,7 +193,11 @@
 
             <div class="overlap-group-fs">
                 <img class="faculty-schedule" src="assets/images/faculty schedule.png" />
-                <div class="colleges-section"><div class="faculty-wrapper">Faculty Schedule</div></div>
+                <div class="colleges-section">
+                    <div class="faculty-wrapper">Faculty Schedule</div>
+                </div>
+                <!-- Add this div for the calendar -->
+                <div id="faculty-calendar" class="calendar-content"></div>
             </div>
 
             <div class="div-fs">
@@ -180,5 +268,39 @@
             </div>
         </div>
     </div>
+
+    <style>
+        .calendar-content {
+            height: 100%;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .fc-event {
+            border: none;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .availability-event {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .appointment-event {
+            background-color: #2196F3;
+            color: white;
+        }
+        
+        .fc-time-grid-event {
+            border-radius: 4px;
+        }
+        
+        .fc-time {
+            font-weight: bold;
+        }
+    </style>
+
 </body>
 </html>

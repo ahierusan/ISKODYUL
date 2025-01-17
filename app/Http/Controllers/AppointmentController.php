@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Faculty;
 use App\Models\User;
+use App\Models\FacultyAvailability;
 use App\Models\CollegeDepartment;
 use Illuminate\Http\Request;
 
@@ -32,4 +33,11 @@ class AppointmentController extends Controller
 
         return response()->json(['faculties' => $faculties]);
     }
+
+    public function getFacultyAvailability(Faculty $faculty)
+    {
+        $availabilities = FacultyAvailability::where('faculty_id', $faculty->id)->get();
+        return response()->json(['availabilities' => $availabilities]);
+    }
+
 }
