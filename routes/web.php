@@ -100,3 +100,4 @@ Route::get('/confirmation', function () {
 Route::get('/admin-dashboard', function () {
     return view('sysad.dashboard')->with('user', Auth::user());
 })->middleware('auth');
+
