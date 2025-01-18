@@ -170,13 +170,13 @@
     width: 100%;
     margin-bottom: 20px;
     box-sizing: border-box;
-    font-size: 75px;
+    font-size: 50px;
 }
 
 /* Toggle hours button positioning */
 .toggle-hours-ss {
     position: relative;
-    width: 800px;
+    width: 700px;
     height: 150px;
     margin-bottom: 10px;
     font-size: 75px;

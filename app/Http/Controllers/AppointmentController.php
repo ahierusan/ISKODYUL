@@ -67,7 +67,7 @@ class AppointmentController extends Controller
         // Store the appointment ID in session for the next step
         session(['appointment_id' => $appointment->id]);
 
-        return redirect()->route('appointment.information');
+        return redirect()->route('student.information');
     }
 
 }
