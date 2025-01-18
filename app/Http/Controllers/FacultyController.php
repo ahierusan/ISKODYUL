@@ -5,10 +5,30 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Faculty;
 use App\Models\FacultyAvailability;
+use App\Models\Appointment;
 use Illuminate\Support\Facades\Auth;
 
 class FacultyController extends Controller
 {
+    public function dashboard()
+    {
+        $faculty = Faculty::where('user_id', auth()->user()->id)->first();
+        
+        // Get current appointments for the dashboard
+        $currentAppointments = Appointment::where('faculty_id', $faculty->id)
+            ->where('date', '>=', now())
+            ->orderBy('date')
+            ->limit(4)
+            ->get();
+        
+        // Get ALL appointments for the modal
+        $allAppointments = Appointment::where('faculty_id', $faculty->id)
+            ->orderBy('date', 'desc')
+            ->get();
+        
+        return view('faculty.dashboard', compact('faculty', 'currentAppointments', 'allAppointments'));
+    }
+
     public function store(Request $request)
     {
         // Validate the inputs
@@ -33,7 +53,6 @@ class FacultyController extends Controller
                 'bldg_no' => $request->bldg_no,
             ]
         );
-
 
         $availabilityExists = FacultyAvailability::where('faculty_id', Auth::id())->exists();
 

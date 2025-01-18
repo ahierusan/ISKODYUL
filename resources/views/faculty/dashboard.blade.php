@@ -20,8 +20,12 @@
             <div class="hello">Hello,</div>
             <div class="prof-name">{{ $faculty->last_name }}, {{ $faculty->first_name }}</div>
             <div class="appointment-list">
-              <a href="view_appointments (faculty).html" class="appointments-link">Your Appointments</a>
+              <button onclick="openAppointmentsModal()" class="appointments-button">APPOINTMENTS</>
             </div>
+
+            
+            <div class="divider-line"></div>
+            <div class="current-app">Current Appointments</div>
           </div>
           <div class="placeholder-container-df">
             @for ($i = 0; $i < 4; $i++)
