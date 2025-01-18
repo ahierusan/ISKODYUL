@@ -62,12 +62,12 @@
                 <div class="isko-in">ISKO</div>
               </div>
             </div>
-            <nav class="menu-group-in">
-                <a href="dashboard.html">DASHBOARD</a>
-                <a href="search_faculty.html" class="appointment-in">APPOINTMENT</a>
-                <a href="about.html">ABOUT</a>
-                <a href="login.html" class="logout-in">LOGOUT</a>
-            </nav>
+            <nav class="menu-group-ss">
+                    <a href="/student-dashboard">DASHBOARD</a>
+                    <a href="/appointment" class="appointment">APPOINTMENT</a>
+                    <a href="about.html">ABOUT</a>
+                    <a href="/logout" class="logout-fs">LOGOUT</a>
+                </nav>
 
             <img class="line-in" src="assets/images/line.png" />
             <div class="group-in">

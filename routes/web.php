@@ -86,6 +86,11 @@ Route::get('/select-schedule', function () {
     return view('student.select-schedule')->with('user', Auth::user());
 })->middleware('auth');
 
+// Add this route for storing appointment schedule
+Route::post('/appointment/schedule/store', [AppointmentController::class, 'storeSchedule'])
+    ->name('appointment.schedule.store')
+    ->middleware('auth');
+
 Route::get('/information', function () {
     return view('student.information')->with('user', Auth::user());
 })->middleware('auth');
