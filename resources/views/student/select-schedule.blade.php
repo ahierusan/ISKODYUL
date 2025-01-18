@@ -170,7 +170,7 @@
     width: 100%;
     margin-bottom: 20px;
     box-sizing: border-box;
-    font-size: 50px;
+    font-size: 80px;
 }
 
 /* Toggle hours button positioning */
@@ -244,6 +244,14 @@
                 <!-- New Schedule Selection Section -->
                 <div class="schedule-section-ss">
                     <div class="schedule-container-ss">
+                      <!-- Add these just below your schedule-container-ss div -->
+                    <div id="noAvailabilityAlert" class="alert-ss alert-warning-ss" style="display: none;">
+                        This day is not within the faculty member's availability. Toggle "Show All Hours" to schedule outside regular hours. This will require approval.
+                    </div>
+
+<div id="outsideHoursAlert" class="alert-ss alert-warning-ss" style="display: none;">
+    This time is outside the faculty member's regular hours and will require approval.
+</div>
                         <form action="{{ route('appointment.schedule.store') }}" method="POST" id="scheduleForm">
                             @csrf
                             
@@ -258,14 +266,14 @@
                             @endif
 
                             <div>
-                                <div class="section-title-ss">Select Date</div>
+                                <div class="section-title-ss">1. Select Date</div>
                                 <input type="hidden" name="date" id="selectedDate" required>
                                 <div class="date-grid-ss" id="dateGrid"></div>
                             </div>
 
                             <div class="time-duration-grid-ss">
                                 <div>
-                                    <div class="section-title-ss">Select Time</div>
+                                    <div class="section-title-ss">2. Select Time</div>
                                     <button type="button" class="toggle-hours-ss" onclick="toggleTimeSlots()">
                                         Show All Hours
                                     </button>
@@ -275,12 +283,10 @@
                                 </div>
 
                                 <div>
-                                    <div class="section-title-ss">Select Duration</div>
+                                    <div class="section-title-ss">3. Select Duration</div>
                                     <select name="duration" class="form-control-ss" required>
                                         <option value="30">30 minutes</option>
                                         <option value="60">1 hour</option>
-                                        <option value="90">1.5 hours</option>
-                                        <option value="120">2 hours</option>
                                     </select>
                                 </div>
                             </div>
@@ -309,96 +315,300 @@
         </div>
     </div>
 
-    <script>
+        <script>
+        // Track state
+        let facultyAvailabilities = [];
         let showingAllHours = false;
 
-        function generateDateGrid() {
-            const grid = document.getElementById('dateGrid');
-            const today = new Date();
-            const twoWeeksLater = new Date();
-            twoWeeksLater.setDate(today.getDate() + 14);
+        // Fetch faculty availabilities when page loads
+        async function fetchFacultyAvailabilities() {
+            const facultyId = sessionStorage.getItem('selected_faculty_id');
+            console.log('Fetching availabilities for faculty:', facultyId);
 
-            grid.innerHTML = '';
-
-            for (let d = new Date(today); d <= twoWeeksLater; d.setDate(d.getDate() + 1)) {
-                const dateButton = document.createElement('div');
-                dateButton.className = 'date-button-ss';
-                
-                const weekday = d.toLocaleDateString('en-US', { weekday: 'short' });
-                const day = d.getDate();
-                const month = d.toLocaleDateString('en-US', { month: 'short' });
-                
-                dateButton.innerHTML = `
-                    <div class="date-weekday-ss">${weekday}</div>
-                    <div class="date-day-ss">${day}</div>
-                    <div class="date-weekday-ss">${month}</div>
-                `;
-
-                const dateString = d.toISOString().split('T')[0];
-                dateButton.setAttribute('data-date', dateString);
-
-                dateButton.addEventListener('click', function() {
-                    document.querySelectorAll('.date-button-ss').forEach(btn => btn.classList.remove('selected'));
-                    this.classList.add('selected');
-                    document.getElementById('selectedDate').value = dateString;
-                });
-
-                grid.appendChild(dateButton);
+            if (!facultyId) {
+                console.error('No faculty ID found in session storage');
+                return;
             }
+
+            try {
+                const response = await fetch(`/api/faculty/${facultyId}/availabilities`);
+                if (!response.ok) throw new Error('Failed to fetch availabilities');
+                const data = await response.json();
+                console.log('Availability data:', data);
+                facultyAvailabilities = data.availabilities;
+                updateDateGridAvailability();
+            } catch (error) {
+                console.error('Error fetching faculty availabilities:', error);
+            }
+        }
+
+        function generateDateGrid() {
+          const grid = document.getElementById('dateGrid');
+          const tomorrow = new Date();
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          const twoWeeksLater = new Date(tomorrow);
+          twoWeeksLater.setDate(tomorrow.getDate() + 13); // 14 days including tomorrow
+
+          grid.innerHTML = '';
+          grid.style.display = 'grid';
+          grid.style.gridTemplateColumns = 'repeat(7, 1fr)';
+          grid.style.gap = '15px';
+
+          for (let d = new Date(tomorrow); d <= twoWeeksLater; d.setDate(d.getDate() + 1)) {
+              const dateButton = document.createElement('div');
+              dateButton.className = 'date-button-ss';
+              
+              const dateString = d.toISOString().split('T')[0];
+              
+              const weekday = d.toLocaleDateString('en-US', { weekday: 'short' });
+              const day = d.getDate();
+              const month = d.toLocaleDateString('en-US', { month: 'short' });
+              
+              dateButton.innerHTML = `
+                  <div class="date-weekday-ss">${weekday}</div>
+                  <div class="date-day-ss">${day}</div>
+                  <div class="date-weekday-ss">${month}</div>
+              `;
+
+              dateButton.setAttribute('data-date', dateString);
+              dateButton.addEventListener('click', handleDateSelection);
+              grid.appendChild(dateButton);
+          }
+      }
+
+        function updateDateGridAvailability() {
+            const dateButtons = document.querySelectorAll('.date-button-ss');
+            dateButtons.forEach(button => {
+                const dateString = button.getAttribute('data-date');
+                const hasAvailability = checkDateAvailability(dateString);
+                
+                if (hasAvailability) {
+                    button.style.backgroundColor = 'rgba(28, 53, 94, 0.1)';
+                    button.setAttribute('data-available', 'true');
+                } else {
+                    button.style.backgroundColor = '#ffffff';
+                    button.setAttribute('data-available', 'false');
+                }
+            });
+        }
+
+            function handleDateSelection(event) {
+              const dateButton = event.currentTarget;
+              const dateString = dateButton.getAttribute('data-date');
+              const hasAvailability = dateButton.getAttribute('data-available') === 'true';
+              const isCurrentlySelected = dateButton.classList.contains('selected');
+              
+              // Reset all buttons to their original state
+              document.querySelectorAll('.date-button-ss').forEach(btn => {
+                  btn.classList.remove('selected');
+                  btn.style.backgroundColor = btn.getAttribute('data-available') === 'true' 
+                      ? 'rgba(28, 53, 94, 0.1)' 
+                      : '#ffffff';
+                  btn.style.color = '#000000';
+              });
+
+              // If clicking the same date, unselect it
+              if (isCurrentlySelected) {
+                  document.getElementById('selectedDate').value = '';
+                  resetTimeAndDurationDropdowns();
+                  document.getElementById('noAvailabilityAlert').style.display = 'none';
+                  document.getElementById('outsideHoursAlert').style.display = 'none';
+                  return;
+              }
+
+              // Handle new date selection
+              dateButton.classList.add('selected');
+              dateButton.style.backgroundColor = '#1c355e';
+              dateButton.style.color = 'white';
+              document.getElementById('selectedDate').value = dateString;
+
+              if (!hasAvailability) {
+                  document.getElementById('noAvailabilityAlert').style.display = 'block';
+                  document.getElementById('outsideHoursAlert').style.display = 'none';
+                  resetTimeAndDurationDropdowns();
+              } else {
+                  document.getElementById('noAvailabilityAlert').style.display = 'none';
+                  document.getElementById('outsideHoursAlert').style.display = 'none';
+                  generateTimeSlots(showingAllHours);
+              }
+          }
+
+          function resetTimeAndDurationDropdowns() {
+              const timeSelect = document.querySelector('select[name="time"]');
+              const durationSelect = document.querySelector('select[name="duration"]');
+              
+              // Reset time dropdown to just the placeholder
+              timeSelect.innerHTML = '<option value="">Choose time</option>';
+              
+              // Reset duration dropdown to default options but disabled
+              durationSelect.innerHTML = `
+                  <option value="30">30 minutes</option>
+                  <option value="60">1 hour</option>
+              `;
+              durationSelect.disabled = true;
+          }
+
+        function checkDateAvailability(dateString) {
+            return facultyAvailabilities.some(availability => 
+                availability.date === dateString
+            );
+        }
+
+        function getAvailabilityForDate(dateString) {
+            return facultyAvailabilities.find(availability => 
+                availability.date === dateString
+            );
         }
 
         function generateTimeSlots(showAll = false) {
-            const select = document.querySelector('select[name="time"]');
-            select.innerHTML = '<option value="">Choose time</option>';
-            
-            const startHour = showAll ? 0 : 8;
-            const endHour = showAll ? 24 : 17;
+          const select = document.querySelector('select[name="time"]');
+          select.innerHTML = '<option value="">Choose time</option>';
+          
+          const selectedDate = document.getElementById('selectedDate').value;
+          const availability = getAvailabilityForDate(selectedDate);
+          const hasAvailability = checkDateAvailability(selectedDate);
 
-            for (let hour = startHour; hour < endHour; hour++) {
-                for (let minute = 0; minute < 60; minute += 30) {
-                    const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                    const option = document.createElement('option');
-                    option.value = timeString;
-                    option.textContent = timeString;
-                    select.appendChild(option);
-                }
-            }
-        }
+          select.disabled = !hasAvailability && !showAll;
 
-        function toggleTimeSlots() {
+          if (!hasAvailability && !showAll) {
+              return;
+          }
+
+          // Always use 7:00 to 18:30 range when showAll is true
+          const startHour = showAll ? 7 : 
+              (hasAvailability ? parseInt(availability.start_time.split(':')[0]) : 8);
+          
+          const endHour = showAll ? 18 : 
+              (hasAvailability ? parseInt(availability.end_time.split(':')[0]) : 17);
+
+          const endMinutes = showAll ? 30 : 
+              (hasAvailability ? parseInt(availability.end_time.split(':')[1]) : 59);
+
+          const availabilityEndMinutes = hasAvailability ? 
+              (parseInt(availability.end_time.split(':')[0]) * 60 + parseInt(availability.end_time.split(':')[1])) : 
+              (17 * 60);
+
+          for (let hour = startHour; hour <= endHour; hour++) {
+              for (let minute = 0; minute < 60; minute += 30) {
+                  // Skip if we're past the end time
+                  if (hour === endHour && minute > endMinutes) continue;
+                  
+                  const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                  const currentTimeMinutes = hour * 60 + minute;
+                  
+                  const option = document.createElement('option');
+                  option.value = timeString;
+                  option.textContent = timeString;
+                  
+                  // Disable times that exceed availability end time
+                  if (hasAvailability && currentTimeMinutes >= availabilityEndMinutes && !showAll) {
+                      option.disabled = true;
+                  }
+                  
+                  select.appendChild(option);
+              }
+          }
+
+          updateDurationOptions();
+      }
+
+          function toggleTimeSlots() {
             showingAllHours = !showingAllHours;
-            generateTimeSlots(showingAllHours);
             
             const toggleButton = document.querySelector('.toggle-hours-ss');
             toggleButton.textContent = showingAllHours ? 'Show Regular Hours' : 'Show All Hours';
             
-            const outsideHoursAlert = document.getElementById('outsideHoursAlert');
-            outsideHoursAlert.style.display = showingAllHours ? 'block' : 'none';
+            const selectedDate = document.getElementById('selectedDate').value;
+            if (selectedDate) {
+                generateTimeSlots(showingAllHours);
+            }
+            
+            // Reset alerts based on current state
+            const hasAvailability = checkDateAvailability(selectedDate);
+            if (!showingAllHours) {
+                document.getElementById('outsideHoursAlert').style.display = 'none';
+                if (!hasAvailability) {
+                    resetTimeAndDurationDropdowns();
+                }
+            }
         }
 
-        // Initialize
-        generateDateGrid();
-        generateTimeSlots();
+        function isTimeWithinRange(time, startTime, endTime) {
+            const t = convertTimeToMinutes(time);
+            const start = convertTimeToMinutes(startTime);
+            const end = convertTimeToMinutes(endTime);
+            return t >= start && t <= end;
+        }
 
-        // Form validation
-        document.getElementById('scheduleForm').addEventListener('submit', function(event) {
-            const date = document.getElementById('selectedDate').value;
-            const time = document.querySelector('select[name="time"]').value;
+        function convertTimeToMinutes(time) {
+            const [hours, minutes] = time.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+
+        function updateDurationOptions() {
+          const timeSelect = document.querySelector('select[name="time"]');
+          const durationSelect = document.querySelector('select[name="duration"]');
+          const selectedTime = timeSelect.value;
+          const selectedDate = document.getElementById('selectedDate').value;
+          const availability = getAvailabilityForDate(selectedDate);
+
+          if (!selectedTime) {
+              durationSelect.disabled = true;
+              return;
+          }
+
+          durationSelect.disabled = false;
+
+          const [hours, minutes] = selectedTime.split(':').map(Number);
+          const selectedTimeMinutes = hours * 60 + minutes;
+
+          // Calculate end time based on availability or default end time
+          let endTimeMinutes;
+          if (availability && !showingAllHours) {
+              const [availEndHours, availEndMinutes] = availability.end_time.split(':').map(Number);
+              endTimeMinutes = availEndHours * 60 + availEndMinutes;
+          } else {
+              endTimeMinutes = 18 * 60 + 30; // 6:30 PM
+          }
+
+          const availableMinutes = endTimeMinutes - selectedTimeMinutes;
+
+          durationSelect.innerHTML = '';
+
+          if (availableMinutes >= 30) {
+              durationSelect.add(new Option('30 minutes', '30'));
+          }
+          if (availableMinutes >= 60) {
+              durationSelect.add(new Option('1 hour', '60'));
+          }
+
+          if (durationSelect.options.length === 0) {
+              durationSelect.add(new Option('No available duration', ''));
+              durationSelect.disabled = true;
+          }
+
+          // Show outside hours alert if needed
+          if (availability && showingAllHours) {
+              const isWithinAvailability = isTimeWithinRange(
+                  selectedTime,
+                  availability.start_time,
+                  availability.end_time
+              );
+              document.getElementById('outsideHoursAlert').style.display = 
+                  isWithinAvailability ? 'none' : 'block';
+          }
+      }
+
+        // Initialize when page loads
+          document.addEventListener('DOMContentLoaded', function() {
+            const timeSelect = document.querySelector('select[name="time"]');
+            timeSelect.addEventListener('change', updateDurationOptions);
             
-            if (!date || !time) {
-                event.preventDefault();
-                alert('Please select both date and time');
-                return;
-            }
-
-            const selectedDateTime = new Date(date + 'T' + time);
-            const now = new Date();
-
-            if (selectedDateTime < now) {
-                event.preventDefault();
-                alert('Cannot select past date and time');
-                return;
-            }
+            // Initialize with disabled time dropdown
+            timeSelect.disabled = true;
+            
+            generateDateGrid();
+            fetchFacultyAvailabilities();
         });
     </script>
 </body>

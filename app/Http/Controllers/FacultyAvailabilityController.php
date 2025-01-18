@@ -15,6 +15,7 @@ class FacultyAvailabilityController extends Controller
             'day_of_week' => 'required|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
+            'duration' => 'required|in:30,60',  // Updated to limit duration to 30 or 60 minutes
         ]);
 
         $faculty = Faculty::where('user_id', auth()->user()->id)->first();
@@ -110,6 +111,44 @@ class FacultyAvailabilityController extends Controller
             'availabilities' => $availabilities,
             'user' => $user
         ]);
+    }
+
+    public function getAvailabilities(Faculty $faculty)
+    {
+        \Log::debug('Getting availabilities for faculty: ' . $faculty->id);
+        
+        $availabilities = FacultyAvailability::where('faculty_id', $faculty->id)
+            ->orderBy('day_of_week')
+            ->orderBy('start_time')
+            ->get();
+
+        \Log::debug('Found availabilities: ' . $availabilities->toJson());
+
+        // Get dates for the next 14 days starting tomorrow
+        $dates = [];
+        $tomorrow = Carbon::tomorrow();
+        $twoWeeksLater = Carbon::tomorrow()->addDays(13); // 14 days including tomorrow
+
+        for ($date = $tomorrow; $date <= $twoWeeksLater; $date->addDay()) {
+            $dayOfWeek = $date->format('l'); // Get day name (Monday, Tuesday, etc.)
+            
+            // Find availability for this day of week
+            $dayAvailability = $availabilities->first(function($availability) use ($dayOfWeek) {
+                return $availability->day_of_week === $dayOfWeek;
+            });
+
+            if ($dayAvailability) {
+                $dates[] = [
+                    'date' => $date->format('Y-m-d'),
+                    'start_time' => $dayAvailability->start_time,
+                    'end_time' => $dayAvailability->end_time,
+                    'day_of_week' => $dayOfWeek
+                ];
+            }
+        }
+
+        \Log::debug('Returning dates: ' . json_encode($dates));
+        return response()->json(['availabilities' => $dates]);
     }
     
 }

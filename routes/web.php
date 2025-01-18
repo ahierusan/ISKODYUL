@@ -50,20 +50,12 @@ Route::get('/faculty-setup', function () {
 Route::post('/faculty-setup', [FacultyController::class, 'store'])
     ->middleware('auth');
 
-// Replace your current GET route with this
-Route::get('/faculty-availability', [FacultyAvailabilityController::class, 'index'])
-    ->name('faculty.availability')
-    ->middleware('auth');
-
-// Keep these routes as they are
-Route::post('/faculty-availability', [FacultyAvailabilityController::class, 'store'])
-    ->name('faculty.availability.store')
-    ->middleware('auth');
-
-Route::delete('/faculty-availability/{id}', [FacultyAvailabilityController::class, 'destroy'])
-    ->name('faculty.availability.destroy')
-    ->middleware('auth');
-
+Route::prefix('faculty')->middleware('auth')->group(function () {
+    Route::get('/availability', [FacultyAvailabilityController::class, 'index'])->name('faculty.availability');
+    Route::post('/availability', [FacultyAvailabilityController::class, 'store'])->name('faculty.availability.store');
+    Route::delete('/availability/{id}', [FacultyAvailabilityController::class, 'destroy'])->name('faculty.availability.destroy');
+    Route::get('/{faculty}/availabilities', [FacultyAvailabilityController::class, 'getAvailabilities']);
+});
 
 
 // student
@@ -90,6 +82,9 @@ Route::get('/select-schedule', function () {
 Route::post('/appointment/schedule/store', [AppointmentController::class, 'storeSchedule'])
     ->name('appointment.schedule.store')
     ->middleware('auth');
+
+Route::get('/faculty/{faculty}/availabilities', [FacultyAvailabilityController::class, 'getAvailabilities']);
+Route::get('/api/faculty/{faculty}/availabilities', [FacultyAvailabilityController::class, 'getAvailabilities']);
 
 Route::get('/information', function () {
     return view('student.information')->with('user', Auth::user());

@@ -87,6 +87,8 @@
 
             const bookButton = document.querySelector(".book-button");
             bookButton.onclick = function() {
+                // Store the faculty ID in sessionStorage before redirecting
+                sessionStorage.setItem('selected_faculty_id', faculty.id);
                 window.location.href = `/select-schedule`;
             };
         }
