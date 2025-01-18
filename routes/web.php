@@ -50,12 +50,16 @@ Route::get('/faculty-setup', function () {
 Route::post('/faculty-setup', [FacultyController::class, 'store'])
     ->middleware('auth');
 
-Route::prefix('faculty')->middleware('auth')->group(function () {
-    Route::get('/availability', [FacultyAvailabilityController::class, 'index'])->name('faculty.availability');
-    Route::post('/availability', [FacultyAvailabilityController::class, 'store'])->name('faculty.availability.store');
-    Route::delete('/availability/{id}', [FacultyAvailabilityController::class, 'destroy'])->name('faculty.availability.destroy');
-    Route::get('/{faculty}/availabilities', [FacultyAvailabilityController::class, 'getAvailabilities']);
-});
+Route::get('/faculty-availability', [FacultyAvailabilityController::class, 'index'])
+    ->name('faculty.availability')
+    ->middleware('auth');
+// Keep these routes as they are
+Route::post('/faculty-availability', [FacultyAvailabilityController::class, 'store'])
+    ->name('faculty.availability.store')
+    ->middleware('auth');
+Route::delete('/faculty-availability/{id}', [FacultyAvailabilityController::class, 'destroy'])
+    ->name('faculty.availability.destroy')
+    ->middleware('auth');
 
 
 // student

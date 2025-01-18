@@ -307,7 +307,7 @@
                 z-index: 999;
             }
 
-        .faculty-setup .college_department_id; {
+        .faculty-setup .college_department_id {
             position: absolute;
             width: 2900px;
             height: 570px;

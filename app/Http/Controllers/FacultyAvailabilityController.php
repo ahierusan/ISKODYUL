@@ -11,12 +11,24 @@ class FacultyAvailabilityController extends Controller
 {
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'day_of_week' => 'required|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
-            'duration' => 'required|in:30,60',  // Updated to limit duration to 30 or 60 minutes
-        ]);
+        // Determine if this is a faculty availability or student schedule request
+        $isFacultyAvailability = $request->routeIs('faculty.availability.store');
+
+        // Validate based on the request type
+        if ($isFacultyAvailability) {
+            $validated = $request->validate([
+                'day_of_week' => 'required|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday',
+                'start_time' => 'required|date_format:H:i',
+                'end_time' => 'required|date_format:H:i|after:start_time',
+            ]);
+        } else {
+            $validated = $request->validate([
+                'day_of_week' => 'required|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday',
+                'start_time' => 'required|date_format:H:i',
+                'end_time' => 'required|date_format:H:i|after:start_time',
+                'duration' => 'required|in:30,60',
+            ]);
+        }
 
         $faculty = Faculty::where('user_id', auth()->user()->id)->first();
         
@@ -60,6 +72,7 @@ class FacultyAvailabilityController extends Controller
             'day_of_week' => $validated['day_of_week'],
             'start_time' => $validated['start_time'],
             'end_time' => $validated['end_time'],
+            'duration' => $isFacultyAvailability ? null : $validated['duration'],
         ]);
 
         // Update the Google Calendar integration
@@ -68,12 +81,23 @@ class FacultyAvailabilityController extends Controller
             $eventId = $googleCalendar->createEvent($availability);
             $availability->update(['google_event_id' => $eventId]);
             
-            return redirect('/faculty-availability')
-                ->with('success', 'Availability saved successfully.');
+            if ($isFacultyAvailability) {
+                return redirect('/faculty-availability')
+                    ->with('success', 'Availability saved successfully.');
+            } else {
+                return redirect('/select-schedule')
+                    ->with('success', 'Schedule selected successfully.');
+            }
         } catch (\Exception $e) {
             \Log::error('Failed to create Google Calendar event: ' . $e->getMessage());
-            return redirect('/faculty-availability')
-                ->with('error', 'Availability saved but failed to sync with Google Calendar. Please try again.');
+            
+            if ($isFacultyAvailability) {
+                return redirect('/faculty-availability')
+                    ->with('error', 'Availability saved but failed to sync with Google Calendar. Please try again.');
+            } else {
+                return redirect('/select-schedule')
+                    ->with('error', 'Schedule selection failed. Please try again.');
+            }
         }
     }
 
@@ -96,7 +120,6 @@ class FacultyAvailabilityController extends Controller
                 ->with('error', 'Failed to delete availability. Please try again.');
         }
     }
-
 
     public function index()
     {
@@ -127,10 +150,10 @@ class FacultyAvailabilityController extends Controller
         // Get dates for the next 14 days starting tomorrow
         $dates = [];
         $tomorrow = Carbon::tomorrow();
-        $twoWeeksLater = Carbon::tomorrow()->addDays(13); // 14 days including tomorrow
+        $twoWeeksLater = Carbon::tomorrow()->addDays(13);
 
         for ($date = $tomorrow; $date <= $twoWeeksLater; $date->addDay()) {
-            $dayOfWeek = $date->format('l'); // Get day name (Monday, Tuesday, etc.)
+            $dayOfWeek = $date->format('l');
             
             // Find availability for this day of week
             $dayAvailability = $availabilities->first(function($availability) use ($dayOfWeek) {
@@ -150,5 +173,4 @@ class FacultyAvailabilityController extends Controller
         \Log::debug('Returning dates: ' . json_encode($dates));
         return response()->json(['availabilities' => $dates]);
     }
-    
 }
