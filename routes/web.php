@@ -80,7 +80,7 @@ Route::get('/appointment', function () {
 })->middleware('auth');
 
 Route::get('/appointment/faculty-list/{departmentId}', [AppointmentController::class, 'getFacultyListAndDetails']);
-Route::get('/appointment/faculty-availability/{faculty}', [AppointmentController::class, 'getFacultyAvailability']);
+Route::get('/appointment/faculty-availability/{faculty}', 'AppointmentController@getFacultyAvailability');
 
 Route::get('/select-schedule', function () {
     return view('student.select-schedule')->with('user', Auth::user());

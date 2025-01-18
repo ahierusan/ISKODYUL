@@ -50,12 +50,12 @@
                 <div class="isko-cf">ISKO</div>
               </div>
             </div>
-            <nav class="menu-group-cf">
-                <a href="dashboard.html">DASHBOARD</a>
-                <a href="search_faculty.html" class="appointment-cf">APPOINTMENT</a>
-                <a href="about.html">ABOUT</a>
-                <a href="login.html" class="logout-cf">LOGOUT</a>
-            </nav>
+            <nav class="menu-group-ss">
+                    <a href="/student-dashboard">DASHBOARD</a>
+                    <a href="/appointment" class="appointment">APPOINTMENT</a>
+                    <a href="about.html">ABOUT</a>
+                    <a href="/logout" class="logout-fs">LOGOUT</a>
+                </nav>
 
             <img class="line-cf" src="assets/images/line.png" />
             <div class="group-cf">
