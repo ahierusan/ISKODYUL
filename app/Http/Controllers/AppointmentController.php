@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Faculty;
 use Illuminate\Http\Request;
+use App\Models\FacultyAvailability;
 
 class AppointmentController extends Controller
 {
