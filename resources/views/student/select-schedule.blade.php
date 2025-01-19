@@ -343,38 +343,43 @@
         }
 
         function generateDateGrid() {
-          const grid = document.getElementById('dateGrid');
-          const tomorrow = new Date();
-          tomorrow.setDate(tomorrow.getDate() + 1);
-          const twoWeeksLater = new Date(tomorrow);
-          twoWeeksLater.setDate(tomorrow.getDate() + 13); // 14 days including tomorrow
+            const grid = document.getElementById('dateGrid');
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            // Ensure we're working with the start of the day in local time
+            tomorrow.setHours(0, 0, 0, 0);
+            
+            const twoWeeksLater = new Date(tomorrow);
+            twoWeeksLater.setDate(tomorrow.getDate() + 13); // 14 days including tomorrow
 
-          grid.innerHTML = '';
-          grid.style.display = 'grid';
-          grid.style.gridTemplateColumns = 'repeat(7, 1fr)';
-          grid.style.gap = '15px';
+            grid.innerHTML = '';
+            grid.style.display = 'grid';
+            grid.style.gridTemplateColumns = 'repeat(7, 1fr)';
+            grid.style.gap = '15px';
 
-          for (let d = new Date(tomorrow); d <= twoWeeksLater; d.setDate(d.getDate() + 1)) {
-              const dateButton = document.createElement('div');
-              dateButton.className = 'date-button-ss';
-              
-              const dateString = d.toISOString().split('T')[0];
-              
-              const weekday = d.toLocaleDateString('en-US', { weekday: 'short' });
-              const day = d.getDate();
-              const month = d.toLocaleDateString('en-US', { month: 'short' });
-              
-              dateButton.innerHTML = `
-                  <div class="date-weekday-ss">${weekday}</div>
-                  <div class="date-day-ss">${day}</div>
-                  <div class="date-weekday-ss">${month}</div>
-              `;
+            for (let d = new Date(tomorrow); d <= twoWeeksLater; d.setDate(d.getDate() + 1)) {
+                const dateButton = document.createElement('div');
+                dateButton.className = 'date-button-ss';
+                
+                // Format date string in YYYY-MM-DD format using local time
+                const dateString = d.toLocaleDateString('en-CA'); // en-CA gives YYYY-MM-DD format
+                
+                const weekday = d.toLocaleDateString('en-US', { weekday: 'short' });
+                const day = d.getDate();
+                const month = d.toLocaleDateString('en-US', { month: 'short' });
+                
+                dateButton.innerHTML = `
+                    <div class="date-weekday-ss">${weekday}</div>
+                    <div class="date-day-ss">${day}</div>
+                    <div class="date-weekday-ss">${month}</div>
+                `;
 
-              dateButton.setAttribute('data-date', dateString);
-              dateButton.addEventListener('click', handleDateSelection);
-              grid.appendChild(dateButton);
-          }
-      }
+                dateButton.setAttribute('data-date', dateString);
+                dateButton.addEventListener('click', handleDateSelection);
+                grid.appendChild(dateButton);
+            }
+        }
 
         function updateDateGridAvailability() {
             const dateButtons = document.querySelectorAll('.date-button-ss');
@@ -449,9 +454,14 @@
           }
 
         function checkDateAvailability(dateString) {
-            return facultyAvailabilities.some(availability => 
-                availability.date === dateString
-            );
+            // Convert the date string to UTC to ensure consistent comparison
+            const buttonDate = new Date(dateString + 'T00:00:00Z');
+            
+            return facultyAvailabilities.some(availability => {
+                // Convert availability date to UTC for comparison
+                const availabilityDate = new Date(availability.date + 'T00:00:00Z');
+                return buttonDate.getTime() === availabilityDate.getTime();
+            });
         }
 
         function getAvailabilityForDate(dateString) {

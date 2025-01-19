@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Appointment extends Model
-
 {
     protected $fillable = [
         'faculty_id',
@@ -13,7 +12,16 @@ class Appointment extends Model
         'date',
         'time',
         'duration',
-        'status'
+        'status',
+        'appointment_category',
+        'additional_notes',
+        'google_event_id',
+        'student_google_event_id'
+    ];
+
+    protected $casts = [
+        'date' => 'date',
+        'time' => 'datetime',
     ];
 
     public function faculty()
@@ -23,6 +31,6 @@ class Appointment extends Model
 
     public function student()
     {
-        return $this->belongsTo(Student::class);
+        return $this->belongsTo(User::class, 'student_id');
     }
 }

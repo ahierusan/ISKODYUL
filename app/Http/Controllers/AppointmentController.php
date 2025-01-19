@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Faculty;
+use App\Models\Appointment;
+use App\Models\Student;
 use Illuminate\Http\Request;
 use App\Models\FacultyAvailability;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AppointmentController extends Controller
 {
@@ -86,58 +90,163 @@ class AppointmentController extends Controller
 
     public function storeAppointment(Request $request)
     {
-        // Get appointment data from session
-        $appointmentData = session('appointment_schedule');
-        $studentInfo = $appointmentData['student_info'];
+        // 1. Start database transaction
+        DB::beginTransaction();
         
-        // Create new appointment using faculty_id from session
-        $appointment = Appointment::create([
-            'faculty_id' => $appointmentData['faculty_id'],
-            'student_id' => Auth::id(),
-            'date' => $appointmentData['date'],
-            'time' => $appointmentData['time'],
-            'duration' => $appointmentData['duration'],
-            'status' => $appointmentData['requires_approval'] ? 'pending' : 'approved',
-            'appointment_category' => $studentInfo['appointment_category'],
-            'additional_notes' => $studentInfo['additional_notes'] ?? null,
-        ]);
+        try {
+            // 2. Get appointment data from session
+            $appointmentData = session('appointment_schedule');
+            $studentInfo = $appointmentData['student_info'];
+            
+            // 3. Create or update student record
+            $student = Student::updateOrCreate(
+                ['student_number' => $studentInfo['student_number']],
+                [
+                    'user_id' => Auth::id(),
+                    'first_name' => $studentInfo['first_name'],
+                    'last_name' => $studentInfo['last_name'],
+                    'program_year_section' => $studentInfo['program_year_section'],
+                    'college_department' => $studentInfo['college_department'],
+                    'status' => $studentInfo['status']
+                ]
+            );
 
-        // Handle Google Calendar integration
-        if ($appointment->status === 'approved') {
-            $this->createGoogleCalendarEvent($appointment);
+            // 4. Parse dates using Carbon (following faculty pattern)
+            $appointmentDate = Carbon::parse($appointmentData['date']);
+            $startTime = Carbon::createFromFormat('H:i', $appointmentData['time']);
+            $endTime = $startTime->copy()->addMinutes((int)$appointmentData['duration']);
+
+            // 5. Create appointment record
+            $appointment = new Appointment([
+                'faculty_id' => $appointmentData['faculty_id'],
+                'student_id' => Auth::id(),
+                'date' => $appointmentDate->format('Y-m-d'),
+                'time' => $startTime->format('H:i:s'),
+                'duration' => (int)$appointmentData['duration'],
+                'status' => $appointmentData['requires_approval'] ? 'pending' : 'approved',
+                'appointment_category' => $studentInfo['appointment_category'],
+                'additional_notes' => $studentInfo['additional_notes'] ?? null,
+            ]);
+
+            $appointment->save();
+
+            // 6. Handle Google Calendar for approved appointments
+            if ($appointment->status === 'approved') {
+                try {
+                    $calendarResult = $this->createGoogleCalendarEvent($appointment);
+                    if ($calendarResult) {
+                        $appointment->update([
+                            'google_event_id' => $calendarResult['faculty_event_id'],
+                            'student_google_event_id' => $calendarResult['student_event_id']
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    \Log::error('Google Calendar Creation Failed: ' . $e->getMessage());
+                    // Continue with appointment creation even if calendar fails
+                }
+            }
+
+            // 7. Commit transaction and clear session
+            DB::commit();
+            session()->forget('appointment_schedule');
+
+            // 8. Redirect with success message
+            return redirect('/student-dashboard')
+                ->with('success', 'Appointment ' . 
+                    ($appointment->status === 'approved' ? 'scheduled' : 'submitted for approval') . 
+                    ' successfully!');
+
+        } catch (\Exception $e) {
+            // 9. Handle any errors
+            DB::rollback();
+            \Log::error('Appointment Creation Failed: ' . $e->getMessage());
+            
+            return redirect()->back()
+                ->with('error', 'Failed to schedule appointment: ' . $e->getMessage());
         }
-
-        // Clear session data
-        session()->forget('appointment_schedule');
-
-        return redirect('/student-dashboard')->with('success', 'Appointment scheduled successfully!');
     }
 
-    private function createGoogleCalendarEvent($appointment)
+        private function createGoogleCalendarEvent($appointment)
     {
-        $faculty = $appointment->faculty;
-        $student = $appointment->student;
-        
-        // Create event for faculty
-        $facultyCalendar = new GoogleCalendarController();
-        $facultyCalendar->createAppointmentEvent([
-            'title' => "Appointment with {$student->first_name} {$student->last_name}",
-            'start_time' => $appointment->date . 'T' . $appointment->time,
-            'duration' => $appointment->duration,
-            'description' => $appointment->additional_notes,
-            'attendees' => [$student->email]
-        ]);
+        try {
+            $faculty = Faculty::with(['user', 'collegeDepartment'])->findOrFail($appointment->faculty_id);
+            $student = Student::with('user')->where('user_id', $appointment->student_id)->firstOrFail();
+            
+            // Fix date/time parsing
+            // Create a single Carbon instance for the appointment date and time
+            $startDateTime = Carbon::parse($appointment->date)
+                ->setTimeFromTimeString($appointment->time);
+            
+            $endDateTime = $startDateTime->copy()
+                ->addMinutes((int)$appointment->duration);
 
-        // Create event for student if appointment is approved
-        if ($appointment->status === 'approved') {
-            $studentCalendar = new GoogleCalendarController();
-            $studentCalendar->createAppointmentEvent([
-                'title' => "Appointment with {$faculty->first_name} {$faculty->last_name}",
-                'start_time' => $appointment->date . 'T' . $appointment->time,
-                'duration' => $appointment->duration,
-                'description' => $appointment->additional_notes,
-                'attendees' => [$faculty->email]
+            \Log::debug('Appointment times:', [
+                'Start DateTime' => $startDateTime->format('Y-m-d H:i:s'),
+                'End DateTime' => $endDateTime->format('Y-m-d H:i:s')
             ]);
+
+            // Prepare faculty event data
+            $facultyEventData = [
+                'title' => "Student Consultation: {$student->first_name} {$student->last_name}",
+                'start_time' => $startDateTime->format('c'), // ISO 8601
+                'end_time' => $endDateTime->format('c'),     // ISO 8601
+                'description' => $this->formatEventDescription([
+                    'Category' => $appointment->appointment_category,
+                    'Student' => "{$student->first_name} {$student->last_name}",
+                    'Program' => $student->program_year_section,
+                    'Notes' => $appointment->additional_notes ?? 'None'
+                ]),
+                'attendees' => [$student->user->email],
+                'location' => "{$faculty->department} - {$faculty->bldg_no}",
+                'duration' => (int)$appointment->duration
+            ];
+
+            // Prepare student event data
+            $studentEventData = [
+                'title' => "Faculty Consultation: {$faculty->first_name} {$faculty->last_name}",
+                'start_time' => $startDateTime->format('c'), // ISO 8601
+                'end_time' => $endDateTime->format('c'),     // ISO 8601
+                'description' => $this->formatEventDescription([
+                    'Category' => $appointment->appointment_category,
+                    'Faculty' => "{$faculty->first_name} {$faculty->last_name}",
+                    'Department' => $faculty->collegeDepartment->college_name,
+                    'Notes' => $appointment->additional_notes ?? 'None'
+                ]),
+                'attendees' => [$faculty->user->email],
+                'location' => "{$faculty->department} - {$faculty->bldg_no}",
+                'duration' => (int)$appointment->duration
+            ];
+
+            \Log::debug('Event data:', [
+                'Faculty Event' => $facultyEventData,
+                'Student Event' => $studentEventData
+            ]);
+
+            // Create events in both calendars
+            $facultyCalendar = new GoogleCalendarController($faculty->user);
+            $studentCalendar = new GoogleCalendarController($student->user);
+
+            $facultyEvent = $facultyCalendar->createAppointmentEvent($facultyEventData);
+            $studentEvent = $studentCalendar->createAppointmentEvent($studentEventData);
+
+            return [
+                'faculty_event_id' => $facultyEvent->id,
+                'student_event_id' => $studentEvent->id
+            ];
+
+        } catch (\Exception $e) {
+            \Log::error('Google Calendar Event Creation Failed: ' . $e->getMessage());
+            \Log::error('Exception trace: ' . $e->getTraceAsString());
+            throw $e;
         }
+    }
+    
+    private function formatEventDescription($fields)
+    {
+        return collect($fields)
+            ->map(function ($value, $key) {
+                return "$key: $value";
+            })
+            ->join("\n");
     }
 }

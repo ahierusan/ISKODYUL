@@ -65,7 +65,10 @@
 
         @if ($appointmentData['requires_approval'])
             <br><span style="color: #FFA500;">{{ 'Status: Pending Approval' }}</span>
+        @else
+            <br><span style="color: #008000;">{{ 'Status: Approved' }}</span>
         @endif
+
     </div>
 </div>
 
