@@ -84,4 +84,35 @@ class GoogleCalendarController extends Controller
         
         return Carbon::now()->addDays($daysToAdd)->toDateString();
     }
+
+    public function createAppointmentEvent($eventData)
+    {
+        $endTime = Carbon::parse($eventData['start_time'])
+            ->addMinutes($eventData['duration']);
+
+        $event = new \Google_Service_Calendar_Event([
+            'summary' => $eventData['title'],
+            'description' => $eventData['description'],
+            'start' => [
+                'dateTime' => $eventData['start_time'],
+                'timeZone' => 'Asia/Manila',
+            ],
+            'end' => [
+                'dateTime' => $endTime->format('Y-m-d\TH:i:s'),
+                'timeZone' => 'Asia/Manila',
+            ],
+            'attendees' => array_map(function($email) {
+                return ['email' => $email];
+            }, $eventData['attendees']),
+            'reminders' => [
+                'useDefault' => false,
+                'overrides' => [
+                    ['method' => 'popup', 'minutes' => 10],
+                    ['method' => 'email', 'minutes' => 60],
+                ],
+            ],
+        ]);
+
+        return $this->calendarService->events->insert('primary', $event);
+    }
 }

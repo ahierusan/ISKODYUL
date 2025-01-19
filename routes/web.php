@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\CollegeDepartment;
 use App\Http\Controllers\AppointmentController;
 use Illuminate\Http\Request;
+use App\Models\Faculty;
 
 // Login Routes
 Route::get('/login', function () {
@@ -91,6 +92,11 @@ Route::post('/appointment/schedule/store', [AppointmentController::class, 'store
     ->name('appointment.schedule.store')
     ->middleware('auth');
 
+Route::post('/session/store-faculty', function (Request $request) {
+    session(['selected_faculty_id' => $request->faculty_id]);
+    return response()->json(['success' => true]);
+})->middleware('auth');
+
 Route::get('/information', function () {
     return view('student.information')->with('user', Auth::user());
 })->middleware('auth');
@@ -118,8 +124,17 @@ Route::post('/store-information', function (Request $request) {
 })->middleware('auth')->name('store.information');
 
 Route::get('/confirmation', function () {
-    return view('student.confirmation')->with('user', Auth::user());
+    $appointmentData = session('appointment_schedule');
+    $faculty = Faculty::findOrFail($appointmentData['faculty_id']);
+    
+    return view('student.confirmation')
+        ->with('user', Auth::user())
+        ->with('faculty', $faculty);
 })->middleware('auth');
+
+Route::post('/appointment/store', [AppointmentController::class, 'storeAppointment'])
+    ->name('appointment.store')
+    ->middleware('auth');
 
 
 // sysad
@@ -127,4 +142,3 @@ Route::get('/confirmation', function () {
 Route::get('/admin-dashboard', function () {
     return view('sysad.dashboard')->with('user', Auth::user());
 })->middleware('auth');
-

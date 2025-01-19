@@ -3,44 +3,71 @@
     <x-heading-preset />
   </head>
   <body>
+
+
     <div class="appointment-confirmation">
       <div class="overlap-wrapper-cf">
-        
-    
-        <div class="overlap-cf">
-            <div class="continue-button-group-cf">
-                <button class="continue-button-cf" onclick="location.href='/student-dashboard';">
-                    <div class="continue-cf">Confirm</div>
-                </button>
-            </div>
-            <div class="back-button-group-cf">
-                <button class="back-button-cf" onclick="location.href='/information';">
-                    <div class="back-cf">Back</div>
-                </button>
-            </div>
 
+<div class="overlap-cf">
+    <div class="continue-button-group-cf">
+        <form method="POST" action="{{ route('appointment.store') }}">
+            @csrf
+            <button type="submit" class="continue-button-cf">
+                Confirm
+            </button>
+        </form>
+    </div>
+    <div class="back-button-group-cf">
+        <button class="back-button-cf" onclick="location.href='/information';">
+            Back
+        </button>
+    </div>
+</div>
 
-        <div class="schedule-container">
-            <div class="apt-category">[APPOINTMENT CATEGORY]</div>
-            <div class="date-time">
-                <span>[DATE]</span>
-                <span>[TIME]</span>
-            </div>
-            <hr class="divider">
-            <div class="location-room">
-                <span>[LOCATION]</span>
-                <span>[ROOM]</span>
-            </div>
-            <div class="contact-info">
-                [NAME]<br>
-                <a href="#" style="color: #31572c; text-decoration: none;">[EMAIL]</a>
-            </div>
-            <div class="additional-notes">
-                <span>[ADDITIONAL NOTES]</span>
-            </div>
-        </div>
+    @php
+        $appointmentData = session('appointment_schedule');
+        $studentInfo = $appointmentData['student_info'];
+    @endphp
 
-        </div>
+<div class="schedule-container">
+    <div class="apt-category">{{ $studentInfo['appointment_category'] }}</div>
+    <div class="date-time">
+        <span>{{ \Carbon\Carbon::parse($appointmentData['date'])->format('F d, Y') }}</span>
+        <span>
+        {{ \Carbon\Carbon::parse($appointmentData['time'])->format('g:i A') }} - 
+        {{ \Carbon\Carbon::parse($appointmentData['time'])->addMinutes((int)$appointmentData['duration'])->format('g:i A') }}
+        </span>
+    </div>
+    <div class="date-time">
+        <span>{{ $faculty->department }} - {{ $faculty->bldg_no }}</span>
+    </div>
+    <hr class="divider">
+<div class="contact-info">
+        {{ $faculty->first_name }} {{ $faculty->last_name }}<br>
+        <a href="#" style="color: #31572c; text-decoration: none;">{{ $faculty->user->email }}</a><br>
+        {{ $faculty->collegeDepartment->college_name }} ({{ $faculty->collegeDepartment->acronym}})</div>
+    <hr class="divider">
+    <div class="contact-info">
+        {{ $studentInfo['first_name'] }} {{ $studentInfo['last_name'] }}<br>
+        {{ $studentInfo['program_year_section'] }}<br>
+        {{ $studentInfo['student_number'] }}<br>
+        {{ $studentInfo['status'] }}
+    </div>
+    <hr class="divider">
+    <div class="additional-notes">
+        <span>
+            @if(!empty($studentInfo['additional_notes']))
+                Note: {{ $studentInfo['additional_notes'] }}
+            @else
+                No additional notes
+            @endif
+        </span>
+
+        @if ($appointmentData['requires_approval'])
+            <br><span style="color: #FFA500;">{{ 'Status: Pending Approval' }}</span>
+        @endif
+    </div>
+</div>
 
           <div class="overlap-cf-2">
             <img class="rectangle-cf" src="assets/images/Rectangle 39912.png" />

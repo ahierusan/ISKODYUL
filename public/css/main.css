@@ -3286,43 +3286,6 @@
 
 
 
-.appointment-confirmation {
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: #ffffff;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-}
-.appointment-confirmation .overlap-wrapper-cf {
-    background-color: #ffffff;
-    background-image: url(wavy.png);
-    background-size: cover;
-    background-position: center;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: stretch;
-    overflow: hidden;
-}
-.appointment-confirmation .overlap-cf {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        -25deg,
-        rgba(255, 255, 255, 0.7) 30%, 
-        rgba(49, 87, 44, 1) 110%    
-    );
-    display: flex;
-    z-index: 0;
-}
-
-
 .appointment-selectschedule .information-wrapper { /* REPOSITION NG RECTANGLE */
     position: absolute;
     width: 599px;
@@ -3372,6 +3335,41 @@
     left: -1460px;
     flex-direction: column;
 }
+
+.appointment-confirmation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #ffffff;
+    width: 100%;
+    height: 100vh;
+    overflow: auto;
+}
+.appointment-confirmation .overlap-wrapper-cf {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-image: url(wavy.png);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.appointment-confirmation .overlap-cf {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(
+        -25deg,
+        rgba(255, 255, 255, 0.7) 30%, 
+        rgba(49, 87, 44, 1) 110%    
+    );
+}
+
 .appointment-confirmation .overlap-cf-2 { /* reposition ng menu panel */
     position: absolute;
     width: 1768px;
@@ -3380,6 +3378,7 @@
     left: 80px;
     flex-direction: column;
 }
+
 .appointment-confirmation .rectangle-cf { /* resizing at pinaka background ng menu panel */
     width: 5825px;
     height: 383px;
@@ -3700,6 +3699,11 @@
     overflow: hidden;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
+    font-family: "FONTSPRING DEMO - Proxima Nova-Bold", Helvetica;
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 65px;
+    padding-left: 120px;
 }
 
 .appointment-confirmation .continue-button-cf:hover {
@@ -3734,12 +3738,17 @@
     overflow: hidden;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-family: "FONTSPRING DEMO - Proxima Nova-Bold", Helvetica;
+    font-weight: 700;
+    color: #31572c;
+    font-size: 65px;
+    padding-left: 150px;
 }
 
 .appointment-confirmation .back-button-cf:hover {
     background-color: #31572c55;
 }
-.appointment-confirmation .back-cf { /* back */
+/*.appointment-confirmation .back-cf { 
     position: absolute;
     top: 45px;
     left: 155px;
@@ -3752,7 +3761,7 @@
     line-height: 30px;
     white-space: nowrap;
 }
-
+*/
 .appointment-confirmation .continue-button-group-cf {
     position: absolute;
     top: 1800px;
@@ -3767,9 +3776,11 @@
 
 .appointment-confirmation .schedule-container {
     position: relative;
-    top: 550px;
-    text-align: left;
-    left: 300px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 500px auto 0; /* Adjust the first value (100px) to move content up/down */
+    padding: 40px 1000px 40px 1000px; /* Adjust the last value (100px) to move content left/right */
+    z-index: 1;
 }
 
 .appointment-confirmation .apt-category {
@@ -3778,13 +3789,12 @@
     font-weight: bold;
     color: #3c643c;
     margin-bottom: 20px;
+    line-height: 1;
 }
 
 .appointment-confirmation .date-time {
-    position: relative;
-    top: 550px;
     font-family: "Futura Hv BT", Helvetica;
-    font-size:98px;
+    font-size: 98px;
     font-weight: bold;
     color: #3c643c;
     margin-bottom: 20px;
@@ -3796,13 +3806,13 @@
 }
 
 .appointment-confirmation .location-room {
-    position: relative;
-    top: 150px;
     font-family: "Futura Hv BT", Helvetica;
     font-size: 68px;
     font-weight: bold;
     color: #3c643c;
-    margin-top: 550px;
+    margin: 2rem 0;
+    line-height: 1.2;
+}
 }
 
 .appointment-confirmation .location-room span {
@@ -3811,31 +3821,26 @@
 }
 
 .appointment-confirmation .contact-info {
-    position: relative;
-    top: 300px;
     font-family: "Futura Hv BT", Helvetica;
     font-size: 68px;
     font-weight: bold;
     color: #3c643c;
-    margin-top: 40px;
+    margin: 2rem 0;
+    line-height: 1.2;
 }
 
 .appointment-confirmation .divider {
-    position: relative;
-    top: 600px;
-    left: -200px;
     border: none;
     border-top: 9px solid #31572c;
-    margin: 20px auto;
     width: 90%;
+    margin: 1rem 0;
 }
 
 .appointment-confirmation .additional-notes {
-    position: relative;
-    top: 480px;
     font-family: "Futura Hv BT", Helvetica;
     font-size: 68px;
     font-weight: bold;
     color: #3c643c;
-    margin-top: 40px;
+    margin: 2rem 0;
+    line-height: 1.2;
 }

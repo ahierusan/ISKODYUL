@@ -11,13 +11,11 @@
     <div class="appointment-facultysearch">
         <div class="overlap-wrapper-fs">
             <div class="dropdown">
-                <!-- Dropdown Button -->
                 <button class="dropdown-button" id="selected-college" onclick="toggleDropdown()">
                     Select College
                     <span class="arrow-down">&#9662;</span>
                 </button>
 
-                <!-- Dropdown Content with Dynamic List -->
                 <div class="dropdown-content" id="dropdown-content">
                     @foreach ($collegeDepartments as $department)
                         <div 
@@ -74,24 +72,34 @@
                 }
 
                 // Display faculty information when clicked
+                // Update the displayFacultyInformation function
                 function displayFacultyInformation(faculty) {
-            // Existing faculty details code
-            document.querySelector(".faculty-details p:nth-child(1)").innerText = `College: ${faculty.college_name}`;
-            document.querySelector(".faculty-details p:nth-child(2)").innerText = `Name: ${faculty.first_name} ${faculty.last_name}`;
-            document.querySelector(".faculty-details p:nth-child(3)").innerText = `Department: ${faculty.department}`;
-            document.querySelector(".faculty-details p:nth-child(4)").innerText = `Email: ${faculty.email}`;
-            document.querySelector(".faculty-details p:nth-child(5)").innerText = `Bldg. & Room Code: ${faculty.bldg_no}`;
+                    // Existing faculty details code
+                    document.querySelector(".faculty-details p:nth-child(1)").innerText = `College: ${faculty.college_name}`;
+                    document.querySelector(".faculty-details p:nth-child(2)").innerText = `Name: ${faculty.first_name} ${faculty.last_name}`;
+                    document.querySelector(".faculty-details p:nth-child(3)").innerText = `Department: ${faculty.department}`;
+                    document.querySelector(".faculty-details p:nth-child(4)").innerText = `Email: ${faculty.email}`;
+                    document.querySelector(".faculty-details p:nth-child(5)").innerText = `Bldg. & Room Code: ${faculty.bldg_no}`;
 
-            // Add this to initialize calendar when faculty is selected
-            initializeFacultyCalendar(faculty.id);
+                    // Add this to initialize calendar when faculty is selected
+                    initializeFacultyCalendar(faculty.id);
 
-            const bookButton = document.querySelector(".book-button");
-            bookButton.onclick = function() {
-                // Store the faculty ID in sessionStorage before redirecting
-                sessionStorage.setItem('selected_faculty_id', faculty.id);
-                window.location.href = `/select-schedule`;
-            };
-        }
+                    const bookButton = document.querySelector(".book-button");
+                    bookButton.onclick = function() {
+                        // Store the faculty ID in both sessionStorage and Laravel session
+                        sessionStorage.setItem('selected_faculty_id', faculty.id);
+                        fetch('/session/store-faculty', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify({ faculty_id: faculty.id })
+                        }).then(() => {
+                            window.location.href = `/select-schedule`;
+                        });
+                    };
+                }
 
         // Add this new function for calendar initialization
         function initializeFacultyCalendar(facultyId) {
