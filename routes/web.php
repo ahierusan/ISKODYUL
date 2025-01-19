@@ -6,6 +6,7 @@ use App\Http\Controllers\FacultyAvailabilityController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CollegeDepartment;
 use App\Http\Controllers\AppointmentController;
+use Illuminate\Http\Request;
 
 // Login Routes
 Route::get('/login', function () {
@@ -82,17 +83,39 @@ Route::get('/select-schedule', function () {
     return view('student.select-schedule')->with('user', Auth::user());
 })->middleware('auth');
 
-// Add this route for storing appointment schedule
-Route::post('/appointment/schedule/store', [AppointmentController::class, 'storeSchedule'])
-    ->name('appointment.schedule.store')
-    ->middleware('auth');
-
 Route::get('/faculty/{faculty}/availabilities', [FacultyAvailabilityController::class, 'getAvailabilities']);
 Route::get('/api/faculty/{faculty}/availabilities', [FacultyAvailabilityController::class, 'getAvailabilities']);
+
+// Add this route for storing appointment schedule
+Route::post('/appointment/schedule/store', [AppointmentController::class, 'storeScheduleInSession'])
+    ->name('appointment.schedule.store')
+    ->middleware('auth');
 
 Route::get('/information', function () {
     return view('student.information')->with('user', Auth::user());
 })->middleware('auth');
+
+Route::post('/store-information', function (Request $request) {
+    // Validate all required fields
+    $validated = $request->validate([
+        'first_name' => 'required',
+        'last_name' => 'required',
+        'student_number' => 'required',
+        'program_year_section' => 'required',
+        'college_department' => 'required',
+        'status' => 'required',
+        'appointment_category' => 'required',
+        'additional_notes' => 'nullable'
+    ]);
+
+    // Merge new information with existing schedule data
+    $appointment_data = session('appointment_schedule');
+    $appointment_data['student_info'] = $validated;
+    
+    session(['appointment_schedule' => $appointment_data]);
+    
+    return redirect('/confirmation');
+})->middleware('auth')->name('store.information');
 
 Route::get('/confirmation', function () {
     return view('student.confirmation')->with('user', Auth::user());

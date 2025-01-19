@@ -610,6 +610,65 @@
             generateDateGrid();
             fetchFacultyAvailabilities();
         });
+
+        // Add this script section to select-schedule.blade.php
+document.addEventListener('DOMContentLoaded', function() {
+    // Restore previously selected date and time from sessionStorage
+    const savedDate = sessionStorage.getItem('appointment_date');
+    const savedTime = sessionStorage.getItem('appointment_time');
+    const savedDuration = sessionStorage.getItem('appointment_duration');
+
+    if (savedDate) {
+        // Wait for date grid to be populated and faculty availabilities to be fetched
+        const checkGridInterval = setInterval(() => {
+            const dateButton = document.querySelector(`[data-date="${savedDate}"]`);
+            if (dateButton) {
+                clearInterval(checkGridInterval);
+                // Trigger click on the saved date
+                dateButton.click();
+                
+                // After date is selected, restore time and duration
+                if (savedTime) {
+                    const timeSelect = document.querySelector('select[name="time"]');
+                    const checkTimeInterval = setInterval(() => {
+                        if (timeSelect && !timeSelect.disabled) {
+                            clearInterval(checkTimeInterval);
+                            timeSelect.value = savedTime;
+                            timeSelect.dispatchEvent(new Event('change'));
+                            
+                            // Restore duration after time is set
+                            if (savedDuration) {
+                                const durationSelect = document.querySelector('select[name="duration"]');
+                                durationSelect.value = savedDuration;
+                            }
+                        }
+                    }, 100);
+                }
+            }
+        }, 100);
+    }
+
+    // Add event listeners to save selections
+    document.querySelectorAll('.date-button-ss').forEach(button => {
+        button.addEventListener('click', function() {
+            const date = this.getAttribute('data-date');
+            sessionStorage.setItem('appointment_date', date);
+        });
+    });
+
+    document.querySelector('select[name="time"]').addEventListener('change', function() {
+        sessionStorage.setItem('appointment_time', this.value);
+    });
+
+    document.querySelector('select[name="duration"]').addEventListener('change', function() {
+        sessionStorage.setItem('appointment_duration', this.value);
+    });
+
+    // Clear storage when form is submitted
+    document.getElementById('scheduleForm').addEventListener('submit', function() {
+        // Don't clear storage here - we'll clear it after successful appointment creation
+    });
+});
     </script>
 </body>
 </html>

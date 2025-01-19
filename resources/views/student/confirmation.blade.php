@@ -86,5 +86,20 @@
         </div>
       </div>
     </div>
+    <script>
+      // Add this script section to confirmation.blade.php
+document.addEventListener('DOMContentLoaded', function() {
+    const confirmButton = document.querySelector('.continue-button-cf');
+    
+    confirmButton.addEventListener('click', function() {
+        // Clear all appointment-related sessionStorage items
+        Object.keys(sessionStorage).forEach(key => {
+            if (key.startsWith('appointment_')) {
+                sessionStorage.removeItem(key);
+            }
+        });
+    });
+});
+    </script>
   </body>
 </html>
