@@ -25,24 +25,27 @@
           <div class="appointment-list-df">
               <div class="appointment-scroll-df">
                   <div class="placeholder-container-df">
-                      @forelse($appointments['approved'] as $appointment)
-                      <div class="appointment-placeholder-df">
-                          <div class="appointment-date-df">
-                              <span class="date">{{ Carbon\Carbon::parse($appointment['date'])->format('d') }}</span>
-                              <span class="month">{{ Carbon\Carbon::parse($appointment['date'])->format('M') }}</span>
-                          </div>
-                          <div class="appointment-details-df">
-                              <span class="name">{{ $appointment['student']['last_name'] }}, {{ $appointment['student']['first_name'] }}</span>
-                              <span class="college">{{ $appointment['student']['college_department'] }}</span>
-                          </div>
-                          <div class="appointment-time-df">
-                              <span class="time">{{ Carbon\Carbon::parse($appointment['time'])->format('h:i A') }}</span>
-                              <span class="duration">{{ $appointment['duration'] }} Min</span>
-                          </div>
-                      </div>
-                      @empty
-                      <div class="no-appointments">No approved appointments</div>
-                      @endforelse
+                  @forelse($appointments['approved'] as $appointment)
+                    <div class="appointment-wrapper-current">
+                        <div class="appointment-placeholder-df">
+                            <div class="appointment-date-df">
+                                <span class="date">{{ Carbon\Carbon::parse($appointment['date'])->format('d') }}</span>
+                                <span class="month">{{ Carbon\Carbon::parse($appointment['date'])->format('M') }}</span>
+                            </div>
+                            <div class="appointment-details-df">
+                                <span class="name">{{ $appointment['student']['last_name'] }}, {{ $appointment['student']['first_name'] }}</span>
+                                <span class="college">{{ $appointment['student']['college_department'] }}</span>
+                            </div>
+                            <div class="appointment-time-df">
+                                <span class="time">{{ Carbon\Carbon::parse($appointment['time'])->format('h:i A') }}</span>
+                                <span class="duration">{{ $appointment['duration'] }} Min</span>
+                            </div>
+                        </div>
+                        <button class="cancel-apt" onclick="cancelAppointment(this)">&times;</button>
+                    </div>
+                    @empty
+                    <div class="no-appointments">No approved appointments</div>
+                    @endforelse
                   </div>
               </div>
           </div>
@@ -439,6 +442,31 @@ document.head.insertAdjacentHTML('beforeend', `
     }
     </style>
 `);
+
+function cancelAppointment(button) {
+    const isConfirmed = confirm("Are you sure you want to cancel this appointment?");
+    
+    if (isConfirmed) {
+        const appointmentWrapper = button.closest('.appointment-wrapper-current');
+        appointmentWrapper.style.height = appointmentWrapper.offsetHeight + 'px';
+        appointmentWrapper.style.transition = 'all 0.3s ease';
+        
+        // Add fade out effect
+        appointmentWrapper.style.opacity = '0';
+        appointmentWrapper.style.transform = 'translateX(-100%)';
+        
+        // Remove the element after animation
+        setTimeout(() => {
+            appointmentWrapper.style.height = '0';
+            appointmentWrapper.style.margin = '0';
+            appointmentWrapper.style.padding = '0';
+            
+            setTimeout(() => {
+                appointmentWrapper.remove();
+            }, 300);
+        }, 300);
+    }
+}
     </script>
   </body>
 </html>
