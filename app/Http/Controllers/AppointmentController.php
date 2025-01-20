@@ -253,4 +253,94 @@ class AppointmentController extends Controller
             })
             ->join("\n");
     }
+
+    public function getFacultyAppointments(Faculty $faculty)
+    {
+        // Get approved appointments with proper student relationship
+        $approvedAppointments = Appointment::with(['student.user'])
+            ->where('faculty_id', $faculty->id)
+            ->where('status', 'approved')
+            ->where('date', '>=', Carbon::today()->format('Y-m-d'))
+            ->orderBy('date', 'asc')
+            ->orderBy('time', 'asc')
+            ->get();
+
+        // Get pending appointments with proper student relationship
+        $pendingAppointments = Appointment::with(['student.user'])
+            ->where('faculty_id', $faculty->id)
+            ->where('status', 'pending')
+            ->where('date', '>=', Carbon::today()->format('Y-m-d'))
+            ->orderBy('date', 'asc')
+            ->orderBy('time', 'asc')
+            ->get();
+
+        // Transform the data to include necessary student information
+        $transformAppointments = function($appointments) {
+            return $appointments->map(function($appointment) {
+                return [
+                    'id' => $appointment->id,
+                    'date' => $appointment->date,
+                    'time' => $appointment->time,
+                    'duration' => $appointment->duration,
+                    'status' => $appointment->status,
+                    'student' => [
+                        'id' => $appointment->student->id,
+                        'user_id' => $appointment->student->user_id,
+                        'first_name' => $appointment->student->first_name,
+                        'last_name' => $appointment->student->last_name,
+                        'college_department' => $appointment->student->college_department,
+                        'program_year_section' => $appointment->student->program_year_section
+                    ]
+                ];
+            });
+        };
+
+        return [
+            'approved' => $transformAppointments($approvedAppointments),
+            'pending' => $transformAppointments($pendingAppointments)
+        ];
+    }
+
+    public function approveAppointment(Request $request, Appointment $appointment)
+    {
+        try {
+            $appointment->status = 'approved';
+            $appointment->save();
+
+            // Create Google Calendar event
+            $calendarResult = $this->createGoogleCalendarEvent($appointment);
+            if ($calendarResult) {
+                $appointment->update([
+                    'google_event_id' => $calendarResult['faculty_event_id'],
+                    'student_google_event_id' => $calendarResult['student_event_id']
+                ]);
+            }
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function deleteAppointment(Request $request, Appointment $appointment)
+    {
+        try {
+            // Delete Google Calendar events if they exist
+            if ($appointment->google_event_id) {
+                $faculty = Faculty::find($appointment->faculty_id);
+                $facultyCalendar = new GoogleCalendarController($faculty->user);
+                $facultyCalendar->deleteEvent($appointment->google_event_id);
+            }
+            if ($appointment->student_google_event_id) {
+                $student = Student::where('user_id', $appointment->student_id)->first();
+                $studentCalendar = new GoogleCalendarController($student->user);
+                $studentCalendar->deleteEvent($appointment->student_google_event_id);
+            }
+
+            $appointment->delete();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
 }

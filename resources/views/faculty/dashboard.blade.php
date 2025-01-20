@@ -10,8 +10,8 @@
   </head>
   <body>
     @php
-    $faculty = App\Models\Faculty::where('user_id', auth()->user()->id)->first();
-    $availabilities = App\Models\FacultyAvailability::where('faculty_id', $faculty->id)->get();
+      $faculty = App\Models\Faculty::where('user_id', auth()->user()->id)->first();
+      $appointments = app(App\Http\Controllers\AppointmentController::class)->getFacultyAppointments($faculty);
     @endphp
     <div class="dashboard-faculty">
       <div class="overlap-wrapper-df">
@@ -22,67 +22,72 @@
             <div class="divider-line"></div>
           </div>
         <div class="current-app">CURRENT APPOINTMENTS</div>
-        <div class="appointment-list-df">
-        <div class="appointment-scroll-df">
-          <div class="placeholder-container-df">
-            @for ($i = 0; $i < 10; $i++)
-            <div class="appointment-placeholder-df">
-              <div class="appointment-date-df">
-                <span class="date">{{ str_pad(rand(1, 28), 2, '0', STR_PAD_LEFT) }}</span>
-                <span class="month">{{ ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Oct', 'Jan', 'Oct'][rand(0, 7)] }}</span>
+          <div class="appointment-list-df">
+              <div class="appointment-scroll-df">
+                  <div class="placeholder-container-df">
+                      @forelse($appointments['approved'] as $appointment)
+                      <div class="appointment-placeholder-df">
+                          <div class="appointment-date-df">
+                              <span class="date">{{ Carbon\Carbon::parse($appointment['date'])->format('d') }}</span>
+                              <span class="month">{{ Carbon\Carbon::parse($appointment['date'])->format('M') }}</span>
+                          </div>
+                          <div class="appointment-details-df">
+                              <span class="name">{{ $appointment['student']['last_name'] }}, {{ $appointment['student']['first_name'] }}</span>
+                              <span class="college">{{ $appointment['student']['college_department'] }}</span>
+                          </div>
+                          <div class="appointment-time-df">
+                              <span class="time">{{ Carbon\Carbon::parse($appointment['time'])->format('h:i A') }}</span>
+                              <span class="duration">{{ $appointment['duration'] }} Min</span>
+                          </div>
+                      </div>
+                      @empty
+                      <div class="no-appointments">No approved appointments</div>
+                      @endforelse
+                  </div>
               </div>
-              <div class="appointment-details-df">
-                <span class="name">{{ ['Smith', 'Johnson', 'Williams', 'Brown', 'Davis', 'Sanxian', 'Bando', 'Marielle'][rand(0, 7)] }}</span>
-                <span class="college">College of {{ ['Engineering', 'Arts', 'Agriculture, Food, Environment and Natural Resources', 'Education', 'Criminal Justice', 'Economics, Management and Development Studies', 'Science'][rand(0, 6)] }}</span>
-              </div>
-              <div class="appointment-time-df">
-                <span class="time">{{ str_pad(rand(8, 16), 2, '0', STR_PAD_LEFT) }}:00 {{ rand(0, 1) ? 'AM' : 'PM' }}</span>
-                <span class="duration">30 Min</span>
-              </div>
-            </div>
-            @endfor
           </div>
-        </div>
-      </div>
 
       <div class="appointment-list">
           <button class="appointments-link" onclick="togglePopup()">NEW APPOINTMENTS</button>
       </div>
 
       <!-- Separate Modal Container -->
-<div id="appointmentModal" class="modal hidden">
-    <div class="modal-content">
-        <span class="close-button">&times;</span>
-        <h2>CONFIRM APPOINTMENTS</h2>
-        
-        <div class="modal-scroll">
-            <div class="placeholder-container-df">
-                @for ($i = 0; $i < 10; $i++)
-                <div class="appointment-wrapper">
-                <div class="appointment-placeholder-df">
-                    <div class="appointment-date-df">
-                        <span class="date">{{ str_pad(rand(1, 28), 2, '0', STR_PAD_LEFT) }}</span>
-                        <span class="month">{{ ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Oct'][rand(0, 5)] }}</span>
-                    </div>
-                    <div class="appointment-details-df">
-                        <span class="name">{{ ['Smith', 'Johnson', 'Williams', 'Brown', 'Davis', 'Sanxian', 'Bando', 'Marielle'][rand(0, 7)] }}</span>
-                        <span class="college">College of {{ ['Engineering', 'Arts', 'Agriculture, Food, Environment and Natural Resources', 'Education', 'Criminal Justice', 'Economics, Management and Development Studies', 'Science'][rand(0, 6)] }}</span>
-                    </div>
-                    <div class="appointment-time-df">
-                        <span class="time">{{ str_pad(rand(8, 16), 2, '0', STR_PAD_LEFT) }}:00 {{ rand(0, 1) ? 'AM' : 'PM' }}</span>
-                        <span class="duration">30 Min</span>
-                    </div>
-                </div>
-                <div class="action-buttons">
-                  <button class="approve-apt" onclick="approveAppointment(this)">&#10003;</button>
-                  <button class="delete-apt" onclick="deleteAppointment(this)">&times;</button>
-                </div>
-                </div>
-                @endfor
-            </div>
-        </div>
-    </div>
-</div>
+      <div id="appointmentModal" class="modal hidden">
+          <div class="modal-content">
+              <span class="close-button">&times;</span>
+              <h2>CONFIRM APPOINTMENTS</h2>
+              
+              <div class="modal-scroll">
+                  <div class="placeholder-container-df">
+                      @forelse($appointments['pending'] as $appointment)
+                      <div class="appointment-wrapper" data-appointment-id="{{ $appointment['id'] }}">
+                          <div class="appointment-placeholder-df">
+                              <div class="appointment-date-df">
+                                  <span class="date">{{ Carbon\Carbon::parse($appointment['date'])->format('d') }}</span>
+                                  <span class="month">{{ Carbon\Carbon::parse($appointment['date'])->format('M') }}</span>
+                              </div>
+                              <div class="appointment-details-df">
+                                  <span class="name">{{ $appointment['student']['last_name'] }}, {{ $appointment['student']['first_name'] }}</span>
+                                  <span class="college">{{ $appointment['student']['college_department'] }}</span>
+                              </div>
+                              <div class="appointment-time-df">
+                                  <span class="time">{{ Carbon\Carbon::parse($appointment['time'])->format('h:i A') }}</span>
+                                  <span class="duration">{{ $appointment['duration'] }} Min</span>
+                              </div>
+                          </div>
+                          <div class="action-buttons">
+                              {{-- wait --}}
+                              <button class="approve-apt" onclick="approveAppointment(this)">&#10003;</button>
+                              <button class="delete-apt" onclick="deleteAppointment(this)">&times;</button>
+                          </div>
+                      </div>
+                      @empty
+                      <div class="no-appointments">No pending appointments</div>
+                      @endforelse
+                  </div>
+              </div>
+          </div>
+      </div>
       
       
 <div class="right-section">

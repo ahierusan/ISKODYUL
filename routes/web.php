@@ -39,7 +39,14 @@ Route::get('/video-tutorial', function () {
 // faculty
 
 Route::get('/faculty-dashboard', function () {
-    return view('faculty.dashboard')->with('user', Auth::user());
+    $faculty = App\Models\Faculty::where('user_id', auth()->user()->id)->first();
+    $appointments = app(App\Http\Controllers\AppointmentController::class)->getFacultyAppointments($faculty);
+    $availabilities = App\Models\FacultyAvailability::where('faculty_id', $faculty->id)->get();
+    
+    return view('faculty.dashboard')
+        ->with('user', Auth::user())
+        ->with('availabilities', $availabilities)
+        ->with('appointments', $appointments);
 })->middleware('auth');
 
 Route::get('/faculty-setup', function () {
