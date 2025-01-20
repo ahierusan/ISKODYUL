@@ -70,6 +70,17 @@ Route::delete('/faculty-availability/{id}', [FacultyAvailabilityController::clas
     ->name('faculty.availability.destroy')
     ->middleware('auth');
 
+Route::post('/appointment/{appointment}/approve', [AppointmentController::class, 'approveAppointment'])
+    ->name('appointment.approve')
+    ->middleware('auth');
+
+Route::post('/appointment/{appointment}/reject', [AppointmentController::class, 'rejectAppointment'])
+    ->name('appointment.reject')
+    ->middleware('auth');
+
+Route::post('/appointment/{appointment}/cancel', [AppointmentController::class, 'cancelAppointment'])
+    ->name('appointment.cancel')
+    ->middleware('auth');
 
 // student
 

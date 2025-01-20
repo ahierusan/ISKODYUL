@@ -360,5 +360,95 @@ class AppointmentController extends Controller
             ->with('student', $student)
             ->with('appointmentSchedule', $appointmentSchedule);
     }
+
+    public function rejectAppointment(Appointment $appointment)
+    {
+        try {
+            // Update appointment status to rejected
+            $appointment->update([
+                'status' => 'rejected'
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Appointment rejected successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to reject appointment: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+public function cancelAppointment(Appointment $appointment)
+{
+    try {
+        DB::beginTransaction();
+
+        // Check if the appointment exists and can be cancelled
+        if (!$appointment) {
+            throw new \Exception('Appointment not found');
+        }
+
+        // Only allow cancellation of approved appointments
+        if ($appointment->status !== 'approved') {
+            throw new \Exception('Only approved appointments can be cancelled');
+        }
+
+        // Get the faculty and student users
+        $faculty = Faculty::with('user')->find($appointment->faculty_id);
+        $student = Student::with('user')->where('user_id', $appointment->student_id)->first();
+
+        if (!$faculty || !$student) {
+            throw new \Exception('Required user information not found');
+        }
+
+        // Delete faculty's calendar event if it exists
+        if ($appointment->google_event_id) {
+            try {
+                $facultyGoogleCalendar = new GoogleCalendarController($faculty->user);
+                $facultyGoogleCalendar->deleteEvent($appointment->google_event_id);
+            } catch (\Exception $e) {
+                \Log::error('Failed to delete faculty calendar event: ' . $e->getMessage());
+                // Continue with cancellation even if calendar deletion fails
+            }
+        }
+
+        // Delete student's calendar event if it exists
+        if ($appointment->student_google_event_id) {
+            try {
+                $studentGoogleCalendar = new GoogleCalendarController($student->user);
+                $studentGoogleCalendar->deleteEvent($appointment->student_google_event_id);
+            } catch (\Exception $e) {
+                \Log::error('Failed to delete student calendar event: ' . $e->getMessage());
+                // Continue with cancellation even if calendar deletion fails
+            }
+        }
+
+        $appointment->update([
+            'status' => 'cancelled',
+            'google_event_id' => null,
+            'student_google_event_id' => null
+        ]);
+
+        DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Appointment canceled successfully'
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollback();
+        \Log::error('Appointment cancellation failed: ' . $e->getMessage());
+        \Log::error('Stack trace: ' . $e->getTraceAsString());
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to cancel appointment: ' . $e->getMessage()
+        ], 500);
+    }
+}
     
 }

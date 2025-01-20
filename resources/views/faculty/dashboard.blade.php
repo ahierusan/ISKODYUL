@@ -26,7 +26,7 @@
               <div class="appointment-scroll-df">
                   <div class="placeholder-container-df">
                   @forelse($appointments['approved'] as $appointment)
-                    <div class="appointment-wrapper-current">
+                    <div class="appointment-wrapper-current" data-appointment-id="{{ $appointment['id'] }}">
                         <div class="appointment-placeholder-df">
                             <div class="appointment-date-df">
                                 <span class="date">{{ Carbon\Carbon::parse($appointment['date'])->format('d') }}</span>
@@ -81,7 +81,7 @@
                           <div class="action-buttons">
                               {{-- wait --}}
                               <button class="approve-apt" onclick="approveAppointment(this)">&#10003;</button>
-                              <button class="delete-apt" onclick="deleteAppointment(this)">&times;</button>
+                              <button class="delete-apt" onclick="rejectAppointment(this)">&times;</button>
                           </div>
                       </div>
                       @empty
@@ -368,69 +368,89 @@ function approveAppointment(button) {
     const isConfirmed = confirm("Are you sure you want to confirm the appointment?");
     
     if (isConfirmed) {
-        // Get the appointment wrapper and its content
         const appointmentWrapper = button.closest('.appointment-wrapper');
-        const appointmentContent = appointmentWrapper.querySelector('.appointment-placeholder-df').cloneNode(true);
-        
-        // Add the appointment to the dashboard
-        const dashboardContainer = document.querySelector('.appointment-scroll-df .placeholder-container-df');
-        dashboardContainer.insertBefore(appointmentContent, dashboardContainer.firstChild); // Add to top of list
-        
-        // Animate and remove from modal
-        appointmentWrapper.style.height = appointmentWrapper.offsetHeight + 'px';
-        appointmentWrapper.style.transition = 'all 0.3s ease';
-        
-        // Add fade out effect
-        appointmentWrapper.style.opacity = '0';
-        appointmentWrapper.style.transform = 'translateX(-100%)';
-        
-        // Remove the element after animation
-        setTimeout(() => {
-            appointmentWrapper.style.height = '0';
-            appointmentWrapper.style.margin = '0';
-            appointmentWrapper.style.padding = '0';
-            
-            setTimeout(() => {
-                appointmentWrapper.remove();
+        const appointmentId = appointmentWrapper.dataset.appointmentId;
+
+        // Send approval request to backend
+        fetch(`/appointment/${appointmentId}/approve`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Animate removal from modal
+                appointmentWrapper.style.height = appointmentWrapper.offsetHeight + 'px';
+                appointmentWrapper.style.transition = 'all 0.3s ease';
+                appointmentWrapper.style.opacity = '0';
+                appointmentWrapper.style.transform = 'translateX(-100%)';
                 
-                // Animate the new appointment in dashboard
-                appointmentContent.style.opacity = '0';
-                appointmentContent.style.transform = 'translateX(-20px)';
-                appointmentContent.style.transition = 'all 0.3s ease';
-                
-                // Trigger reflow to ensure animation plays
-                void appointmentContent.offsetWidth;
-                
-                // Animate in
-                appointmentContent.style.opacity = '1';
-                appointmentContent.style.transform = 'translateX(0)';
-            }, 300);
-        }, 300);
+                setTimeout(() => {
+                    appointmentWrapper.style.height = '0';
+                    appointmentWrapper.style.margin = '0';
+                    appointmentWrapper.style.padding = '0';
+                    
+                    setTimeout(() => {
+                        appointmentWrapper.remove();
+                        // Refresh the page to update the calendar and current appointments
+                        window.location.reload();
+                    }, 300);
+                }, 300);
+            } else {
+                alert('Failed to approve appointment: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to approve appointment. Please try again.');
+        });
     }
 }
 
-function deleteAppointment(button) {
-    const isConfirmed = confirm("Are you sure you want to delete this appointment?");
+function rejectAppointment(button) {
+    const isConfirmed = confirm("Are you sure you want to reject this appointment?");
     
     if (isConfirmed) {
         const appointmentWrapper = button.closest('.appointment-wrapper');
-        appointmentWrapper.style.height = appointmentWrapper.offsetHeight + 'px';
-        appointmentWrapper.style.transition = 'all 0.3s ease';
-        
-        // Add fade out effect
-        appointmentWrapper.style.opacity = '0';
-        appointmentWrapper.style.transform = 'translateX(-100%)';
-        
-        // Remove the element after animation
-        setTimeout(() => {
-            appointmentWrapper.style.height = '0';
-            appointmentWrapper.style.margin = '0';
-            appointmentWrapper.style.padding = '0';
-            
-            setTimeout(() => {
-                appointmentWrapper.remove();
-            }, 300);
-        }, 300);
+        const appointmentId = appointmentWrapper.dataset.appointmentId;
+
+        // Send reject request to backend
+        fetch(`/appointment/${appointmentId}/reject`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Animate removal from view
+                appointmentWrapper.style.height = appointmentWrapper.offsetHeight + 'px';
+                appointmentWrapper.style.transition = 'all 0.3s ease';
+                appointmentWrapper.style.opacity = '0';
+                appointmentWrapper.style.transform = 'translateX(-100%)';
+                
+                setTimeout(() => {
+                    appointmentWrapper.style.height = '0';
+                    appointmentWrapper.style.margin = '0';
+                    appointmentWrapper.style.padding = '0';
+                    
+                    setTimeout(() => {
+                        appointmentWrapper.remove();
+                    }, 300);
+                }, 300);
+            } else {
+                alert('Failed to reject appointment: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to reject appointment. Please try again.');
+        });
     }
 }
 
@@ -448,23 +468,55 @@ function cancelAppointment(button) {
     
     if (isConfirmed) {
         const appointmentWrapper = button.closest('.appointment-wrapper-current');
-        appointmentWrapper.style.height = appointmentWrapper.offsetHeight + 'px';
-        appointmentWrapper.style.transition = 'all 0.3s ease';
+        const appointmentId = appointmentWrapper.dataset.appointmentId;
         
-        // Add fade out effect
-        appointmentWrapper.style.opacity = '0';
-        appointmentWrapper.style.transform = 'translateX(-100%)';
-        
-        // Remove the element after animation
-        setTimeout(() => {
-            appointmentWrapper.style.height = '0';
-            appointmentWrapper.style.margin = '0';
-            appointmentWrapper.style.padding = '0';
-            
-            setTimeout(() => {
-                appointmentWrapper.remove();
-            }, 300);
-        }, 300);
+        if (!appointmentId) {
+            console.error('Appointment ID not found');
+            alert('Error: Could not find appointment information');
+            return;
+        }
+
+        // Send cancel request to backend
+        fetch(`/appointment/${appointmentId}/cancel`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Animate removal from view
+                appointmentWrapper.style.height = appointmentWrapper.offsetHeight + 'px';
+                appointmentWrapper.style.transition = 'all 0.3s ease';
+                appointmentWrapper.style.opacity = '0';
+                appointmentWrapper.style.transform = 'translateX(-100%)';
+                
+                setTimeout(() => {
+                    appointmentWrapper.style.height = '0';
+                    appointmentWrapper.style.margin = '0';
+                    appointmentWrapper.style.padding = '0';
+                    
+                    setTimeout(() => {
+                        appointmentWrapper.remove();
+                        // Refresh the calendar view
+                        $('#calendar').fullCalendar('refetchEvents');
+                    }, 300);
+                }, 300);
+            } else {
+                throw new Error(data.message || 'Failed to cancel appointment');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to cancel appointment: ' + error.message);
+        });
     }
 }
     </script>

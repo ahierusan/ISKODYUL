@@ -2046,16 +2046,16 @@
 }
 
 .dashboard-faculty .right-section {
-    position: relative;
+    position: absolute; /* Change back to absolute */
     top: 500px;
-    left: -3400px;
-    right: 500px;
-    flex: 1;
+    right: 11.5%; /* Use percentage instead of fixed pixels */
+    width: 35%; /* Use percentage for width */
     display: flex;
     flex-direction: column;
     gap: 20px;
+    z-index: 1;
+    min-width: 2000px; /* Add minimum width to prevent too small sizing */
 }
-
 
 .dashboard-faculty .calendar-box {
     position: relative;
@@ -2077,15 +2077,6 @@
     margin-bottom: 10px;
 }
 
-/* .dashboard-faculty .calendar-content {
-    position: relative;
-    top: 50px;
-    left: 110px;
-    width: 2250px;
-    height: 1470px;
-    border: 2px solid #d6e5d6;
-    border-radius: 35px;
-} */
 
 .dashboard-faculty .no-schedule {
     position: relative;
@@ -2221,23 +2212,6 @@
 }
 
 .delete-apt {
-    /* position: absolute;
-    bottom: 25px;
-    right: -100%;
-    background-color: #ff4444;
-    color: white;
-    border: none;
-    border-radius: 30px;
-    width: 180px;
-    height: 92%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 80px;
-    opacity: 0;
-    transition: right 0.2s ease, opacity 0.3s ease, background-color 0.2s ease;
-    visibility: hidden */
         background-color: #ff4444;
         color: white;
         border: none;
@@ -2351,6 +2325,22 @@
 
 .modal-scroll::-webkit-scrollbar-thumb:hover {
     background: #3c643c;
+}
+
+.dashboard-faculty .no-app-appointments {
+    position: relative;
+    font-size: 65px;
+    font-family: "Futura Hv BT", Helvetica;
+    color:#8c8c8c;
+    text-align: center;
+}
+
+.dashboard-faculty .no-pen-appointments {
+    position: relative;
+    font-size: 65px;
+    font-family: "Futura Hv BT", Helvetica;
+    color:#8c8c8c;
+    text-align: center;
 }
       
 
@@ -4199,33 +4189,38 @@
     width: 170%;
     height: 1350px;
     overflow: hidden;
-    left: 200px;
+    left: 100px;
     top: 350px;
-    overflow-x: hidden;
- 
+    display: flex;
+    /* overflow-x: hidden; */
+    /* padding-right: 40px; */
+
 }
 
 .student-dashboard .appointment-scroll {
     position: relative;
     top: 0;
     left: 0;
-    right: -100px;
+    right: 0;
     bottom: 0;
-    width: 100%;
+    width: 95%; /* Add scrollbar width */;
     height: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
+    display: block;
+    /* padding-right: 80px; */
 }
 
 .student-dashboard  .placeholder-container-sd {
     position: relative;
-    width: 100%; /* Adjusted from 350% */
+    width: 95%; /* Adjusted from 350% */
     padding: 20px 0;
     display: flex;
     flex-direction: column; 
-    gap: 25px;
+    gap: 5px;
     align-items: center; 
-    padding-right: 20px;
+     margin-right: 26px; 
+    /* padding-left: 50px; */ 
 
 }
 
@@ -4234,7 +4229,7 @@
     width: 26px;
     right: 0;
     position: relative;
-    /* display: block; */
+    display: block;
 }
 
 .appointment-scroll::-webkit-scrollbar-track {
@@ -4266,6 +4261,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 25px; /* Space between appointments */
     transition: transform 0.3s ease;
+    /* margin-right: 50px; */
 }
 
 .appointment-placeholder-sd:hover {
@@ -4346,6 +4342,71 @@
     display: block;
     font-size: 60px;
     color: #8c8c8c;
+}
+
+.appointment-wrapper-ovrvw {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    gap: 0;
+    margin-right: -180px;
+}
+
+.appointment-wrapper-ovrvw .appointment-placeholder-sd {
+    width: 98%;
+    height: 280px;
+    margin-right: 0; /* Remove original margin */
+    transition: transform 0.3s ease;
+}
+
+.appointment-wrapper-ovrvw:hover .appointment-placeholder-sd {
+    transform: translateX(-150px); /* Slide left to make room for cancel button */
+}
+
+.cancel-apt-sd {
+    position: absolute;
+    bottom: 25px;
+    right: -180%;
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    width: 160px;
+    height: 90%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    opacity: 0;
+    transition: right 0.2s ease, opacity 0.3s ease, background-color 0.2s ease;
+    visibility: hidden 
+}
+
+.cancel-apt-sd:active {
+    background-color: #cc0000;
+}
+
+.appointment-wrapper-ovrvw:hover .cancel-apt-sd {
+    right: 0;
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Maintain existing hover effect */
+.appointment-wrapper-ovrvw:hover {
+    transform: translateY(-5px);
+}
+
+.no-app-yet {
+    position: relative;
+    font-size: 65px;
+    font-family: "Futura Hv BT", Helvetica;
+    color:#8c8c8c;
+    text-align: center;
 }
 
 

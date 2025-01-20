@@ -319,6 +319,7 @@
         // Track state
         let facultyAvailabilities = [];
         let showingAllHours = false;
+        let facultyAppointments = [];
 
         // Fetch faculty availabilities when page loads
         async function fetchFacultyAvailabilities() {
