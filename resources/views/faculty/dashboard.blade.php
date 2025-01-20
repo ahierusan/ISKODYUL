@@ -44,7 +44,7 @@
                         <button class="cancel-apt" onclick="cancelAppointment(this)">&times;</button>
                     </div>
                     @empty
-                    <div class="no-appointments">No approved appointments</div>
+                    <div class="no-app-appointments">No approved appointments</div>
                     @endforelse
                   </div>
               </div>
@@ -85,7 +85,7 @@
                           </div>
                       </div>
                       @empty
-                      <div class="no-appointments">No pending appointments</div>
+                      <div class="no-pen-appointments">No pending appointments</div>
                       @endforelse
                   </div>
               </div>
@@ -93,36 +93,36 @@
       </div>
       
       
-<div class="right-section">
-  <div class="calendar-box">
-    <div class="calendar-title">Calendar</div>
-    <div id="calendar" class="calendar-content"></div>
-  </div>
-  <div class="no-schedule">
-    <p>Update availability here: </p>
-    <button class="set-here-button" onclick="window.location.href='/faculty-availability'">Update</button>
-  </div>
-</div>
-<div class="overlap-df-2">
-  <img class="rectangle-df" src="assets/images/Rectangle 39912.png" />
-  <div class="iskodyul-logo-df">
-    <div class="overlap-group-2-df">
-      <div class="dyul-df">DYUL</div>
-      <div class="isko-df">ISKO</div>
-    </div>
-  </div>
-  <nav class="menu-group-df">
-    <a href="/faculty-dashboard" class="dashboard-df">DASHBOARD</a>
-    <a href="/faculty-setup">INFORMATION</a>
-    <a href="/faculty-availability">AVAILABILITY</a>
-  </nav>
-  <nav class="logout-only-df">
-    <a href="/logout" class="logout-df">LOGOUT</a>
-  </nav>
-</div>
-</div>
-</div>
-</div>
+            <div class="right-section">
+              <div class="calendar-box">
+                <div class="calendar-title">Calendar</div>
+                <div id="calendar" class="calendar-content"></div>
+              </div>
+              <div class="no-schedule">
+                <p>Update availability here: </p>
+                <button class="set-here-button" onclick="window.location.href='/faculty-availability'">Update</button>
+              </div>
+            </div>
+            <div class="overlap-df-2">
+              <img class="rectangle-df" src="assets/images/Rectangle 39912.png" />
+              <div class="iskodyul-logo-df">
+                <div class="overlap-group-2-df">
+                  <div class="dyul-df">DYUL</div>
+                  <div class="isko-df">ISKO</div>
+                </div>
+              </div>
+              <nav class="menu-group-df">
+                <a href="/faculty-dashboard" class="dashboard-df">DASHBOARD</a>
+                <a href="/faculty-setup">INFORMATION</a>
+                <a href="/faculty-availability">AVAILABILITY</a>
+              </nav>
+              <nav class="logout-only-df">
+                <a href="/logout" class="logout-df">LOGOUT</a>
+              </nav>
+            </div>
+            </div>
+            </div>
+            </div>
 
     <style>
       .calendar-content {
