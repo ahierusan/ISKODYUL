@@ -36,6 +36,7 @@
             </div>
         </div>
 
+
         <!-- Add New Availability Form -->
         <div class="add-availability">
             <h2>Add New Availability</h2>
