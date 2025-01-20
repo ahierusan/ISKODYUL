@@ -343,4 +343,22 @@ class AppointmentController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function getInformationForm()
+    {
+        $user = Auth::user();
+        
+        // Get the student's most recent information
+        $student = Student::where('user_id', $user->id)
+            ->orderBy('updated_at', 'desc')
+            ->first();
+        
+        // Get appointment schedule from session
+        $appointmentSchedule = session('appointment_schedule');
+        
+        return view('student.information')
+            ->with('student', $student)
+            ->with('appointmentSchedule', $appointmentSchedule);
+    }
+    
 }

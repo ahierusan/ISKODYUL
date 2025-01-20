@@ -104,9 +104,8 @@ Route::post('/session/store-faculty', function (Request $request) {
     return response()->json(['success' => true]);
 })->middleware('auth');
 
-Route::get('/information', function () {
-    return view('student.information')->with('user', Auth::user());
-})->middleware('auth');
+Route::get('/information', [AppointmentController::class, 'getInformationForm'])
+    ->middleware('auth');
 
 Route::post('/store-information', function (Request $request) {
     // Validate all required fields

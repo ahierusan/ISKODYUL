@@ -28,18 +28,47 @@
                 <div class="personal-info">
                     <form id="informationForm" action="{{ route('store.information') }}" method="POST">
                         @csrf
-                        <input type="text" name="first_name" placeholder="First Name" class="input-field-in" required>
-                        <input type="text" name="last_name" placeholder="Last Name" class="input-field-in" required>
-                        <input type="text" name="student_number" placeholder="Student Number" class="input-field-in" required>
-                        <input type="text" name="program_year_section" placeholder="Program, Year, and Section" class="input-field-in" required>
-                        <input type="text" name="college_department" placeholder="College Department" class="input-field-in" required>
+                        <input type="text" 
+                               name="first_name" 
+                               placeholder="First Name" 
+                               class="input-field-in" 
+                               required
+                               value="{{ $student->first_name ?? old('first_name') }}">
+                               
+                        <input type="text" 
+                               name="last_name" 
+                               placeholder="Last Name" 
+                               class="input-field-in" 
+                               required
+                               value="{{ $student->last_name ?? old('last_name') }}">
+                               
+                        <input type="text" 
+                               name="student_number" 
+                               placeholder="Student Number" 
+                               class="input-field-in" 
+                               required
+                               value="{{ $student->student_number ?? old('student_number') }}">
+                               
+                        <input type="text" 
+                               name="program_year_section" 
+                               placeholder="Program, Year, and Section" 
+                               class="input-field-in" 
+                               required
+                               value="{{ $student->program_year_section ?? old('program_year_section') }}">
+                               
+                        <input type="text" 
+                               name="college_department" 
+                               placeholder="College Department" 
+                               class="input-field-in" 
+                               required
+                               value="{{ $student->college_department ?? old('college_department') }}">
                         
                         <select name="status" class="dropdown-field status-dropdown" required>
                             <option value="">Status</option>
-                            <option value="Regular">Regular</option>
-                            <option value="Irregular">Irregular</option>
+                            <option value="Regular" {{ ($student->status ?? old('status')) == 'Regular' ? 'selected' : '' }}>Regular</option>
+                            <option value="Irregular" {{ ($student->status ?? old('status')) == 'Irregular' ? 'selected' : '' }}>Irregular</option>
                         </select>
-                    
+
                         <div class="schedule-details">
                             <select name="appointment_category" class="dropdown-field appointment-category-dropdown" required>
                                 <option value="">Appointment Category</option>
