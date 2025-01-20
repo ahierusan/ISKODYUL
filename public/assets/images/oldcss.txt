@@ -33,12 +33,6 @@
     src: url("/assets/fonts/futura/Futura Heavy font.ttf") format("truetype");
 }
 
-@font-face {
-    font-family: "Futura Book font";
-    src: url("/assets/fonts/futura/Futura Book font.ttf") format("truetype");
-}
-
-
 /* IDEN:LANDING-PAGE */
 
 .landing-page {
@@ -1152,7 +1146,7 @@
 }
 .appointment-facultysearch .faculty-schedule { /* SIZE NG BOX FACULTY SCHEDULE */
     width: 2300px;
-    height: 1450px;
+    height: 1250px;
     position: absolute;
     top: 0;
     left: 0;
@@ -1161,51 +1155,37 @@
     position: absolute;
     width: 300px;
     height: 55px;
-    top: 20px;
+    top: 50px;
     left: 50px;
 }
 
 .appointment-facultysearch .faculty-wrapper {
-    position: relative;
+    position: absolute;
     width: 1067px;
     top: 15px;
-    left: 20px;
+    left: 50px;
     font-family: "Futura Hv BT", Helvetica;
     font-weight: 400;
     color: #31572c;
-    font-size: 65px;
+    font-size: 85px;
     letter-spacing: 0;
     line-height: normal;
 }
-
-.appointment-facultysearch .faculty-wrapper-info {
-    position: relative;
-    width: 1067px;
-    top: 15px;
-    left: 20px;
-    font-family: "Futura Hv BT", Helvetica;
-    font-weight: 400;
-    color: #31572c;
-    font-size: 65px;
-    letter-spacing: 0;
-    line-height: normal;
-}
-.appointment-facultysearch .div-fs { /*POSITION NG BOX FACULTY INFORMATION */
-     position: absolute;
+.appointment-facultysearch .div-fs { /* POSITION NG BOX FACULTY INFORMATION */
+    position: absolute;
     width: 599px;
     height: 365px;
-    top: 1900px;
+    top: 1770px;
     left: 3595px;
     padding: 20px;
-} 
-/* .appointment-facultysearch .faculty-information { SIZE NG BOX FACULTY INFORMATION */
-    /* width: 2300px;
-    height: 990px;
-    position: relative;
+}
+.appointment-facultysearch .faculty-information { /* SIZE NG BOX FACULTY INFORMATION */
+    width: 2300px;
+    height: 1190px;
+    position: absolute;
     top: 0;
     left: 0;
-} */
-
+}
 .appointment-facultysearch .div-wrapper-fs {
     position: absolute;
     width: 569px;
@@ -1216,23 +1196,22 @@
 
 .appointment-facultysearch .faculty-details {
     position: relative;
-    width: 2000px;
+    width: 1800px;
     padding: 80px;
-    top: 80px;
+    top: 120px;
     font-family: "Futura Medium BT", Helvetica;
     font-size: 75px; 
     color: #31572c; 
-    line-height: 1; 
+    line-height: 0.6; 
     z-index: 99;
 }
 .appointment-facultysearch .book-button {
     position: absolute;
     width: 470px;
     height: 120px;
-    top: 900px;
-    left: 1700px;
+    top: 980px;
+    left: 950px;
     background-color: #31572c;
-    border: none;
     border-radius: 35px;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -1242,30 +1221,13 @@
     font-size: 50px;
     text-align: center;
     letter-spacing: 1px;
-    line-height: 120px; /* 30 dati */
+    line-height: 30px;
     white-space: nowrap;
-    outline: none;
-    z-index: 999; /* Increase z-index */
-    pointer-events: auto; /* Ensure clicks are registered */
     
 }
 
 .appointment-facultysearch .book-button:hover {
     background-color: #5b715c;
-    transform: scale(1.05);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-/* Add active state */
-.appointment-facultysearch .book-button:active {
-    transform: scale(0.95);
-    background-color: #264420;
-}
-
-/* Add disabled state */
-.appointment-facultysearch .book-button:disabled {
-    background-color: #cccccc;
-    transform: none;
 }
 
 .appointment-facultysearch .colleges-section-2 {
@@ -1810,186 +1772,124 @@
 
 .dashboard-faculty .divider-line {
     position: relative;
-    bottom: 50px;
+    bottom: 70px;
     height: 6px;
     background-color: #597259;
     width: 185%;
     margin: 40px 0;
-    z-index: 9;
 }
-
 
 .dashboard-faculty .current-app {
     position: relative;
-    top: 1300px;
-    left: -1380px;
+    bottom: 20px;
     font-family: "Futura Hv BT", Helvetica;
     font-size: 98px;
     color:#31572c;
-    z-index: 9;
-    text-wrap: nowrap;
+}
+.dashboard-faculty .appointment-list {
+    position: relative;
+    top: 250px;
+    font-family: "Futura Hv BT", Helvetica;
+    font-size:98px;
+    font-weight: bold;
+    color: #3c643c;
+    margin-bottom: 20px;
 }
 
-.dashboard-faculty .appointment-list-df {
-    position: relative;
-    width: 250%;
-    height: 2050px;
-    overflow: visible;
-    left: -2600px;
-    top: 1450px;
-    margin-right: 26px;
- 
+.dashboard-faculty .date-time span {
+    display: block;
+    margin: 5px 0;
 }
 
 
 .dashboard-faculty .placeholder-container-df {
     position: relative;
-    width: 100%; /* Adjusted from 350% */
-    height: 250%;
-    padding: 20px 30px 20px 0;
+    left: -950px;
+    top: 1600px;
     display: flex;
     flex-direction: column; 
-    gap: 25px;
-    align-items: left; 
-
+    gap: 45px; 
+    width: 350%;
+    max-width: 2800px;
+    align-items: center;
 }
-
-.dashboard-faculty .appointment-scroll-df {
-    position: relative;
-    width: 100%;
-    height: 73%;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    padding-right: 26px; /* Add padding for scrollbar */
-    box-sizing: border-box; /* Include padding in width calculation */
-}
-
-
-/* Custom scrollbar styling */
-.appointment-scroll-df::-webkit-scrollbar {
-    width: 26px;
-    right: 0;
-    position: absolute;
-    display: block;
-}
-
-.appointment-scroll-df::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 20px;
-    margin: 5px 0;
-    
-}
-
-.appointment-scroll-df::-webkit-scrollbar-thumb {
-    background: #4f772d;
-    border-radius: 20px;
-    border: 4px solid #f1f1f1;
-    min-height: 40px;
-}
-
-.appointment-scroll-df::-webkit-scrollbar-thumb:hover {
-    background: #3c643c;
-}
-
 
 .dashboard-faculty .appointment-placeholder-df {
     position: relative;
-    width: 2800px;
+    left: 10px;
+    width: 520%;
+    max-width: 2800px; 
     height: 280px;
     background-color: #fff;
     border: 6px solid #4f772d;
     border-radius: 30px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 25px; /* Space between appointments */
-    transition: transform 0.3s ease;
-    margin-right: 26px;
-}
-
-.appointment-placeholder-df:hover {
-    transform: translateY(-5px);
 }
 
 .dashboard-faculty .appointment-date-df {
-    position: absolute;
-    top: 40px;
-    left: 50px;
-    text-align: center;
-}
-
-.dashboard-faculty .date {
-    display: block;
-    font-family: "Futura Hv BT", Helvetica;
-    font-size: 120px;
-    font-weight: bold;
-    color: #3c643c;
-    line-height: 1;
+    position: relative;
+    top: 20px;
+    left: -1250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: "Futura Hv BT", Helvetica;
+  color: #3c643c;
+  font-weight: bold;
+  font-size: 120px;
 }
 
 .dashboard-faculty .appointment-date-df .month {
-    display: block;
-    font-size: 70px;
-    color: #3c643c;
-    font-family: "Futura Hv BT", Helvetica;
+  font-size: 70px;
 }
 
 .dashboard-faculty .appointment-details-df {
-    position: absolute;
+    position: relative;
+    top: -80px;
     left: 350px;
-    top: 50%;
-    transform: translateY(-50%);   
+  display: flex;
+  transform: translateY(-50%);
+  flex-direction: column;
+  align-items: left;
+  justify-content: center;
+  padding-left: 20px;
+  font-family: "Futura Hv BT", Helvetica;
+  color: #3c643c;
+  gap: 20px;
 }
 
 .dashboard-faculty .appointment-details-df .name {
-    display: block;
-    font-family: "Futura Hv BT", Helvetica;
-    font-size: 80px;
-    font-weight: bold;
-    color: #3c643c;
-    margin-bottom: 10px;
+  font-size: 80px;
+  font-weight: bold;
 }
 
 .dashboard-faculty .appointment-details-df .college {
-    display: block;
-    font-size: 60px;
-    font-family: "Futura Book font", Helvetica;
-    color: #8c8c8c;
+  font-size: 50px;
+  color: #8c8c8c;
 }
 
 .dashboard-faculty .appointment-time-df {
-    position: absolute;
-    right: 50px;
-    top: 50%;
-    transform: translateY(-50%);
-    text-align: right;
-}
-
-
-.dashboard-faculty .time {
-    display: block;
-    font-family: "Futura Hv BT", Helvetica;
-    font-size: 70px;
-    font-weight: bold;
-    color: #3c643c;
-}
-
-.dashboard-faculty .duration {
-    display: block;
-    font-family: "Futura Book font", Helvetica;
-    font-size: 60px;
-    color: #8c8c8c;
+    position: relative;
+    top: -330px;
+    left: -100px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-family: "Futura Hv BT", Helvetica;
+  color: #3c643c;
+  font-weight: bold;
+  font-size: 70px;
 }
 
 .dashboard-faculty .appointment-time-df .duration {
-    display: block;
-    font-size: 60px;
-    color: #8c8c8c;
+  font-size: 60px;
+  color: #8c8c8c;
 }
-
 .dashboard-faculty .right-section {
     position: relative;
     top: 500px;
-    left: -3400px;
-    right: 500px;
+    left: -100px;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -2005,7 +1905,7 @@
     box-shadow: 5px 15px 15px rgba(0, 0, 0, 0.3);
     padding: 50px;
     text-align: left;
-    width: 2580px;
+    width: 2500px;
     height: 1800px;
 }
 
@@ -2017,7 +1917,7 @@
     margin-bottom: 10px;
 }
 
-/* .dashboard-faculty .calendar-content {
+.dashboard-faculty .calendar-content {
     position: relative;
     top: 50px;
     left: 110px;
@@ -2025,19 +1925,19 @@
     height: 1470px;
     border: 2px solid #d6e5d6;
     border-radius: 35px;
-} */
+}
 
 .dashboard-faculty .no-schedule {
     position: relative;
-    right: 10px;
-    left: 20px;
-    top: 120px;
+    left: 50px;
+    top: 190px; 
     z-index: 999;
 }
 
 .dashboard-faculty .no-schedule p {
     position: relative;
     font-family: "Futura Hv BT", Helvetica;
+    
     bottom: 150px;
     font-size: 110px;
     color: #31572c;
@@ -2047,23 +1947,22 @@
 
 .dashboard-faculty .set-here-button {
     position: relative;
-    left: 10px;
+    left: 20px;
+    
     bottom: 100px;
     padding: 30px 120px;
-    background: none;
-    border-radius: 70px;
-    border: 8px solid #31572c;
+    background-color: #31572c;
+    color: #fff;
+    border: none;
+    border-radius: 35px;
     cursor: pointer;
     font-size: 55px;
     font-family: "Futura Hv BT", Helvetica;
-    color: #31572c;
-    transition: color 0.1s ease;
+
 }
 
 .dashboard-faculty .set-here-button:hover {
     background-color: #23401a;
-    color: #ffffff;
-
 }
 
 .dashboard-faculty .appointments-button {
@@ -2086,214 +1985,8 @@
   color: #4f772d; 
 }
 
-.dashboard-faculty .appointments-link {
-    position: relative;
-    width: 900px;
-    right: 1550px;
-    top: 120px;
-    padding: 30px 120px;
-    background: none;
-    border-radius: 70px;
-    border: 8px solid #31572c;
-    cursor: pointer;
-    font-size: 55px;
-    font-family: "Futura Hv BT", Helvetica;
-    color: #31572c;
-    transition: color 0.1s ease;
-    z-index: 10;
-}
 
-.dashboard-faculty .appointments-link:hover {
-    background-color: #23401a;
-    color: #ffffff;
-
-}
-
-.appointment-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    transition: transform 0.1s ease;
-    overflow: hidden;
-    gap: 0;
-}
-
-.appointment-wrapper:hover .appointment-placeholder-df {
-    transform: translateX(-360px);
-}
-
-.action-buttons {
-    position: absolute;
-    bottom: 30px;
-    right: -100%;
-    display: flex;
-    gap: 25px;
-    height: 90%;
-    opacity: 0;
-    visibility: hidden;
-    transition: right 0.3s ease, opacity 0.3s ease;
-}
-
-.appointment-wrapper:hover .action-buttons {
-    right: 0;
-    opacity: 1;
-    visibility: visible;
-}
-
-.approve-apt {
-    background-color: #4CAF50; /* Green color for approve button */
-    color: white;
-    border: none;
-    border-radius: 30px;
-    width: 180px;
-    height: 100%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 80px;
-    transition: background-color 0.2s ease;
-}
-
-.approve-apt:active {
-    background-color: #357a38; /* Darker green when clicked */
-}
-
-.delete-apt {
-    /* position: absolute;
-    bottom: 25px;
-    right: -100%;
-    background-color: #ff4444;
-    color: white;
-    border: none;
-    border-radius: 30px;
-    width: 180px;
-    height: 92%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 80px;
-    opacity: 0;
-    transition: right 0.2s ease, opacity 0.3s ease, background-color 0.2s ease;
-    visibility: hidden */
-        background-color: #ff4444;
-        color: white;
-        border: none;
-        border-radius: 30px;
-        width: 180px;
-        height: 100%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 80px;
-        transition: background-color 0.2s ease;
-    
-}
-
-.delete-apt:active {
-    background-color: #9a0808;
-}
-.appointment-wrapper:hover .delete-apt {
-    right: 0;
-    opacity: 1;
-    visibility: visible;
-
-}
-
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    visibility: hidden;
-    opacity: 0;
-    transition: visibility 0s, opacity 0.3s linear;
-}
-
-.modal.show {
-    visibility: visible;
-    opacity: 1;
-}
-
-.hidden {
-    display: none;
-}
-
-.modal-content {
-    position: relative;
-    background-color: #fff;
-    width: 80%;
-    max-width: 2900px;
-    height: 90vh;
-    margin: 5vh auto;
-    padding: 20px;
-    padding-left: 70px;
-    border-radius: 30px;
-    border: 6px solid #4f772d;
-    overflow: hidden;
-}
-
-.modal-scroll {
-    height: calc(90vh - 100px);
-    overflow-y: auto;
-    padding-right: 20px;
-}
-
-/* Close Button */
-.close-button {
-    position: absolute;
-    right: 30px;
-    top: 20px;
-    font-size: 90px;
-    font-weight: bold;
-    color: #4f772d;
-    cursor: pointer;
-}
-
-.close-button:hover {
-    color: #3c643c;
-}
-
-/* Modal Header */
-.modal-content h2 {
-    font-family: "Futura Hv BT", Helvetica;
-    font-size: 98px;
-    color: #31572c;
-    margin-bottom: 30px;
-    text-align: center;
-}
-
-/* Scrollbar Styling */
-.modal-scroll::-webkit-scrollbar {
-    width: 26px;
-    position: absolute;
-    right: 0;
-}
-
-.modal-scroll::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 20px;
-    margin: 5px 0;
-}
-
-.modal-scroll::-webkit-scrollbar-thumb {
-    background: #4f772d;
-    border-radius: 20px;
-    border: 4px solid #f1f1f1;
-    min-height: 40px;
-}
-
-.modal-scroll::-webkit-scrollbar-thumb:hover {
-    background: #3c643c;
-}
-      
-
+                                
 
 .appointment-facultysearch .container {
     position: relative;
@@ -3593,43 +3286,6 @@
 
 
 
-.appointment-confirmation {
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: #ffffff;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-}
-.appointment-confirmation .overlap-wrapper-cf {
-    background-color: #ffffff;
-    background-image: url(wavy.png);
-    background-size: cover;
-    background-position: center;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: stretch;
-    overflow: hidden;
-}
-.appointment-confirmation .overlap-cf {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        -25deg,
-        rgba(255, 255, 255, 0.7) 30%, 
-        rgba(49, 87, 44, 1) 110%    
-    );
-    display: flex;
-    z-index: 0;
-}
-
-
 .appointment-selectschedule .information-wrapper { /* REPOSITION NG RECTANGLE */
     position: absolute;
     width: 599px;
@@ -3679,6 +3335,41 @@
     left: -1460px;
     flex-direction: column;
 }
+
+.appointment-confirmation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #ffffff;
+    width: 100%;
+    height: 100vh;
+    overflow: auto;
+}
+.appointment-confirmation .overlap-wrapper-cf {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-image: url(wavy.png);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.appointment-confirmation .overlap-cf {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(
+        -25deg,
+        rgba(255, 255, 255, 0.7) 30%, 
+        rgba(49, 87, 44, 1) 110%    
+    );
+}
+
 .appointment-confirmation .overlap-cf-2 { /* reposition ng menu panel */
     position: absolute;
     width: 1768px;
@@ -3687,6 +3378,7 @@
     left: 80px;
     flex-direction: column;
 }
+
 .appointment-confirmation .rectangle-cf { /* resizing at pinaka background ng menu panel */
     width: 5825px;
     height: 383px;
@@ -4007,6 +3699,11 @@
     overflow: hidden;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
+    font-family: "FONTSPRING DEMO - Proxima Nova-Bold", Helvetica;
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 65px;
+    padding-left: 120px;
 }
 
 .appointment-confirmation .continue-button-cf:hover {
@@ -4041,12 +3738,17 @@
     overflow: hidden;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-family: "FONTSPRING DEMO - Proxima Nova-Bold", Helvetica;
+    font-weight: 700;
+    color: #31572c;
+    font-size: 65px;
+    padding-left: 150px;
 }
 
 .appointment-confirmation .back-button-cf:hover {
     background-color: #31572c55;
 }
-.appointment-confirmation .back-cf { /* back */
+/*.appointment-confirmation .back-cf { 
     position: absolute;
     top: 45px;
     left: 155px;
@@ -4059,7 +3761,7 @@
     line-height: 30px;
     white-space: nowrap;
 }
-
+*/
 .appointment-confirmation .continue-button-group-cf {
     position: absolute;
     top: 1800px;
@@ -4074,9 +3776,11 @@
 
 .appointment-confirmation .schedule-container {
     position: relative;
-    top: 550px;
-    text-align: left;
-    left: 300px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 500px auto 0; /* Adjust the first value (100px) to move content up/down */
+    padding: 40px 1000px 40px 1000px; /* Adjust the last value (100px) to move content left/right */
+    z-index: 1;
 }
 
 .appointment-confirmation .apt-category {
@@ -4085,13 +3789,12 @@
     font-weight: bold;
     color: #3c643c;
     margin-bottom: 20px;
+    line-height: 1;
 }
 
 .appointment-confirmation .date-time {
-    position: relative;
-    top: 550px;
     font-family: "Futura Hv BT", Helvetica;
-    font-size:98px;
+    font-size: 98px;
     font-weight: bold;
     color: #3c643c;
     margin-bottom: 20px;
@@ -4103,13 +3806,13 @@
 }
 
 .appointment-confirmation .location-room {
-    position: relative;
-    top: 150px;
     font-family: "Futura Hv BT", Helvetica;
     font-size: 68px;
     font-weight: bold;
     color: #3c643c;
-    margin-top: 550px;
+    margin: 2rem 0;
+    line-height: 1.2;
+}
 }
 
 .appointment-confirmation .location-room span {
@@ -4118,219 +3821,26 @@
 }
 
 .appointment-confirmation .contact-info {
-    position: relative;
-    top: 300px;
     font-family: "Futura Hv BT", Helvetica;
     font-size: 68px;
     font-weight: bold;
     color: #3c643c;
-    margin-top: 40px;
+    margin: 2rem 0;
+    line-height: 1.2;
 }
 
 .appointment-confirmation .divider {
-    position: relative;
-    top: 600px;
-    left: -200px;
     border: none;
     border-top: 9px solid #31572c;
-    margin: 20px auto;
     width: 90%;
+    margin: 1rem 0;
 }
 
 .appointment-confirmation .additional-notes {
-    position: relative;
-    top: 480px;
     font-family: "Futura Hv BT", Helvetica;
     font-size: 68px;
     font-weight: bold;
     color: #3c643c;
-    margin-top: 40px;
+    margin: 2rem 0;
+    line-height: 1.2;
 }
-
-
-.student-dashboard .student-fullname {
-    position: relative;
-    left: 150px;
-    top: 50px;
-}
-.student-dashboard .hello-student {
-    font-family: "Futura Hv BT", Helvetica;
-    font-size: 280px;
-    font-weight: bold;
-    color: #132a13;
-    margin-bottom: 20px;
-}
-
-.student-dashboard .student-name {
-    width: 1500px;
-    font-family: "Futura Hv BT", Helvetica;
-    font-size: 200px;
-    font-weight: bold;
-    color: #132a13;
-    margin-bottom: 20px;
-}
-
-.student-dashboard .dashboard-overview {
-    position: relative;
-    top: 150px;
-    left: 150px;
-    font-family: "Futura Hv BT", Helvetica;
-    font-size: 98px;
-    color:#31572c;
-}
-
-.student-dashboard .appointment-list-sd {
-    position: relative;
-    width: 170%;
-    height: 1350px;
-    overflow: hidden;
-    left: 200px;
-    top: 350px;
-    overflow-x: hidden;
- 
-}
-
-.student-dashboard .appointment-scroll {
-    position: relative;
-    top: 0;
-    left: 0;
-    right: -100px;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    overflow-y: scroll;
-    overflow-x: hidden;
-}
-
-.student-dashboard  .placeholder-container-sd {
-    position: relative;
-    width: 100%; /* Adjusted from 350% */
-    padding: 20px 0;
-    display: flex;
-    flex-direction: column; 
-    gap: 25px;
-    align-items: center; 
-    padding-right: 20px;
-
-}
-
-/* Custom scrollbar styling */
-.appointment-scroll::-webkit-scrollbar {
-    width: 26px;
-    right: 0;
-    position: relative;
-    /* display: block; */
-}
-
-.appointment-scroll::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 20px;
-    margin: 5px 0;
-    
-}
-
-.appointment-scroll::-webkit-scrollbar-thumb {
-    background: #4f772d;
-    border-radius: 20px;
-    border: 4px solid #f1f1f1;
-    min-height: 40px;
-}
-
-.appointment-scroll::-webkit-scrollbar-thumb:hover {
-    background: #3c643c;
-}
-
-
-.student-dashboard .appointment-placeholder-sd {
-    position: relative;
-    width: 95%;
-    height: 280px;
-    background-color: #fff;
-    border: 6px solid #4f772d;
-    border-radius: 30px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 25px; /* Space between appointments */
-    transition: transform 0.3s ease;
-}
-
-.appointment-placeholder-sd:hover {
-    transform: translateY(-5px);
-}
-
-.student-dashboard .appointment-date-sd {
-    position: absolute;
-    top: 40px;
-    left: 50px;
-    text-align: center;
-}
-
-.student-dashboard .date-sd {
-    display: block;
-    font-family: "Futura Hv BT", Helvetica;
-    font-size: 120px;
-    font-weight: bold;
-    color: #3c643c;
-    line-height: 1;
-}
-
-.student-dashboard .appointment-date-sd .month-sd {
-    display: block;
-    font-size: 70px;
-    color: #3c643c;
-    font-family: "Futura Hv BT", Helvetica;
-}
-
-.student-dashboard .appointment-details-sd {
-    position: absolute;
-    left: 350px;
-    top: 50%;
-    transform: translateY(-50%);   
-}
-
-.student-dashboard .appointment-details-sd .prof-name {
-    display: block;
-    font-family: "Futura Hv BT", Helvetica;
-    font-size: 80px;
-    font-weight: bold;
-    color: #3c643c;
-    margin-bottom: 10px;
-}
-
-.student-dashboard .appointment-details-sd .prof-college {
-    display: block;
-    font-size: 60px;
-    font-family: "Futura Book font", Helvetica;
-    color: #8c8c8c;
-}
-
-.student-dashboard .appointment-time-sd {
-    position: absolute;
-    right: 50px;
-    top: 50%;
-    transform: translateY(-50%);
-    text-align: right;
-}
-
-
-.student-dashboard .prof-time {
-    display: block;
-    font-family: "Futura Hv BT", Helvetica;
-    font-size: 70px;
-    font-weight: bold;
-    color: #3c643c;
-}
-
-.student-dashboard .prof-duration {
-    display: block;
-    font-family: "Futura Book font", Helvetica;
-    font-size: 60px;
-    color: #8c8c8c;
-}
-
-.student-dashboard .appointment-time-sd .prof-duration {
-    display: block;
-    font-size: 60px;
-    color: #8c8c8c;
-}
-
-

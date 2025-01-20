@@ -280,36 +280,142 @@
     </div>
 
     <style>
-        .calendar-content {
-            height: 100%;
-            background-color: white;
-            padding: 15px;
-            border-radius: 8px;
-        }
+      .calendar-content {
+        position: relative;
+        background: none;
+        padding: 30px;
+        border-radius: 35px;
+        width: 2100px;
+        left: 75px; 
+        top: 100px;
+    
+      }
+
+      .fc-toolbar {
+        margin-bottom: 40px !important;
+      }
+
+      .fc-toolbar h2 { 
+        font-family: "Futura Hv BT", Helvetica;
+        font-size: 65px;
+        color: #31572c;
+      }
+      
+      .fc-toolbar button { 
+        font-family: "Futura Hv BT", Helvetica;
+        font-size: 35px !important;
+        color:#31572c;
+        padding: 15px 25px !important;
+        width: 130px;
+        height: 80px !important;
+        background: none !important;
+        border-color: #31572c !important;
+        border-radius: 15px !important;
+        transition: color 0.1s ease, background-color 0.3s ease;
+
+
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
         
-        .fc-event {
-            border: none;
-            padding: 2px 4px;
-            border-radius: 3px;
-        }
-        
-        .availability-event {
-            background-color: #4CAF50;
-            color: white;
-        }
-        
-        .appointment-event {
-            background-color: #2196F3;
-            color: white;
-        }
-        
-        .fc-time-grid-event {
-            border-radius: 4px;
-        }
-        
-        .fc-time {
-            font-weight: bold;
-        }
+        padding: 0 !important;  
+        margin: 0 5px !important;  
+      }
+
+      .fc-toolbar button:hover {
+        background-color: #23401a !important;
+        color: #ffffff;
+      }
+
+      .fc-toolbar button.fc-state-active {
+        background-color: #31572c !important; 
+        color: #ffffff !important;
+      }
+
+            /* Day headers */
+      .fc-day-header {
+        font-family: "Futura Hv BT", Helvetica;
+        font-size: 30px;
+        padding: 15px 0 !important;
+        color: #31572c;
+      }
+
+      /* Time slots */
+      .fc-time-grid .fc-slats td {
+        height: 40px !important; /* DITO NAADJUST YUNG HEIGHT */
+        font-size: 37px;
+        border-top: 1px solid #d6e5d6 !important;
+      }
+
+      .fc-axis {
+        font-family: "Futura Book font", Helvetica;
+        font-size: 40px;
+        color: #8c8c8c;
+        padding: 0 20px !important;
+      }
+    
+      .fc-event {
+        border: none;
+        padding: 2px 4px;
+        border-radius: 3px;
+      }
+      
+      /* Events styling */
+      .availability-event {
+        background-color: #4f772d !important;
+        opacity: 0.2 !important;
+        border: none !important;
+      }
+
+      .appointment-event {
+        background-color: #31572c !important;
+        border: none !important;
+        padding: 10px !important;
+        border-radius: 15px !important;
+      }
+
+      /* Time labels in events */
+      .fc-time {
+        font-family: "Futura Hv BT", Helvetica;
+        font-size: 25px !important;
+        margin-bottom: 5px;
+      }
+
+      .fc-title {
+        font-family: "Futura Book font", Helvetica;
+        font-size: 35px !important;
+      }
+
+      /* Today highlight */
+      .fc-today {
+        background-color: rgba(79, 119, 45, 0.1) !important;
+      }
+
+      /* Week/day view now indicator */
+      .fc-now-indicator {
+        border-color: #31572c !important;
+      }
+
+      /* Month view specific styles */
+      .fc-month-view .fc-day {
+          height: 200px !important; 
+      }
+
+      .fc-row.fc-week.fc-widget-content {
+          height: 220px !important; /* Should match the day height */
+      }
+
+      /* This ensures the month view has proper height */
+      .fc-dayGrid-view .fc-body .fc-row {
+          min-height: 200px !important; /* Should match the above heights */
+      }
+
+      /* Optional: Adjust the text size for dates in month view */
+      .fc-month-view .fc-day-number {
+          font-size: 50px;
+          font-family: "Futura Hv BT", Helvetica;
+          padding: 15px;
+      }
     </style>
 
 </body>

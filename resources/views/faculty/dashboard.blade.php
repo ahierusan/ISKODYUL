@@ -19,94 +19,230 @@
           <div class="schedule-container">
             <div class="hello">Hello,</div>
             <div class="prof-name">{{ $faculty->last_name }}, {{ $faculty->first_name }}</div>
-            <div class="appointment-list">
-              <button onclick="openAppointmentsModal()" class="appointments-button">APPOINTMENTS</>
-            </div>
-
-            
             <div class="divider-line"></div>
-            <div class="current-app">Current Appointments</div>
           </div>
+        <div class="current-app">CURRENT APPOINTMENTS</div>
+        <div class="appointment-list-df">
+        <div class="appointment-scroll-df">
           <div class="placeholder-container-df">
-            @for ($i = 0; $i < 4; $i++)
+            @for ($i = 0; $i < 10; $i++)
             <div class="appointment-placeholder-df">
               <div class="appointment-date-df">
-                <span class="date">17</span>
-                <span class="month">Nov</span>
+                <span class="date">{{ str_pad(rand(1, 28), 2, '0', STR_PAD_LEFT) }}</span>
+                <span class="month">{{ ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Oct', 'Jan', 'Oct'][rand(0, 7)] }}</span>
               </div>
               <div class="appointment-details-df">
-                <span class="name">Sample Name</span>
-                <span class="college">Sample College</span>
+                <span class="name">{{ ['Smith', 'Johnson', 'Williams', 'Brown', 'Davis', 'Sanxian', 'Bando', 'Marielle'][rand(0, 7)] }}</span>
+                <span class="college">College of {{ ['Engineering', 'Arts', 'Agriculture, Food, Environment and Natural Resources', 'Education', 'Criminal Justice', 'Economics, Management and Development Studies', 'Science'][rand(0, 6)] }}</span>
               </div>
               <div class="appointment-time-df">
-                <span class="time">10:00 AM</span>
+                <span class="time">{{ str_pad(rand(8, 16), 2, '0', STR_PAD_LEFT) }}:00 {{ rand(0, 1) ? 'AM' : 'PM' }}</span>
                 <span class="duration">30 Min</span>
               </div>
             </div>
             @endfor
           </div>
-          <div class="right-section">
-            <div class="calendar-box">
-              <div class="calendar-title">Calendar</div>
-              <div id="calendar" class="calendar-content"></div>
-            </div>
-            <div class="no-schedule">
-              <p>Update availability here: </p>
-              <button class="set-here-button" onclick="window.location.href='/faculty-availability'">Update</button>
-            </div>
-          </div>
-          <div class="overlap-df-2">
-            <img class="rectangle-df" src="assets/images/Rectangle 39912.png" />
-            <div class="iskodyul-logo-df">
-              <div class="overlap-group-2-df">
-                <div class="dyul-df">DYUL</div>
-                <div class="isko-df">ISKO</div>
-              </div>
-            </div>
-            <nav class="menu-group-df">
-              <a href="/faculty-dashboard" class="dashboard-df">DASHBOARD</a>
-              <a href="/faculty-setup">INFORMATION</a>
-              <a href="/faculty-availability">AVAILABILITY</a>
-            </nav>
-            <nav class="logout-only-df">
-              <a href="/logout" class="logout-df">LOGOUT</a>
-            </nav>
-          </div>
         </div>
       </div>
+
+      <div class="appointment-list">
+          <button class="appointments-link" onclick="togglePopup()">NEW APPOINTMENTS</button>
+      </div>
+
+      <!-- Separate Modal Container -->
+<div id="appointmentModal" class="modal hidden">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>CONFIRM APPOINTMENTS</h2>
+        
+        <div class="modal-scroll">
+            <div class="placeholder-container-df">
+                @for ($i = 0; $i < 10; $i++)
+                <div class="appointment-wrapper">
+                <div class="appointment-placeholder-df">
+                    <div class="appointment-date-df">
+                        <span class="date">{{ str_pad(rand(1, 28), 2, '0', STR_PAD_LEFT) }}</span>
+                        <span class="month">{{ ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Oct'][rand(0, 5)] }}</span>
+                    </div>
+                    <div class="appointment-details-df">
+                        <span class="name">{{ ['Smith', 'Johnson', 'Williams', 'Brown', 'Davis', 'Sanxian', 'Bando', 'Marielle'][rand(0, 7)] }}</span>
+                        <span class="college">College of {{ ['Engineering', 'Arts', 'Agriculture, Food, Environment and Natural Resources', 'Education', 'Criminal Justice', 'Economics, Management and Development Studies', 'Science'][rand(0, 6)] }}</span>
+                    </div>
+                    <div class="appointment-time-df">
+                        <span class="time">{{ str_pad(rand(8, 16), 2, '0', STR_PAD_LEFT) }}:00 {{ rand(0, 1) ? 'AM' : 'PM' }}</span>
+                        <span class="duration">30 Min</span>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                  <button class="approve-apt" onclick="approveAppointment(this)">&#10003;</button>
+                  <button class="delete-apt" onclick="deleteAppointment(this)">&times;</button>
+                </div>
+                </div>
+                @endfor
+            </div>
+        </div>
     </div>
+</div>
+      
+      
+<div class="right-section">
+  <div class="calendar-box">
+    <div class="calendar-title">Calendar</div>
+    <div id="calendar" class="calendar-content"></div>
+  </div>
+  <div class="no-schedule">
+    <p>Update availability here: </p>
+    <button class="set-here-button" onclick="window.location.href='/faculty-availability'">Update</button>
+  </div>
+</div>
+<div class="overlap-df-2">
+  <img class="rectangle-df" src="assets/images/Rectangle 39912.png" />
+  <div class="iskodyul-logo-df">
+    <div class="overlap-group-2-df">
+      <div class="dyul-df">DYUL</div>
+      <div class="isko-df">ISKO</div>
+    </div>
+  </div>
+  <nav class="menu-group-df">
+    <a href="/faculty-dashboard" class="dashboard-df">DASHBOARD</a>
+    <a href="/faculty-setup">INFORMATION</a>
+    <a href="/faculty-availability">AVAILABILITY</a>
+  </nav>
+  <nav class="logout-only-df">
+    <a href="/logout" class="logout-df">LOGOUT</a>
+  </nav>
+</div>
+</div>
+</div>
+</div>
 
     <style>
       .calendar-content {
-        height: 100%;
+        position: relative;
+        /* height: 0%; */
         background-color: white;
-        padding: 15px;
-        border-radius: 8px;
+        padding: 30px;
+        border-radius: 35px;
+      }
+
+      .fc-toolbar {
+        margin-bottom: 40px !important;
+      }
+
+      .fc-toolbar h2 { /* Calendar title */
+        font-family: "Futura Hv BT", Helvetica;
+        font-size: 65px;
+        color: #31572c;
       }
       
+      .fc-toolbar button { /* Calendar buttons */
+        font-family: "Futura Hv BT", Helvetica;
+        font-size: 45px !important;
+        color:#31572c;
+        padding: 15px 25px !important;
+        height: auto !important;
+        background: none !important;
+        border-color: #31572c !important;
+        border-radius: 15px !important;
+        transition: color 0.1s ease, background-color 0.3s ease;
+      }
+
+      .fc-toolbar button:hover {
+        background-color: #23401a !important;
+        color: #ffffff;
+      }
+
+/* Add this to your existing CSS */
+      .fc-toolbar button.fc-state-active {
+        background-color: #31572c !important; /* Same as your hover color */
+        color: #ffffff !important;
+      }
+
+            /* Day headers */
+      .fc-day-header {
+        font-family: "Futura Hv BT", Helvetica;
+        font-size: 45px;
+        padding: 15px 0 !important;
+        color: #31572c;
+      }
+
+      /* Time slots */
+      .fc-time-grid .fc-slats td {
+        height: 50px !important;
+        font-size: 37px;
+        border-top: 1px solid #d6e5d6 !important;
+      }
+
+      .fc-axis {
+        font-family: "Futura Book font", Helvetica;
+        font-size: 40px;
+        color: #8c8c8c;
+        padding: 0 20px !important;
+      }
+    
       .fc-event {
         border: none;
         padding: 2px 4px;
         border-radius: 3px;
       }
       
+      /* Events styling */
       .availability-event {
-        background-color: #4CAF50;
-        color: white;
+        background-color: #4f772d !important;
+        opacity: 0.2 !important;
+        border: none !important;
       }
-      
+
       .appointment-event {
-        background-color: #2196F3;
-        color: white;
+        background-color: #31572c !important;
+        border: none !important;
+        padding: 10px !important;
+        border-radius: 15px !important;
       }
-      
-      .fc-time-grid-event {
-        border-radius: 4px;
-      }
-      
+
+      /* Time labels in events */
       .fc-time {
-        font-weight: bold;
+        font-family: "Futura Hv BT", Helvetica;
+        font-size: 40px !important;
+        margin-bottom: 5px;
       }
+
+      .fc-title {
+        font-family: "Futura Book font", Helvetica;
+        font-size: 35px !important;
+      }
+
+      /* Today highlight */
+      .fc-today {
+        background-color: rgba(79, 119, 45, 0.1) !important;
+      }
+
+      /* Week/day view now indicator */
+      .fc-now-indicator {
+        border-color: #31572c !important;
+      }
+
+      /* Month view specific styles */
+      .fc-month-view .fc-day {
+          height: 200px !important; /* Adjust this value */
+      }
+
+      .fc-row.fc-week.fc-widget-content {
+          height: 220px !important; /* Should match the day height */
+      }
+
+      /* This ensures the month view has proper height */
+      .fc-dayGrid-view .fc-body .fc-row {
+          min-height: 200px !important; /* Should match the above heights */
+      }
+
+      /* Optional: Adjust the text size for dates in month view */
+      .fc-month-view .fc-day-number {
+          font-size: 50px;
+          font-family: "Futura Hv BT", Helvetica;
+          padding: 15px;
+      }
+
     </style>
 
     <script>
@@ -180,6 +316,124 @@
         });
       }); --}}
 
+      document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('appointmentModal');
+    const btn = document.querySelector('.appointments-link');
+    const closeBtn = document.querySelector('.close-button');
+
+    // Open modal
+    btn.addEventListener('click', function() {
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 10);
+        document.body.style.overflow = 'hidden';
+    });
+
+    // Close modal
+    function closeModal() {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+        document.body.style.overflow = 'auto';
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+
+    // Close when clicking outside
+    modal.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
+
+    // Close on escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+            closeModal();
+        }
+    });
+});
+
+function approveAppointment(button) {
+    const isConfirmed = confirm("Are you sure you want to confirm the appointment?");
+    
+    if (isConfirmed) {
+        // Get the appointment wrapper and its content
+        const appointmentWrapper = button.closest('.appointment-wrapper');
+        const appointmentContent = appointmentWrapper.querySelector('.appointment-placeholder-df').cloneNode(true);
+        
+        // Add the appointment to the dashboard
+        const dashboardContainer = document.querySelector('.appointment-scroll-df .placeholder-container-df');
+        dashboardContainer.insertBefore(appointmentContent, dashboardContainer.firstChild); // Add to top of list
+        
+        // Animate and remove from modal
+        appointmentWrapper.style.height = appointmentWrapper.offsetHeight + 'px';
+        appointmentWrapper.style.transition = 'all 0.3s ease';
+        
+        // Add fade out effect
+        appointmentWrapper.style.opacity = '0';
+        appointmentWrapper.style.transform = 'translateX(-100%)';
+        
+        // Remove the element after animation
+        setTimeout(() => {
+            appointmentWrapper.style.height = '0';
+            appointmentWrapper.style.margin = '0';
+            appointmentWrapper.style.padding = '0';
+            
+            setTimeout(() => {
+                appointmentWrapper.remove();
+                
+                // Animate the new appointment in dashboard
+                appointmentContent.style.opacity = '0';
+                appointmentContent.style.transform = 'translateX(-20px)';
+                appointmentContent.style.transition = 'all 0.3s ease';
+                
+                // Trigger reflow to ensure animation plays
+                void appointmentContent.offsetWidth;
+                
+                // Animate in
+                appointmentContent.style.opacity = '1';
+                appointmentContent.style.transform = 'translateX(0)';
+            }, 300);
+        }, 300);
+    }
+}
+
+function deleteAppointment(button) {
+    const isConfirmed = confirm("Are you sure you want to delete this appointment?");
+    
+    if (isConfirmed) {
+        const appointmentWrapper = button.closest('.appointment-wrapper');
+        appointmentWrapper.style.height = appointmentWrapper.offsetHeight + 'px';
+        appointmentWrapper.style.transition = 'all 0.3s ease';
+        
+        // Add fade out effect
+        appointmentWrapper.style.opacity = '0';
+        appointmentWrapper.style.transform = 'translateX(-100%)';
+        
+        // Remove the element after animation
+        setTimeout(() => {
+            appointmentWrapper.style.height = '0';
+            appointmentWrapper.style.margin = '0';
+            appointmentWrapper.style.padding = '0';
+            
+            setTimeout(() => {
+                appointmentWrapper.remove();
+            }, 300);
+        }, 300);
+    }
+}
+
+// Add some CSS to ensure smooth animations
+document.head.insertAdjacentHTML('beforeend', `
+    <style>
+    .appointment-placeholder-df {
+        transition: all 0.3s ease;
+    }
+    </style>
+`);
     </script>
   </body>
 </html>
