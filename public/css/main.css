@@ -1813,7 +1813,7 @@
     bottom: 50px;
     height: 6px;
     background-color: #597259;
-    width: 185%;
+    width: 190%;
     margin: 40px 0;
     z-index: 9;
 }
@@ -1835,7 +1835,7 @@
     width: 250%;
     height: 2050px;
     overflow: visible;
-    left: -2600px;
+    left: -2640px;
     top: 1450px;
     margin-right: 26px;
  
@@ -1870,6 +1870,10 @@
     width: 26px;
     right: 0;
     position: absolute;
+    display: none;
+}
+
+.appointment-scroll-df.show-scrollbar::-webkit-scrollbar {
     display: block;
 }
 
@@ -1983,6 +1987,62 @@
     display: block;
     font-size: 60px;
     color: #8c8c8c;
+}
+
+.appointment-wrapper-current {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    gap: 0;
+}
+
+.appointment-wrapper-current .appointment-placeholder-df {
+    width: 2800px;
+    height: 280px;
+    margin-right: 0; /* Remove original margin */
+    transition: transform 0.3s ease;
+}
+
+.appointment-wrapper-current:hover .appointment-placeholder-df {
+    transform: translateX(-180px); /* Slide left to make room for cancel button */
+}
+
+.cancel-apt {
+    position: absolute;
+    bottom: 25px;
+    right: -100%;
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    width: 180px;
+    height: 90%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    opacity: 0;
+    transition: right 0.2s ease, opacity 0.3s ease, background-color 0.2s ease;
+    visibility: hidden 
+}
+
+.cancel-apt:active {
+    background-color: #cc0000;
+}
+
+.appointment-wrapper-current:hover .cancel-apt {
+    right: 0;
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Maintain existing hover effect */
+.appointment-wrapper-current:hover {
+    transform: translateY(-5px);
 }
 
 .dashboard-faculty .right-section {
@@ -4070,7 +4130,7 @@
     margin: 2rem 0;
     line-height: 1.2;
 }
-}
+
 
 .appointment-confirmation .location-room span {
     display: block;

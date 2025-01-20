@@ -65,9 +65,9 @@
       .schedule-container-ss {
           position: relative;
           background: white;
-          border-radius: 8px;
+          border-radius: 40px;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          padding: 30px;
+          padding: 40px;
           width: 100%;
       }
 
@@ -83,7 +83,7 @@
     .time-duration-grid-ss {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 30px;
+        gap: 15px;
         width: 100%;
     }
 
