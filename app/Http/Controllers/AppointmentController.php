@@ -166,30 +166,39 @@ class AppointmentController extends Controller
         }
     }
 
-        private function createGoogleCalendarEvent($appointment)
+    private function createGoogleCalendarEvent($appointment)
     {
         try {
             $faculty = Faculty::with(['user', 'collegeDepartment'])->findOrFail($appointment->faculty_id);
             $student = Student::with('user')->where('user_id', $appointment->student_id)->firstOrFail();
-            
-            // Fix date/time parsing
-            // Create a single Carbon instance for the appointment date and time
-            $startDateTime = Carbon::parse($appointment->date)
-                ->setTimeFromTimeString($appointment->time);
-            
-            $endDateTime = $startDateTime->copy()
-                ->addMinutes((int)$appointment->duration);
 
+            // Create proper DateTime objects with timezone
+            $appointmentDate = new \DateTime($appointment->date, new \DateTimeZone('Asia/Manila'));
+            $appointmentTime = new \DateTime($appointment->time, new \DateTimeZone('Asia/Manila'));
+            
+            // Combine date and time properly
+            $startDateTime = new \DateTime(
+                $appointmentDate->format('Y-m-d') . ' ' . $appointmentTime->format('H:i:s'),
+                new \DateTimeZone('Asia/Manila')
+            );
+            
+            // Create end time by adding duration
+            $endDateTime = clone $startDateTime;
+            $endDateTime->add(new \DateInterval('PT' . (int)$appointment->duration . 'M'));
+
+            // Log the times for debugging
             \Log::debug('Appointment times:', [
-                'Start DateTime' => $startDateTime->format('Y-m-d H:i:s'),
-                'End DateTime' => $endDateTime->format('Y-m-d H:i:s')
+                'Original Date' => $appointment->date,
+                'Original Time' => $appointment->time,
+                'Start DateTime' => $startDateTime->format('c'),
+                'End DateTime' => $endDateTime->format('c')
             ]);
 
             // Prepare faculty event data
             $facultyEventData = [
                 'title' => "Student Consultation: {$student->first_name} {$student->last_name}",
-                'start_time' => $startDateTime->format('c'), // ISO 8601
-                'end_time' => $endDateTime->format('c'),     // ISO 8601
+                'start_time' => $startDateTime->format('c'),
+                'end_time' => $endDateTime->format('c'),
                 'description' => $this->formatEventDescription([
                     'Category' => $appointment->appointment_category,
                     'Student' => "{$student->first_name} {$student->last_name}",
@@ -204,8 +213,8 @@ class AppointmentController extends Controller
             // Prepare student event data
             $studentEventData = [
                 'title' => "Faculty Consultation: {$faculty->first_name} {$faculty->last_name}",
-                'start_time' => $startDateTime->format('c'), // ISO 8601
-                'end_time' => $endDateTime->format('c'),     // ISO 8601
+                'start_time' => $startDateTime->format('c'),
+                'end_time' => $endDateTime->format('c'),
                 'description' => $this->formatEventDescription([
                     'Category' => $appointment->appointment_category,
                     'Faculty' => "{$faculty->first_name} {$faculty->last_name}",
@@ -216,11 +225,6 @@ class AppointmentController extends Controller
                 'location' => "{$faculty->department} - {$faculty->bldg_no}",
                 'duration' => (int)$appointment->duration
             ];
-
-            \Log::debug('Event data:', [
-                'Faculty Event' => $facultyEventData,
-                'Student Event' => $studentEventData
-            ]);
 
             // Create events in both calendars
             $facultyCalendar = new GoogleCalendarController($faculty->user);
@@ -240,7 +244,7 @@ class AppointmentController extends Controller
             throw $e;
         }
     }
-    
+
     private function formatEventDescription($fields)
     {
         return collect($fields)

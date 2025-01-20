@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('appointment_category');
             $table->text('additional_notes')->nullable();
             $table->string('google_event_id')->nullable();
-            $table->string('student_google_event_id')->nullable()->after('google_event_id');
+            $table->string('student_google_event_id')->nullable();
             $table->timestamps();
         });
     }

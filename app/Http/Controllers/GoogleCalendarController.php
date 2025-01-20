@@ -93,15 +93,19 @@ class GoogleCalendarController extends Controller
 
     public function createAppointmentEvent($eventData)
     {
+        // Convert times to Asia/Manila timezone for Google Calendar
+        $startDateTime = new \DateTime($eventData['start_time'], new \DateTimeZone('Asia/Manila'));
+        $endDateTime = new \DateTime($eventData['end_time'], new \DateTimeZone('Asia/Manila'));
+
         $event = new \Google_Service_Calendar_Event([
             'summary' => $eventData['title'],
             'description' => $eventData['description'],
             'start' => [
-                'dateTime' => $eventData['start_time'],
+                'dateTime' => $startDateTime->format('c'), // RFC3339 format
                 'timeZone' => 'Asia/Manila',
             ],
             'end' => [
-                'dateTime' => $eventData['end_time'],
+                'dateTime' => $endDateTime->format('c'), // RFC3339 format
                 'timeZone' => 'Asia/Manila',
             ],
             'attendees' => array_map(function($email) {
