@@ -450,5 +450,95 @@ public function cancelAppointment(Appointment $appointment)
         ], 500);
     }
 }
+
+    public function getFacultyAvailabilities(Faculty $faculty)
+    {
+        $availabilities = FacultyAvailability::where('faculty_id', $faculty->id)->get();
+        
+        // Get approved appointments
+        $approvedAppointments = Appointment::where('faculty_id', $faculty->id)
+            ->where('status', 'approved')
+            ->where('date', '>=', now()->format('Y-m-d'))
+            ->get();
+
+        $bookedSlots = [];
+        foreach ($approvedAppointments as $appointment) {
+            $startTime = Carbon::parse($appointment->time);
+            $endTime = $startTime->copy()->addMinutes($appointment->duration);
+            
+            $bookedSlots[$appointment->date][] = [
+                'start' => $appointment->time,
+                'end' => $endTime->format('H:i:s'),
+                'duration' => $appointment->duration
+            ];
+        }
+
+        return response()->json([
+            'availabilities' => $availabilities,
+            'bookedSlots' => $bookedSlots
+        ]);
+    }
+
+    public function getAvailableTimeSlots(Request $request, Faculty $faculty)
+{
+    $date = $request->date;
+    $dayOfWeek = Carbon::parse($date)->format('l');
+    
+    // Get faculty's availability for this day
+    $availability = FacultyAvailability::where('faculty_id', $faculty->id)
+        ->where('day_of_week', $dayOfWeek)
+        ->first();
+
+    if (!$availability) {
+        return response()->json(['timeSlots' => []]);
+    }
+
+    // Get approved appointments for this date
+    $appointments = Appointment::where('faculty_id', $faculty->id)
+        ->where('date', $date)
+        ->where('status', 'approved')
+        ->get();
+
+    $bookedSlots = [];
+    foreach ($appointments as $appointment) {
+        $startTime = Carbon::parse($appointment->time);
+        $endTime = $startTime->copy()->addMinutes($appointment->duration);
+        $bookedSlots[] = [
+            'start' => $appointment->time,
+            'start_formatted' => $startTime->format('H:i:s'),
+            'end' => $endTime->format('H:i:s')
+        ];
+    }
+
+    // Generate available time slots
+    $availableSlots = [];
+    $startTime = Carbon::parse($availability->start_time);
+    $endTime = Carbon::parse($availability->end_time);
+
+    while ($startTime < $endTime) {
+        $slotEnd = $startTime->copy()->addMinutes(30);
+        $isAvailable = true;
+
+        foreach ($bookedSlots as $bookedSlot) {
+            $bookedStart = Carbon::parse($bookedSlot['start']);
+            $bookedEnd = Carbon::parse($bookedSlot['end']);
+
+            if ($startTime < $bookedEnd && $slotEnd > $bookedStart) {
+                $isAvailable = false;
+                break;
+            }
+        }
+        if ($isAvailable) {
+            $availableSlots[] = $startTime->format('H:i');
+        }
+
+        $startTime->addMinutes(30);
+    }
+
+    \Log::debug($availableSlots);
+    \Log::debug($bookedSlots);
+    return response()->json(['timeSlots' => $availableSlots, 'bookedSlots' => $bookedSlots]);
+}
+
     
 }

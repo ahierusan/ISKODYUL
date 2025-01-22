@@ -82,6 +82,9 @@ Route::post('/appointment/{appointment}/cancel', [AppointmentController::class, 
     ->name('appointment.cancel')
     ->middleware('auth');
 
+Route::get('/appointment/available-slots/{faculty}', [AppointmentController::class, 'getAvailableTimeSlots'])
+    ->name('appointment.available-slots');
+
 // student
 
 Route::get('/student-dashboard', function () {

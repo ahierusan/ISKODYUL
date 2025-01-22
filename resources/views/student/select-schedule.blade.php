@@ -471,57 +471,74 @@
             );
         }
 
-        function generateTimeSlots(showAll = false) {
-          const select = document.querySelector('select[name="time"]');
-          select.innerHTML = '<option value="">Choose time</option>';
-          
-          const selectedDate = document.getElementById('selectedDate').value;
-          const availability = getAvailabilityForDate(selectedDate);
-          const hasAvailability = checkDateAvailability(selectedDate);
+        async function generateTimeSlots(showAll = false) {
+            const select = document.querySelector('select[name="time"]');
+            select.innerHTML = '<option value="">Choose time</option>';
+            
+            const selectedDate = document.getElementById('selectedDate').value;
+            if (!selectedDate) return;
+            const facultyId = sessionStorage.getItem('selected_faculty_id');
+            
+            try {
+                const response = await fetch(`/appointment/available-slots/${facultyId}?date=${selectedDate}`);
+                const data = await response.json();
+                
+                // Only disable select if we're not showing all hours AND there are no available slots
+                if (!showAll) {
+                    if (!data.timeSlots.length) {
+                        select.disabled = true;
+                        return;
+                    }
+                    // Add only available slots
+                    select.disabled = false;
+                    data.timeSlots.forEach(time => {
+                        const option = document.createElement('option');
+                        option.value = time;
+                        option.textContent = time;
+                        select.appendChild(option);
+                    });
+                } else {
+                    // Always enable select when showing all hours
+                    select.disabled = false;
+                    // Generate all possible slots from 7:00 to 18:30
+                    generateAllTimeSlots(select, data.bookedSlots || []);
+                }
+                
+                updateDurationOptions();
+            } catch (error) {
+                console.error('Error fetching available time slots:', error);
+            }
+        }
 
-          select.disabled = !hasAvailability && !showAll;
+        function generateAllTimeSlots(select, bookedSlots) {
+            const startHour = 7;
+            const endHour = 18;
+            
+            function timeToMinutes(timeString) {
+                const [hours, minutes] = timeString.split(':').map(Number);
+                return hours * 60 + minutes;
+            }
 
-          if (!hasAvailability && !showAll) {
-              return;
-          }
-
-          // Always use 7:00 to 18:30 range when showAll is true
-          const startHour = showAll ? 7 : 
-              (hasAvailability ? parseInt(availability.start_time.split(':')[0]) : 8);
-          
-          const endHour = showAll ? 18 : 
-              (hasAvailability ? parseInt(availability.end_time.split(':')[0]) : 17);
-
-          const endMinutes = showAll ? 30 : 
-              (hasAvailability ? parseInt(availability.end_time.split(':')[1]) : 59);
-
-          const availabilityEndMinutes = hasAvailability ? 
-              (parseInt(availability.end_time.split(':')[0]) * 60 + parseInt(availability.end_time.split(':')[1])) : 
-              (17 * 60);
-
-          for (let hour = startHour; hour <= endHour; hour++) {
-              for (let minute = 0; minute < 60; minute += 30) {
-                  // Skip if we're past the end time
-                  if (hour === endHour && minute > endMinutes) continue;
-                  
-                  const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                  const currentTimeMinutes = hour * 60 + minute;
-                  
-                  const option = document.createElement('option');
-                  option.value = timeString;
-                  option.textContent = timeString;
-                  
-                  // Disable times that exceed availability end time
-                  if (hasAvailability && currentTimeMinutes >= availabilityEndMinutes && !showAll) {
-                      option.disabled = true;
-                  }
-                  
-                  select.appendChild(option);
-              }
-          }
-
-          updateDurationOptions();
-      }
+            for (let hour = startHour; hour <= endHour; hour++) {
+                for (let minute = 0; minute < 60; minute += 30) {
+                    if (hour === endHour && minute > 30) continue;
+                    
+                    const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                    const option = document.createElement('option');
+                    option.value = timeString;
+                    option.textContent = timeString;
+                    
+                    const slotTime = timeToMinutes(timeString + ':00');
+                    option.disabled = bookedSlots.some(bookedSlot => {
+                        const bookingStart = timeToMinutes(bookedSlot.start_formatted);
+                        const bookingEnd = timeToMinutes(bookedSlot.end);
+                        return slotTime >= bookingStart && slotTime < bookingEnd;
+                    });
+                    
+                    select.appendChild(option);
+                }
+            }
+        }
 
           function toggleTimeSlots() {
             showingAllHours = !showingAllHours;
