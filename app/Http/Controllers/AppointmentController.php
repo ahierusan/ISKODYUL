@@ -51,6 +51,12 @@ class AppointmentController extends Controller
 
         // Get faculty ID from session storage
         $facultyId = session('selected_faculty_id');
+
+        if (!$facultyId) {
+        // If no faculty ID in session, redirect back with an error
+        return redirect('/select-schedule')
+            ->with('error', 'Please select a faculty member first');
+        }
         
         // Get the day of week for the requested date
         $appointmentDate = Carbon::parse($request->date);
@@ -356,8 +362,13 @@ class AppointmentController extends Controller
         // Get appointment schedule from session
         $appointmentSchedule = session('appointment_schedule');
         
+        // Retrieve faculty based on the stored faculty ID
+        $facultyId = session('selected_faculty_id');
+        $faculty = Faculty::findOrFail($facultyId);
+        
         return view('student.information')
             ->with('student', $student)
+            ->with('faculty', $faculty)
             ->with('appointmentSchedule', $appointmentSchedule);
     }
 
@@ -480,65 +491,91 @@ public function cancelAppointment(Appointment $appointment)
     }
 
     public function getAvailableTimeSlots(Request $request, Faculty $faculty)
-{
-    $date = $request->date;
-    $dayOfWeek = Carbon::parse($date)->format('l');
-    
-    // Get faculty's availability for this day
-    $availability = FacultyAvailability::where('faculty_id', $faculty->id)
-        ->where('day_of_week', $dayOfWeek)
-        ->first();
+    {
+        $date = $request->date;
+        $dayOfWeek = Carbon::parse($date)->format('l');
+        
+        // Get faculty's availability for this day
+        $availability = FacultyAvailability::where('faculty_id', $faculty->id)
+            ->where('day_of_week', $dayOfWeek)
+            ->first();
 
-    if (!$availability) {
-        return response()->json(['timeSlots' => []]);
+        if (!$availability) {
+            return response()->json(['timeSlots' => []]);
+        }
+
+        // Get approved appointments for this date
+        $appointments = Appointment::where('faculty_id', $faculty->id)
+            ->where('date', $date)
+            ->where('status', 'approved')
+            ->get();
+
+        $bookedSlots = [];
+        foreach ($appointments as $appointment) {
+            $startTime = Carbon::parse($appointment->time);
+            $endTime = $startTime->copy()->addMinutes($appointment->duration);
+            $bookedSlots[] = [
+                'start' => $appointment->time,
+                'start_formatted' => $startTime->format('H:i:s'),
+                'end' => $endTime->format('H:i:s')
+            ];
+        }
+
+        // Generate available time slots
+        $availableSlots = [];
+        $startTime = Carbon::parse($availability->start_time);
+        $endTime = Carbon::parse($availability->end_time);
+
+        while ($startTime < $endTime) {
+            $slotEnd = $startTime->copy()->addMinutes(30);
+            $isAvailable = true;
+
+            foreach ($bookedSlots as $bookedSlot) {
+                $bookedStart = Carbon::parse($bookedSlot['start']);
+                $bookedEnd = Carbon::parse($bookedSlot['end']);
+
+                if ($startTime < $bookedEnd && $slotEnd > $bookedStart) {
+                    $isAvailable = false;
+                    break;
+                }
+            }
+            if ($isAvailable) {
+                $availableSlots[] = $startTime->format('H:i');
+            }
+
+            $startTime->addMinutes(30);
+        }
+
+        return response()->json(['timeSlots' => $availableSlots, 'bookedSlots' => $bookedSlots]);
     }
 
-    // Get approved appointments for this date
-    $appointments = Appointment::where('faculty_id', $faculty->id)
-        ->where('date', $date)
-        ->where('status', 'approved')
-        ->get();
+    public function priorityScheduling(Request $request)
+    {
+        // Collect appointments sorted by multiple criteria
+        $appointments = Appointment::where('faculty_id', $facultyId)
+            ->orderBy('priority', 'desc')  // Primary: Inquiry priority
+            ->orderBy('created_at', 'asc')  // Secondary: First-come-first-served
+            ->get();
 
-    $bookedSlots = [];
-    foreach ($appointments as $appointment) {
-        $startTime = Carbon::parse($appointment->time);
-        $endTime = $startTime->copy()->addMinutes($appointment->duration);
-        $bookedSlots[] = [
-            'start' => $appointment->time,
-            'start_formatted' => $startTime->format('H:i:s'),
-            'end' => $endTime->format('H:i:s')
+        // Implement scheduling logic:
+        // 1. Check faculty availability
+        // 2. Resolve time slot conflicts
+        // 3. Allocate based on priority and time
+    }
+
+    public function plotAppointmentCalendar(Appointment $appointment)
+    {
+        // Plot to calendar 1 day before expiry
+        $expiryDate = Carbon::parse($appointment->date)->subDay();
+        
+        // Create Google Calendar event
+        $calendarEvent = [
+            'summary' => "Upcoming Appointment - {$appointment->category}",
+            'description' => "Priority: {$appointment->priority}",
+            'start' => $expiryDate,
+            // Additional event details
         ];
     }
-
-    // Generate available time slots
-    $availableSlots = [];
-    $startTime = Carbon::parse($availability->start_time);
-    $endTime = Carbon::parse($availability->end_time);
-
-    while ($startTime < $endTime) {
-        $slotEnd = $startTime->copy()->addMinutes(30);
-        $isAvailable = true;
-
-        foreach ($bookedSlots as $bookedSlot) {
-            $bookedStart = Carbon::parse($bookedSlot['start']);
-            $bookedEnd = Carbon::parse($bookedSlot['end']);
-
-            if ($startTime < $bookedEnd && $slotEnd > $bookedStart) {
-                $isAvailable = false;
-                break;
-            }
-        }
-        if ($isAvailable) {
-            $availableSlots[] = $startTime->format('H:i');
-        }
-
-        $startTime->addMinutes(30);
-    }
-
-    \Log::debug($availableSlots);
-    \Log::debug($bookedSlots);
-    return response()->json(['timeSlots' => $availableSlots, 'bookedSlots' => $bookedSlots]);
-}
 
     
 }

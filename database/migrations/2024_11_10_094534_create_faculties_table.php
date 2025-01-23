@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('department');
             $table->string('fb_link')->nullable();
             $table->string('bldg_no');
+            $table->json('inquiry_categories')->nullable(); 
             $table->timestamps();
         });
     }

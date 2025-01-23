@@ -8,6 +8,7 @@ use App\Models\CollegeDepartment;
 use App\Http\Controllers\AppointmentController;
 use Illuminate\Http\Request;
 use App\Models\Faculty;
+use App\Models\Appointment;
 
 // Login Routes
 Route::get('/login', function () {
@@ -88,7 +89,16 @@ Route::get('/appointment/available-slots/{faculty}', [AppointmentController::cla
 // student
 
 Route::get('/student-dashboard', function () {
-    return view('student.dashboard')->with('user', Auth::user());
+    $user = Auth::user();
+    $appointments = Appointment::where('student_id', $user->id)
+        ->where('status', 'approved')
+        ->with(['faculty', 'faculty.collegeDepartment'])
+        ->orderBy('date', 'asc')
+        ->get();
+
+    return view('student.dashboard')
+        ->with('user', $user)
+        ->with('appointments', $appointments);
 })->middleware('auth');
 
 Route::get('/appointment', function () {
@@ -120,6 +130,7 @@ Route::post('/session/store-faculty', function (Request $request) {
 
 Route::get('/information', [AppointmentController::class, 'getInformationForm'])
     ->middleware('auth');
+
 
 Route::post('/store-information', function (Request $request) {
     // Validate all required fields
