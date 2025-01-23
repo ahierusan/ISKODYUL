@@ -31,35 +31,43 @@ class FacultyController extends Controller
 
     public function store(Request $request)
     {
-        // Validate the inputs
-        $request->validate([
+        // Validate the main faculty information
+        $validatedData = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'college_department_id' => 'required|exists:college_departments,id',
             'department' => 'required|string|max:255',
             'fb_link' => 'nullable|url',
             'bldg_no' => 'required|string|max:255',
+            // Validation for dropdown priorities
+            'dropdown1' => 'required|in:0,1,2,3',
+            'dropdown2' => 'required|in:0,1,2,3',
+            'dropdown3' => 'required|in:0,1,2,3',
         ]);
 
-        // Save to the Faculty table
-        Faculty::updateOrCreate(
-            ['user_id' => auth()->user()->id],
+        // Prepare inquiry categories
+        $inquiryCategories = [
+            'advising' => (int)$request->input('dropdown1'),
+            'undergraduate_thesis' => (int)$request->input('dropdown2'),
+            'grade_consultation' => (int)$request->input('dropdown3')
+        ];
+
+        // Find or create faculty record
+        $faculty = Faculty::updateOrCreate(
+            ['user_id' => Auth::id()],
             [
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'college_department_id' => $request->college_department_id,
-                'department' => $request->department,
-                'fb_link' => $request->fb_link,
-                'bldg_no' => $request->bldg_no,
+                'first_name' => $validatedData['first_name'],
+                'last_name' => $validatedData['last_name'],
+                'college_department_id' => $validatedData['college_department_id'],
+                'department' => $validatedData['department'],
+                'fb_link' => $validatedData['fb_link'],
+                'bldg_no' => $validatedData['bldg_no'],
+                'inquiry_categories' => $inquiryCategories
             ]
         );
 
-        $availabilityExists = FacultyAvailability::where('faculty_id', Auth::id())->exists();
-
-        if ($availabilityExists) {
-            return redirect('/faculty-dashboard')->with('success', 'Availability saved successfully.');
-        } else {
-            return redirect('/faculty-availability')->with('error', 'Please connect your Google Calendar.');
-        }
+        // Redirect with success message
+        return redirect('/faculty-dashboard')
+            ->with('success', 'Faculty profile updated successfully');
     }
 }
