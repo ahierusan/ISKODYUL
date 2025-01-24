@@ -17,9 +17,6 @@
         </div>
         <nav class="menu-group">
           <a href="/{{$user->role}}-dashboard">DASHBOARD</a>
-          @if (strtolower($user->role) === 'admin')
-            <a href="/appointment">APPOINTMENT</a>
-          @endif
           @if (strtolower($user->role) === 'student')
             <a href="/appointment">APPOINTMENT</a>
           @endif

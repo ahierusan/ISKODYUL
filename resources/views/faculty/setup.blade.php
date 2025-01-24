@@ -481,27 +481,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 <form class="category">
                 <select name="dropdown1" class="dropdown-options" required>
                         <option value="" disabled selected style="color: #999;">Advising</option>
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
+                        <option value="0">0 (Will not be entertained) </option>
+                        <option value="1">1 (High Priority) </option>
+                        <option value="2">2 (Medium Priority) </option>
+                        <option value="3">3 (Low Priority) </option>
                     </select>
             
 
                     <select name="dropdown2" class="dropdown-options" required>
                         <option value="" disabled selected style="color: #999;">Undergraduate Thesis Consultation</option>
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
+                       <option value="0">0 (Will not be entertained) </option>
+                        <option value="1">1 (High Priority) </option>
+                        <option value="2">2 (Medium Priority) </option>
+                        <option value="3">3 (Low Priority) </option>
                     </select>
 
                     <select name="dropdown3" class="dropdown-options" required>
                         <option value="" disabled selected style="color: #999;">Grade Consultation</option>
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
+                        <option value="0">0 (Will not be entertained) </option>
+                        <option value="1">1 (High Priority) </option>
+                        <option value="2">2 (Medium Priority) </option>
+                        <option value="3">3 (Low Priority) </option>
                     </select>
                 </form>
                     <!-- <button class="confirm-button-faculty-setup" type="submit">

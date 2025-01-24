@@ -10,9 +10,170 @@ use App\Models\FacultyAvailability;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
+trait PriorityAppointmentScheduling
+{
+    /**
+     * Organize and prioritize pending appointments
+     * 
+     * @param Faculty $faculty
+     * @return array
+     */
+    private function prioritizeAppointments(Faculty $faculty)
+    {
+        // Decode inquiry categories
+        $inquiryPriorities = json_decode($faculty->inquiry_categories, true);
+
+        // Fetch pending appointments
+        $pendingAppointments = Appointment::where('faculty_id', $faculty->id)
+            ->where('status', 'pending')
+            ->with(['student'])
+            ->get();
+
+        // Sort pending appointments by priority
+        $sortedAppointments = $pendingAppointments->sort(function($a, $b) use ($inquiryPriorities) {
+            // Default to lowest priority if not set
+            $aPriority = $inquiryPriorities[$a->appointment_category] ?? 3;
+            $bPriority = $inquiryPriorities[$b->appointment_category] ?? 3;
+
+            // Lower number means higher priority
+            if ($aPriority == $bPriority) {
+                // If priorities are the same, sort by earliest date
+                return Carbon::parse($a->date)->compare(Carbon::parse($b->date));
+            }
+
+            return $aPriority <=> $bPriority;
+        });
+
+        // Get approved appointments to find potential scheduling conflicts
+        $approvedAppointments = Appointment::where('faculty_id', $faculty->id)
+            ->where('status', 'approved')
+            ->where('date', '>=', now()->format('Y-m-d'))
+            ->orderBy('date', 'asc')
+            ->orderBy('time', 'asc')
+            ->get();
+
+        // Schedule pending appointments
+        $scheduledPendingAppointments = $this->scheduleQueuedAppointments(
+            $sortedAppointments, 
+            $approvedAppointments
+        );
+
+        return $scheduledPendingAppointments;
+    }
+
+    /**
+     * Schedule queued appointments around existing approved appointments
+     * 
+     * @param \Illuminate\Support\Collection $pendingAppointments
+     * @param \Illuminate\Support\Collection $approvedAppointments
+     * @return \Illuminate\Support\Collection
+     */
+    private function scheduleQueuedAppointments($pendingAppointments, $approvedAppointments)
+    {
+        $scheduledAppointments = collect();
+        
+        // If no approved appointments, schedule from start of day
+        if ($approvedAppointments->isEmpty()) {
+            foreach ($pendingAppointments as $index => $appointment) {
+                // Assuming standard business hours start at 8:00 AM
+                $startTime = Carbon::parse('08:00:00');
+                $appointment->suggested_time = $startTime->format('H:i:s');
+                $scheduledAppointments->push($appointment);
+                
+                // Add duration for next appointment
+                $startTime->addMinutes($appointment->duration);
+            }
+            return $scheduledAppointments;
+        }
+
+        // Start with the last approved appointment's end time
+        $lastApprovedAppointment = $approvedAppointments->last();
+        $availableTime = Carbon::parse($lastApprovedAppointment->date . ' ' . $lastApprovedAppointment->time)
+            ->addMinutes($lastApprovedAppointment->duration);
+
+        foreach ($pendingAppointments as $appointment) {
+            // Check for conflicts with existing approved appointments
+            $proposed = $this->findNextAvailableSlot(
+                $availableTime, 
+                $appointment->duration, 
+                $approvedAppointments
+            );
+
+            $appointment->suggested_time = $proposed['time']->format('H:i:s');
+            $appointment->suggested_date = $proposed['date']->format('Y-m-d');
+            $scheduledAppointments->push($appointment);
+
+            // Update available time for next appointment
+            $availableTime = $proposed['time']->addMinutes($appointment->duration);
+        }
+
+        return $scheduledAppointments;
+    }
+
+    /**
+     * Find the next available time slot
+     * 
+     * @param Carbon $startTime
+     * @param int $duration
+     * @param \Illuminate\Support\Collection $approvedAppointments
+     * @return array
+     */
+    private function findNextAvailableSlot($startTime, $duration, $approvedAppointments)
+    {
+        $proposedTime = $startTime->copy();
+        $proposedDate = $proposedTime->copy()->startOfDay();
+
+        while (true) {
+            $isConflict = $approvedAppointments->first(function ($appointment) use ($proposedTime, $duration, $proposedDate) {
+                $appointmentStart = Carbon::parse($appointment->date . ' ' . $appointment->time);
+                $appointmentEnd = $appointmentStart->copy()->addMinutes($appointment->duration);
+                $proposedEnd = $proposedTime->copy()->addMinutes($duration);
+
+                // Check for overlap on the same date
+                return $proposedDate->isSameDay($appointmentStart) && 
+                       $proposedTime < $appointmentEnd && 
+                       $proposedEnd > $appointmentStart;
+            });
+
+            if (!$isConflict) {
+                return [
+                    'time' => $proposedTime,
+                    'date' => $proposedDate
+                ];
+            }
+
+            // If conflict found, move to next time slot
+            $proposedTime->addMinutes(30);  // Try next 30-minute slot
+        }
+    }
+
+    /**
+     * Modify getFacultyAppointments to include prioritization
+     * 
+     * @param Faculty $faculty
+     * @return array
+     */
+    public function getFacultyAppointments(Faculty $faculty)
+    {
+        $appointments = parent::getFacultyAppointments($faculty);
+
+        // Add prioritized pending appointments
+        $prioritizedPendingAppointments = $this->prioritizeAppointments($faculty);
+        
+        $appointments['pending_prioritized'] = $prioritizedPendingAppointments;
+
+        return $appointments;
+    }
+}
+
+// In AppointmentController, use the trait
 class AppointmentController extends Controller
 {
+    use PriorityAppointmentScheduling;
+
+    // Existing methods...
     public function getFacultyListAndDetails($departmentId)
     {
         $facultyList = Faculty::with(['user', 'collegeDepartment'])
