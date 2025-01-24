@@ -68,7 +68,7 @@
         <p>Make an appointment </p>
     </div>
     <div class="apt">
-        <button class="apt-here-button" onclick="window.location.href='/faculty-availability'">Book Now</button>
+        <button class="apt-here-button" onclick="window.location.href='/appointment'">Book Now</button>
     </div>
 </div>
 
