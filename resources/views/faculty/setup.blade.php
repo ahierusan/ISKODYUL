@@ -366,6 +366,7 @@
 
                     @php
                         $faculty = App\Models\Faculty::where('user_id', auth()->user()->id)->first(); // Fetch faculty data for the logged-in user
+                        $inquiryCategories = json_decode($faculty->inquiry_categories, true);
                     @endphp
 
                     <!-- Check if faculty data exists for the user -->
@@ -387,31 +388,6 @@
                         <input type="text" name="department" id="department" placeholder="{{ $faculty->department }}" value="{{ $faculty->department }}" required>
                         <input type="text" name="fb_link" id="fb-link" placeholder="{{ $faculty->fb_link ?? 'Facebook Link (Optional)' }}" value="{{ $faculty->fb_link }}">
                         <input type="text" name="bldg_no" id="bldg-no" placeholder="{{ $faculty->bldg_no }}" value="{{ $faculty->bldg_no }}">
-
-                                                <!-- Add new dropdowns here
-                        <select name="dropdown1" class="dropdown-options" required>
-                            <option value="" disabled selected style="color: #999;">Select Option</option>
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                        </select>
-
-                        <select name="dropdown2" class="dropdown-options" required>
-                            <option value="" disabled selected style="color: #999;">Select Option</option>
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                        </select> -->
-
-                        <!-- <select name="dropdown3" class="dropdown-options" required>
-                            <option value="" disabled selected style="color: #999;">Select Option</option>
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                        </select> -->
                     @else
                         <!-- Placeholder text for when no data exists for the user -->
                         <input type="text" name="first_name" id="first-name" placeholder="First Name" required>
@@ -429,10 +405,7 @@
                         <input type="text" name="fb_link" id="fb-link" placeholder="Facebook Link (Optional)">
                         <input type="text" name="bldg_no" id="bldg-no" placeholder="Building Room No. (e.g. DIT CS UNIT)">
                     @endif
-                    <!-- Add these hidden inputs just before the confirm button -->
-<input type="hidden" name="dropdown1" id="advising-priority" value="0">
-<input type="hidden" name="dropdown2" id="thesis-priority" value="0">
-<input type="hidden" name="dropdown3" id="grade-priority" value="0">
+
 
 <!-- Update the JavaScript to populate these hidden inputs -->
 <script>
@@ -440,26 +413,61 @@ document.addEventListener('DOMContentLoaded', function() {
     const advisingSelect = document.querySelector('select[name="dropdown1"]');
     const thesisSelect = document.querySelector('select[name="dropdown2"]');
     const gradeSelect = document.querySelector('select[name="dropdown3"]');
-    const advisingHidden = document.getElementById('advising-priority');
-    const thesisHidden = document.getElementById('thesis-priority');
-    const gradeHidden = document.getElementById('grade-priority');
+    const form = document.querySelector('form');
 
-    // Initial values
-    advisingHidden.value = advisingSelect.value;
-    thesisHidden.value = thesisSelect.value;
-    gradeHidden.value = gradeSelect.value;
+    // Populate dropdowns with existing values if available
+    @php
+        $faculty = App\Models\Faculty::where('user_id', auth()->user()->id)->first();
+        $inquiryCategories = $faculty ? json_decode($faculty->inquiry_categories, true) : null;
+    @endphp
 
-    // Update hidden inputs when dropdowns change
-    advisingSelect.addEventListener('change', function() {
-        advisingHidden.value = this.value;
+    @if($inquiryCategories)
+        advisingSelect.value = "{{ $inquiryCategories['advising'] }}";
+        thesisSelect.value = "{{ $inquiryCategories['undergraduate_thesis'] }}";
+        gradeSelect.value = "{{ $inquiryCategories['grade_consultation'] }}";
+    @endif
+
+    // Function to update hidden inputs before form submission
+    function updateHiddenInputs() {
+        // Remove any existing hidden inputs
+        document.querySelectorAll('input[name^="dropdown"]').forEach(el => el.remove());
+
+        // Create and append hidden inputs
+        const hiddenInputs = [
+            { name: 'dropdown1', value: advisingSelect.value },
+            { name: 'dropdown2', value: thesisSelect.value },
+            { name: 'dropdown3', value: gradeSelect.value }
+        ];
+
+        hiddenInputs.forEach(input => {
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = input.name;
+            hiddenInput.value = input.value;
+            form.appendChild(hiddenInput);
+        });
+    }
+
+    // Attach event listeners to dropdowns
+    [advisingSelect, thesisSelect, gradeSelect].forEach(select => {
+        select.addEventListener('change', function() {
+            // Save to localStorage for persistence
+            localStorage.setItem(select.name, this.value);
+        });
     });
 
-    thesisSelect.addEventListener('change', function() {
-        thesisHidden.value = this.value;
+    // Modify form submission to include dropdown values
+    form.addEventListener('submit', function(e) {
+        updateHiddenInputs();
     });
 
-    gradeSelect.addEventListener('change', function() {
-        gradeHidden.value = this.value;
+    // Initial localStorage and hidden input setup
+    ['dropdown1', 'dropdown2', 'dropdown3'].forEach(name => {
+        const select = document.querySelector(`select[name="${name}"]`);
+        const savedValue = localStorage.getItem(name);
+        if (savedValue) {
+            select.value = savedValue;
+        }
     });
 });
 </script>
