@@ -169,7 +169,7 @@
             transform: scale(1.05);
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        /* .modal-overlay {
+        .modal-overlay {
             display: none;
             position: fixed;
             top: 0;
@@ -180,7 +180,7 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
-        } */
+        }
 
         .dashboard-sysad .modal-content {
             background-color: white;
@@ -315,6 +315,7 @@
         <div class="sec-title">Manage Security Key</div>
     <button class="manage-sec-btn" onclick="openModal()"></button>
     </div>
+
 
     <div id="securityKeyModal" class="modal-overlay">
         <div class="modal-content">

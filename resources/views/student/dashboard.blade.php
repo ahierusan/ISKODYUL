@@ -76,12 +76,14 @@
         </div>
     </div>
 </div>
+<div class="book-now-apt">
     <div class="no-book">
         <p>Make an appointment </p>
     </div>
     <div class="apt">
         <button class="apt-here-button" onclick="window.location.href='/appointment'">Book Now</button>
     </div>
+</div>
 </div>
 
 <script>

@@ -4449,11 +4449,16 @@
     display: block;
 }
 
-.appointment-scroll::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 20px;
-    margin: 5px 0;
-    
+.student-dashboard .appointment-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+@media (min-width: 1) {
+    .student-dashboard .appointment-scroll::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 20px;
+        margin: 5px 0;
+    }
 }
 
 .appointment-scroll::-webkit-scrollbar-thumb {
@@ -4466,7 +4471,6 @@
 .appointment-scroll::-webkit-scrollbar-thumb:hover {
     background: #3c643c;
 }
-
 
 .student-dashboard .appointment-placeholder-sd {
     position: relative;
@@ -4751,12 +4755,18 @@
     display: block;
 }
 
-.pending-scroll::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 20px;
-    margin: 5px 0;
-    
+.student-dashboard .appointment-scroll::-webkit-scrollbar-track {
+    background: transparent;
 }
+
+@media (min-width: 1) {
+    .student-dashboard .appointment-scroll::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 20px;
+        margin: 5px 0;
+    }
+}
+
 
 .pending-scroll::-webkit-scrollbar-thumb {
     background: #4f772d;
