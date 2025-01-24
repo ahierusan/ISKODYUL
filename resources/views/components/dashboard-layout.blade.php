@@ -17,15 +17,15 @@
         </div>
         <nav class="menu-group">
           <a href="/{{$user->role}}-dashboard">DASHBOARD</a>
+          @if (strtolower($user->role) === 'admin')
+            <a href="/appointment">APPOINTMENT</a>
+          @endif
           @if (strtolower($user->role) === 'student')
             <a href="/appointment">APPOINTMENT</a>
           @endif
           @if (strtolower($user->role) === 'faculty')
             <a href="/faculty-setup" class="appointment">SET SCHEDULE</a>
             <!-- <a href="/faculty-availability">SET AVAILABILITY</a> -->
-          @endif
-          @if (strtolower($user->role) === 'student')
-            <a href="about.html">ABOUT</a>
           @endif
           <a href="/logout" class="logout-fs">LOGOUT</a>
         </nav>

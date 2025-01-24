@@ -246,7 +246,6 @@
                 <nav class="menu-group">
                     <a href="/student-dashboard">DASHBOARD</a>
                     <a href="/appointment" class="appointment">APPOINTMENT</a>
-                    <a href="about.html">ABOUT</a>
                     <a href="/logout" class="logout-fs">LOGOUT</a>
                 </nav>
 

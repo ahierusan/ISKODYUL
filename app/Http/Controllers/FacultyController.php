@@ -30,44 +30,36 @@ class FacultyController extends Controller
     }
 
     public function store(Request $request)
-    {
-        // Validate the main faculty information
-        $validatedData = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'college_department_id' => 'required|exists:college_departments,id',
-            'department' => 'required|string|max:255',
-            'fb_link' => 'nullable|url',
-            'bldg_no' => 'required|string|max:255',
-            // Validation for dropdown priorities
-            'dropdown1' => 'required|in:0,1,2,3',
-            'dropdown2' => 'required|in:0,1,2,3',
-            'dropdown3' => 'required|in:0,1,2,3',
-        ]);
+{
+    $validatedData = $request->validate([
+        'first_name' => 'required|string',
+        'last_name' => 'required|string',
+        'college_department_id' => 'required|exists:college_departments,id',
+        'department' => 'required|string',
+        'fb_link' => 'nullable|url',
+        'bldg_no' => 'nullable|string',
+    ]);
 
-        // Prepare inquiry categories
-        $inquiryCategories = [
-            'advising' => (int)$request->input('dropdown1'),
-            'undergraduate_thesis' => (int)$request->input('dropdown2'),
-            'grade_consultation' => (int)$request->input('dropdown3')
-        ];
+    $inquiry_categories = [
+        'advising' => (int)$request->input('dropdown1', 0),
+        'undergraduate_thesis' => (int)$request->input('dropdown2', 0),
+        'grade_consultation' => (int)$request->input('dropdown3', 0),
+    ];
 
-        // Find or create faculty record
-        $faculty = Faculty::updateOrCreate(
-            ['user_id' => Auth::id()],
-            [
-                'first_name' => $validatedData['first_name'],
-                'last_name' => $validatedData['last_name'],
-                'college_department_id' => $validatedData['college_department_id'],
-                'department' => $validatedData['department'],
-                'fb_link' => $validatedData['fb_link'],
-                'bldg_no' => $validatedData['bldg_no'],
-                'inquiry_categories' => $inquiryCategories
-            ]
-        );
+    $faculty = Faculty::updateOrCreate(
+        ['user_id' => Auth::id()],
+        [
+            'first_name' => $validatedData['first_name'],
+            'last_name' => $validatedData['last_name'],
+            'college_department_id' => $validatedData['college_department_id'],
+            'department' => $validatedData['department'],
+            'fb_link' => $validatedData['fb_link'],
+            'bldg_no' => $validatedData['bldg_no'],
+            'inquiry_categories' => json_encode($inquiry_categories)
+        ]
+    );
 
-        // Redirect with success message
-        return redirect('/faculty-dashboard')
-            ->with('success', 'Faculty profile updated successfully');
-    }
+    return redirect('/faculty-dashboard')
+        ->with('success', 'Faculty profile updated successfully');
+}
 }

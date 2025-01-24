@@ -293,7 +293,7 @@
 
 <div class="dashboard-sysad">
     <div class="one-container">
-        <a href="student-dashboard.html" class="student-box-link">
+        <a href="/student-dashboard" class="student-box-link">
             <div class="student-box">
             <img src="assets/images/student-icon.svg" alt="Background Design" class="student-box-svg">
                 <div class="student-title">As Student</div>
@@ -302,7 +302,7 @@
     </div>
 
     <div class="three-container">
-        <a href="faculty-dashboard.html" class="faculty-box-link">
+        <a href="/faculty-dashboard" class="faculty-box-link">
             <div class="faculty-box">
             <img src="assets/images/faculty-icon.svg" alt="Background Design" class="faculty-box-svg">
                 <div class="faculty-title">As Faculty</div>
