@@ -96,9 +96,16 @@ Route::get('/student-dashboard', function () {
         ->orderBy('date', 'asc')
         ->get();
 
+    $pendingAppointments = Appointment::where('student_id', $user->id)
+        ->where('status', 'pending')
+        ->with(['faculty', 'faculty.collegeDepartment'])
+        ->orderBy('date', 'asc')
+        ->get();
+
     return view('student.dashboard')
         ->with('user', $user)
-        ->with('appointments', $appointments);
+        ->with('appointments', $appointments)
+        ->with('pendingAppointments', $pendingAppointments);
 })->middleware('auth');
 
 Route::get('/appointment', function () {
