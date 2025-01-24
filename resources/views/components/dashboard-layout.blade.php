@@ -19,13 +19,22 @@
           <a href="/{{$user->role}}-dashboard">DASHBOARD</a>
           @if (strtolower($user->role) === 'admin')
             <a href="/appointment">APPOINTMENT</a>
+            <!-- Admin Dashboard Button -->
+            <div class="sysad-db">
+              <div class="db-button">
+                <a href="/admin-dashboard" class="db-link">
+                  <div class="holder">
+                    <div class="title">.........................</div>
+                  </div>
+                </a>
+              </div>
+            </div>
           @endif
           @if (strtolower($user->role) === 'student')
             <a href="/appointment">APPOINTMENT</a>
           @endif
           @if (strtolower($user->role) === 'faculty')
             <a href="/faculty-setup" class="appointment">SET SCHEDULE</a>
-            <!-- <a href="/faculty-availability">SET AVAILABILITY</a> -->
           @endif
           <a href="/logout" class="logout-fs">LOGOUT</a>
         </nav>

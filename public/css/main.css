@@ -1334,7 +1334,7 @@
 }
 .appointment-facultysearch .menu-group { /* REPOSITIONING NG DASHBOARD, APTMT, ABT, LOGOUT */
     position: absolute;
-    top: 70px;
+    top: 1px;
     left: 900px;
 }
 
@@ -4971,4 +4971,29 @@
 
 }
 
+.sysad-db {
+    position: relative;
+    top: 30px;
+    right: 2450px;
+    z-index: 1;
+}
+
+.sysad-db .title {
+    color: white;
+}
+
+.db-button,
+.db-link,
+.db-link .holder {
+transition: none !important;
+background: none !important;
+}
+
+.db-button:hover,
+.db-link:hover,
+.db-link .holder:hover {
+transform: none !important;
+box-shadow: none !important;
+background: none !important;
+}
 
