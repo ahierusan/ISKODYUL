@@ -4656,7 +4656,7 @@
 
 .student-dashboard .pending-overview {
     position: relative;
-    bottom: 2200px;
+    bottom: 2400px;
     left: 3050px;
     font-family: "Futura Hv BT", Helvetica;
     font-size: 98px;
@@ -4669,7 +4669,7 @@
     height: 1550px;
     overflow: hidden;
     left: 2950px;
-    bottom: 2120px;
+    bottom: 2300px;
     display: flex;
     /* overflow-x: hidden; */
     /* padding-right: 40px; */
