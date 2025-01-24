@@ -6,7 +6,7 @@
 
 .dashboard-sysad .student-box {
     position: relative;
-    top: 250px;
+    top: 790px;
     background-color: #fff;
     border-radius: 35px;
     box-shadow: 5px 15px 15px rgba(0, 0, 0, 0.3);
@@ -14,6 +14,7 @@
     text-align: center;
     width: 750px;
     height: 800px;
+    left: 2450px;
 }
 
 
@@ -59,7 +60,7 @@
 
 .dashboard-sysad .faculty-box {
     position: relative;
-    top: 500px;
+    bottom: 100px;
     background-color: #fff;
     border-radius: 35px;
     box-shadow: 5px 15px 15px rgba(0, 0, 0, 0.3);
@@ -67,6 +68,8 @@
     text-align: center;
     width: 750px;
     height: 800px;
+    left: 1200px;
+    
 }
 
 
@@ -111,142 +114,179 @@
 }
 
 
-.sec-key-title {
+.sec-title {
     position: relative;
-    font-size: 105px;
-    font-family: "Futura Hv BT", Helvetica;
+    bottom: 900px;
+    font-family: "Futura Hv BT", Helvetica;;
+    font-size: 110px;
+    font-weight: bold;
     color: #31572c;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+    z-index: 2;
+    text-wrap: wrap;
+    width: 850px;
+    text-align: center;
+    
+    left: 1000px;
+
 }
 
-.dashboard-sysad .set-sec {
+.manage-sec {
     position: relative;
-    bottom: 1700px;
-    left: 1500px;
-    background-color: #fff;
-    border-radius: 35px;
-    box-shadow: 5px 15px 15px rgba(0, 0, 0, 0.3);
-    padding: 50px;
-    text-align: left;
-    width: 1550px;
-    height: 1000px;
+    bottom: 200px;
+    left: 2700px;
 }
 
-.dashboard-sysad .set-sec .sec-key-input {
-    width: 80%; /* Responsive width */
-    height: 15%;
-    padding: 15px;
-    margin-top: 20px;
-    border: 2px solid #31572c;
-    border-radius: 110px;
-    font-size: 65px;
-    transition: all 0.3s ease;
-    outline: none;
-    font-family: "Futura Book Font", Helvetica;
-    padding-left: 55px;
-    margin-top: 20px;
-    margin-bottom: 35px;
-}
+.manage-sec-btn {
+            position: relative;
+            width: 850px;
+            height: 900px;
+            border-radius: 35px;
+            background-color: #fff;
+            box-shadow: 5px 15px 15px rgba(0, 0, 0, 0.3);
+            color: #31572c;
+            font-size: 110px;
+            font-family: "Futura Hv BT", Helvetica;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 50;
+            bottom: 1700px;
+            left: 1000px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border: none;
+        }
 
-.dashboard-sysad .set-sec .sec-key-input::placeholder {
-    color: #31572c;
-    opacity: 0.7;
-    transition: opacity 0.3s ease;
-}
+        .manage-sec-btn span {
+            position: relative;
+            order: 2;
+            margin-top: 80px; /* Adjust spacing as needed */
+        }
 
-.dashboard-sysad .set-sec .sec-key-input:hover,
-.dashboard-sysad .set-sec .sec-key-input:focus {
-    border-color: #4CAF50;
-    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
-}
+        .manage-sec-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        /* .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        } */
 
-.dashboard-sysad .set-sec .sec-key-input:hover::placeholder,
-.dashboard-sysad .set-sec .sec-key-input:focus::placeholder {
-    opacity: 0.4;
-}
+        .dashboard-sysad .modal-content {
+            background-color: white;
+            border-radius: 35px;
+            width: 2200px;
+            height: 800px;
+            padding: 50px;
+            box-shadow: 5px 15px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
 
-.dashboard-sysad .set-sec .sec-key-update {
-    width: 80%; /* Responsive width */
-    height: 15%;
-    padding: 15px;
-    margin-top: 20px;
-    border: 2px solid #31572c;
-    border-radius: 110px;
-    font-size: 65px;
-    transition: all 0.3s ease;
-    outline: none;
-    font-family: "Futura Book Font", Helvetica;
-    padding-left: 55px;
-}
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 100px;
+            cursor: pointer;
+            color: #31572c;
+            padding-right: 30px;
+        }
 
-.dashboard-sysad .set-sec .sec-key-update::placeholder {
-    color: #31572c;
-    opacity: 0.7;
-    transition: opacity 0.3s ease;
-}
+        .dashboard-sysad .modal-title {
+            position: relative;
+            font-size: 150px;
+            color: #31572c;
+            margin-bottom: 30px;
+            font-family: "Futura Hv BT", Helvetica;
+            text-align: center;
+        }
 
-.dashboard-sysad .set-sec .sec-key-update:hover,
-.dashboard-sysad .set-sec .sec-key-update:focus {
-    border-color: #4CAF50;
-    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
-}
+        .modal-input {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            padding: 75px;
+            margin-bottom: 20px;
+            border: 2px solid #31572c;
+            border-radius: 110px;
+            font-size: 80px;
+            font-family: "Futura Hv BT", Helvetica;
+            outline: none;
+            transition: all 0.3s ease;
+            top: 200px;
+        }
 
-.dashboard-sysad .set-sec .sec-key-update:hover::placeholder,
-.dashboard-sysad .set-sec .sec-key-update:focus::placeholder {
-    opacity: 0.4;
-}
+        .modal-input:hover,
+        .modal-input:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+        }
 
-.dashboard-sysad .set-sec .sec-key-actions {
-    /* display: none; */
-    justify-content: center;
-    gap: 50px;
-    margin-top: 50px;
-    z-index: 10;
-    width: 40%;
-    height: 20%;
-}
+        .modal-actions {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            top: 200px;
+        }
 
-.dashboard-sysad .set-sec .sec-key-actions button {
-    position: relative;
-    top: 70px;
-    width: 80%;
-    height: 60%;
-    border: 2px solid #31572c;
-    border-radius: 110px;
-    font-size: 65px;
-    font-family: "Futura Book Font", Helvetica;
-    background-color: white;
-    color: #31572c;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    z-index: 10;
-    margin-bottom: 35px;
-}
+        .modal-btn {
+            position: relative;
+            width: 45%;
+            height: 100px;
+            border: none;
+            border-radius: 110px;
+            font-size: 60px;
+            font-family: "Futura Book Font", Helvetica;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-.dashboard-sysad .set-sec .sec-key-actions .confirm-btn {
-    border-color: #4CAF50;
-}
+        .confirm-btn {
+            position: relative;
+            border-color: #4CAF50;
+            color: #4CAF50;
+            height: 150px;
+        }
 
-.dashboard-sysad .set-sec .sec-key-actions .cancel-btn {
-    border-color: #f44336;
-}
+        .cancel-btn {
+            position: relative;
+            border-color: #f44336;
+            color: #f44336;
+            height: 150px;
 
-.dashboard-sysad .set-sec .sec-key-actions button:hover {
-    color: white;
-}
+        }
 
-.dashboard-sysad .set-sec .sec-key-actions .confirm-btn:hover {
-    background-color: #4CAF50;
-}
+        .confirm-btn:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
 
-.dashboard-sysad .set-sec .sec-key-actions .cancel-btn:hover {
-    background-color: #f44336;
-}
+        .cancel-btn:hover {
+            background-color: #f44336;
+            color: white;
+        }
 
-.dashboard-sysad .set-sec .sec-key-input:not(:placeholder-shown) + .sec-key-update:not(:placeholder-shown) + .sec-key-actions,
-.dashboard-sysad .set-sec .sec-key-update:not(:placeholder-shown) + .sec-key-input:not(:placeholder-shown) + .sec-key-actions {
-    display: flex;
-}
+        .key-svg {
+            position: relative;
+            right: 1300px;
+            bottom: 800px;
+            width: 310%;
+            height: 310%;
+            z-index: 20;
+        }
+
+
 </style>
 </head>
 <body>
@@ -271,27 +311,44 @@
     </div>
     
     <div class="manage-sec">
-    <div class="set-sec">
-        <div class="sec-key-title">Manage Security Key</div>
-        <input 
-            type="text" 
-            class="sec-key-input" 
-            placeholder="Set security key"
-        >
-        <input 
-            type="text" 
-            class="sec-key-update" 
-            placeholder="Update current security key"
-        >
+    <img src="assets/images/key-icon.svg" alt="Background Design" class="key-svg">
+        <div class="sec-title">Manage Security Key</div>
+    <button class="manage-sec-btn" onclick="openModal()"></button>
+    </div>
 
-        <div class="sec-key-actions">
-            <button class="confirm-btn">Confirm</button>
-            <button class="cancel-btn">Cancel</button>
+    <div id="securityKeyModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div class="modal-title">Manage Security Key</div>
+            
+            <input type="text" class="modal-input" placeholder="Update current security key">
+            <div class="modal-actions">
+                <button class="modal-btn confirm-btn">Confirm</button>
+                <button class="modal-btn cancel-btn" onclick="closeModal()">Cancel</button>
+            </div>
         </div>
     </div>
 </div>
 
+
 </div>
+<script>
+        function openModal() {
+            document.getElementById('securityKeyModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('securityKeyModal').style.display = 'none';
+        }
+
+        // Close modal if clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('securityKeyModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>
 </x-dashboard-layout>

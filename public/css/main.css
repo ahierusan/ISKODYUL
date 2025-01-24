@@ -2293,7 +2293,7 @@
     display: none;
 }
 
-.modal-content {
+.dashboard-faculty .modal-content {
     position: relative;
     background-color: #fff;
     width: 80%;
