@@ -269,11 +269,6 @@
             </div>
         </a>
     </div>
-
-
-    <!-- <div class="sec-key">
-        <button class="securityk">Manage Security Key</button>
-    </div> -->
     
     <div class="manage-sec">
     <div class="set-sec">

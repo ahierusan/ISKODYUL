@@ -1620,7 +1620,7 @@
     overflow: hidden;
 }
 .dashboard-faculty .overlap-wrapper-df {
-    background-color: #ffffff;
+    /* background-color: #ffffff;
     background-image: url(wavy.png);
     background-size: cover;
     background-position: center;
@@ -1628,16 +1628,42 @@
     height: 100%;
     display: flex;
     align-items: stretch;
+    overflow: hidden; */
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(wavy.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: stretch;
     overflow: hidden;
 }
 .dashboard-faculty .overlap-df {
-    position: relative;
+    /* position: relative;
     width: 100%;
     height: 100%;
     background: linear-gradient(
         -25deg,
         rgba(255, 255, 255, 0.7) 30%, 
         rgba(49, 87, 44, 1) 110%    
+    );
+    display: flex;
+    z-index: 0; */
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        -25deg,
+        rgba(255, 255, 255, 0.7) 30%,
+        rgba(49, 87, 44, 1) 110%
     );
     display: flex;
     z-index: 0;
@@ -1843,6 +1869,11 @@
  
 }
 
+.dashboard-faculty .appointment-list {
+    position: relative;
+    left: 5070px;
+}
+
 
 .dashboard-faculty .placeholder-container-df {
     position: relative;
@@ -2009,13 +2040,13 @@
 }
 
 .appointment-wrapper-current:hover .appointment-placeholder-df {
-    transform: translateX(-180px); /* Slide left to make room for cancel button */
+    transform: translateX(-220px); /* Slide left to make room for cancel button */
 }
 
 .cancel-apt {
-    position: absolute;
-    bottom: 25px;
-    right: -100%;
+    position: relative;
+    bottom: 15px;
+    left: -180px; /* Changed from -100% to match button width */
     background-color: #ff4444;
     color: white;
     border: none;
@@ -2029,7 +2060,8 @@
     font-size: 80px;
     opacity: 0;
     transition: right 0.2s ease, opacity 0.3s ease, background-color 0.2s ease;
-    visibility: hidden 
+    visibility: hidden;
+    z-index: 10; /* Ensure button is above the appointment card */
 }
 
 .cancel-apt:active {
@@ -2142,7 +2174,7 @@
 .dashboard-faculty .appointments-link {
     position: relative;
     width: 900px;
-    right: 1550px;
+    right: 1000px;
     top: 120px;
     padding: 30px 120px;
     background: none;
