@@ -8,7 +8,7 @@
     <div class="appointment-confirmation">
       <div class="overlap-wrapper-cf">
 
-<div class="overlap-cf">
+  <div class="overlap-cf">
     <div class="continue-button-group-cf">
         <form method="POST" action="{{ route('appointment.store') }}">
             @csrf
@@ -63,12 +63,13 @@
             @endif
         </span>
 
+        <div class="approval-status">
         @if ($appointmentData['requires_approval'])
             <br><span style="color: #FFA500;">{{ 'Status: Pending Approval' }}</span>
         @else
             <br><span style="color: #008000;">{{ 'Status: Approved' }}</span>
         @endif
-
+        </div>
     </div>
 </div>
 
@@ -80,11 +81,11 @@
                 <div class="isko-cf">ISKO</div>
               </div>
             </div>
-            <nav class="menu-group-ss">
+            <nav class="menu-group-cf">
                     <a href="/student-dashboard">DASHBOARD</a>
-                    <a href="/appointment" class="appointment">APPOINTMENT</a>
+                    <a href="/appointment" class="appointment-cf">APPOINTMENT</a>
                     <a href="about.html">ABOUT</a>
-                    <a href="/logout" class="logout-fs">LOGOUT</a>
+                    <a href="/logout" class="logout-cf">LOGOUT</a>
                 </nav>
 
             <img class="line-cf" src="assets/images/line.png" />

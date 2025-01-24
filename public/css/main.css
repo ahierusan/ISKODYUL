@@ -4260,20 +4260,21 @@
 
 .appointment-confirmation .schedule-container {
     position: relative;
-    width: 90%;
+    width: 80%; /* Reduced width */
     max-width: 1200px;
-    margin: 500px auto 0; /* Adjust the first value (100px) to move content up/down */
-    padding: 40px 8000px 40px 2000px; /* Adjust the last value (100px) to move content left/right */
+    margin: 500px auto 0 100px; /* Added negative left margin */
+    padding: 40px;
     z-index: 1;
 }
 
 .appointment-confirmation .apt-category {
     font-family: "Futura Hv BT", Helvetica;
-    font-size: 280px;
+    font-size: 250px;
     font-weight: bold;
-    color: #3c643c;
-    margin-bottom: 20px;
+    color: #132a13;
+    margin-bottom: 250px;
     line-height: 1;
+    text-wrap: nowrap;
 }
 
 .appointment-confirmation .date-time {
@@ -4311,12 +4312,13 @@
     color: #3c643c;
     margin: 2rem 0;
     line-height: 1.2;
+    width: 7000px;
 }
 
 .appointment-confirmation .divider {
     border: none;
     border-top: 9px solid #31572c;
-    width: 90%;
+    width: 230%;
     margin: 1rem 0;
 }
 
@@ -4327,6 +4329,12 @@
     color: #3c643c;
     margin: 2rem 0;
     line-height: 1.2;
+    width: 2500px;
+}
+
+.appointment-confirmation .approval-status {
+    position: relative;
+    top: 200px;
 }
 
 
