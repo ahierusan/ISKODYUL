@@ -8,6 +8,7 @@ use App\Models\CollegeDepartment;
 use App\Http\Controllers\AppointmentController;
 use Illuminate\Http\Request;
 use App\Models\Faculty;
+use App\Models\Appointment;
 
 // Login Routes
 Route::get('/login', function () {
@@ -70,11 +71,34 @@ Route::delete('/faculty-availability/{id}', [FacultyAvailabilityController::clas
     ->name('faculty.availability.destroy')
     ->middleware('auth');
 
+Route::post('/appointment/{appointment}/approve', [AppointmentController::class, 'approveAppointment'])
+    ->name('appointment.approve')
+    ->middleware('auth');
+
+Route::post('/appointment/{appointment}/reject', [AppointmentController::class, 'rejectAppointment'])
+    ->name('appointment.reject')
+    ->middleware('auth');
+
+Route::post('/appointment/{appointment}/cancel', [AppointmentController::class, 'cancelAppointment'])
+    ->name('appointment.cancel')
+    ->middleware('auth');
+
+Route::get('/appointment/available-slots/{faculty}', [AppointmentController::class, 'getAvailableTimeSlots'])
+    ->name('appointment.available-slots');
 
 // student
 
 Route::get('/student-dashboard', function () {
-    return view('student.dashboard')->with('user', Auth::user());
+    $user = Auth::user();
+    $appointments = Appointment::where('student_id', $user->id)
+        ->where('status', 'approved')
+        ->with(['faculty', 'faculty.collegeDepartment'])
+        ->orderBy('date', 'asc')
+        ->get();
+
+    return view('student.dashboard')
+        ->with('user', $user)
+        ->with('appointments', $appointments);
 })->middleware('auth');
 
 Route::get('/appointment', function () {
@@ -104,9 +128,9 @@ Route::post('/session/store-faculty', function (Request $request) {
     return response()->json(['success' => true]);
 })->middleware('auth');
 
-Route::get('/information', function () {
-    return view('student.information')->with('user', Auth::user());
-})->middleware('auth');
+Route::get('/information', [AppointmentController::class, 'getInformationForm'])
+    ->middleware('auth');
+
 
 Route::post('/store-information', function (Request $request) {
     // Validate all required fields

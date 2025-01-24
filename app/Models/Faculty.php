@@ -17,6 +17,7 @@ class Faculty extends Model
         'department',
         'fb_link',
         'bldg_no',
+        'inquiry_categories'
     ];
 
 

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -429,31 +428,41 @@
                         <input type="text" name="department" id="department" placeholder="Department (e.g. DIT)" required>
                         <input type="text" name="fb_link" id="fb-link" placeholder="Facebook Link (Optional)">
                         <input type="text" name="bldg_no" id="bldg-no" placeholder="Building Room No. (e.g. DIT CS UNIT)">
-                            <!-- Add new dropdowns here for the else case as well
-                        <select name="dropdown1" class="dropdown-options" required>
-                            <option value="" disabled selected style="color: #999;">Select Option</option>
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                        </select>
-
-                        <select name="dropdown2" class="dropdown-options" required>
-                            <option value="" disabled selected style="color: #999;">Select Option</option>
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                        </select>
-
-                        <select name="dropdown3" class="dropdown-options" required>
-                            <option value="" disabled selected style="color: #999;">Select Option</option>
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                        </select> -->
                     @endif
+                    <!-- Add these hidden inputs just before the confirm button -->
+<input type="hidden" name="dropdown1" id="advising-priority" value="0">
+<input type="hidden" name="dropdown2" id="thesis-priority" value="0">
+<input type="hidden" name="dropdown3" id="grade-priority" value="0">
+
+<!-- Update the JavaScript to populate these hidden inputs -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const advisingSelect = document.querySelector('select[name="dropdown1"]');
+    const thesisSelect = document.querySelector('select[name="dropdown2"]');
+    const gradeSelect = document.querySelector('select[name="dropdown3"]');
+    const advisingHidden = document.getElementById('advising-priority');
+    const thesisHidden = document.getElementById('thesis-priority');
+    const gradeHidden = document.getElementById('grade-priority');
+
+    // Initial values
+    advisingHidden.value = advisingSelect.value;
+    thesisHidden.value = thesisSelect.value;
+    gradeHidden.value = gradeSelect.value;
+
+    // Update hidden inputs when dropdowns change
+    advisingSelect.addEventListener('change', function() {
+        advisingHidden.value = this.value;
+    });
+
+    thesisSelect.addEventListener('change', function() {
+        thesisHidden.value = this.value;
+    });
+
+    gradeSelect.addEventListener('change', function() {
+        gradeHidden.value = this.value;
+    });
+});
+</script>
                     <button class="confirm-button-faculty-setup" type="submit">
                         <div class="confirm-button">
                             Confirm

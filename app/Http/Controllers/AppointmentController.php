@@ -552,6 +552,36 @@ public function cancelAppointment(Appointment $appointment)
         return response()->json(['timeSlots' => $availableSlots, 'bookedSlots' => $bookedSlots]);
     }
 
+<<<<<<< HEAD
+=======
+    public function priorityScheduling(Request $request)
+    {
+        // Collect appointments sorted by multiple criteria
+        $appointments = Appointment::where('faculty_id', $facultyId)
+            ->orderBy('priority', 'desc')  // Primary: Inquiry priority
+            ->orderBy('created_at', 'asc')  // Secondary: First-come-first-served
+            ->get();
+
+        // Implement scheduling logic:
+        // 1. Check faculty availability
+        // 2. Resolve time slot conflicts
+        // 3. Allocate based on priority and time
+    }
+
+    public function plotAppointmentCalendar(Appointment $appointment)
+    {
+        // Plot to calendar 1 day before expiry
+        $expiryDate = Carbon::parse($appointment->date)->subDay();
+        
+        // Create Google Calendar event
+        $calendarEvent = [
+            'summary' => "Upcoming Appointment - {$appointment->category}",
+            'description' => "Priority: {$appointment->priority}",
+            'start' => $expiryDate,
+            // Additional event details
+        ];
+    }
+>>>>>>> 0f8350fc11a9602f827fc77a38787aa7e6426be1
 
     
 }

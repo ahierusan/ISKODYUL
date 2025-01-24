@@ -2345,7 +2345,6 @@
     text-align: center;
 }
 
-
 .appointment-facultysearch .container {
     position: relative;
     left: 1000px;
@@ -4520,6 +4519,71 @@
     display: block;
     font-size: 60px;
     color: #8c8c8c;
+}
+
+.appointment-wrapper-ovrvw {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    gap: 0;
+    margin-right: -180px;
+}
+
+.appointment-wrapper-ovrvw .appointment-placeholder-sd {
+    width: 98%;
+    height: 280px;
+    margin-right: 0; /* Remove original margin */
+    transition: transform 0.3s ease;
+}
+
+.appointment-wrapper-ovrvw:hover .appointment-placeholder-sd {
+    transform: translateX(-150px); /* Slide left to make room for cancel button */
+}
+
+.cancel-apt-sd {
+    position: absolute;
+    bottom: 25px;
+    right: -180%;
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    width: 160px;
+    height: 90%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    opacity: 0;
+    transition: right 0.2s ease, opacity 0.3s ease, background-color 0.2s ease;
+    visibility: hidden 
+}
+
+.cancel-apt-sd:active {
+    background-color: #cc0000;
+}
+
+.appointment-wrapper-ovrvw:hover .cancel-apt-sd {
+    right: 0;
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Maintain existing hover effect */
+.appointment-wrapper-ovrvw:hover {
+    transform: translateY(-5px);
+}
+
+.no-app-yet {
+    position: relative;
+    font-size: 65px;
+    font-family: "Futura Hv BT", Helvetica;
+    color:#8c8c8c;
+    text-align: center;
 }
 
 
