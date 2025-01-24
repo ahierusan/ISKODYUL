@@ -21,42 +21,38 @@
             <div class="prof-name">{{ $faculty->last_name }}, {{ $faculty->first_name }}</div>
             <div class="divider-line"></div>
           </div>
-        <div class="current-app">CURRENT APPOINTMENTS</div>
+          <div class="current-app">CURRENT APPOINTMENTS</div>
           <div class="appointment-list-df">
               <div class="appointment-scroll-df">
                   <div class="placeholder-container-df">
-                  @forelse($appointments['approved'] as $appointment)
-                    <div class="appointment-wrapper-current" data-appointment-id="{{ $appointment['id'] }}">
-                        <div class="appointment-placeholder-df">
-                            <div class="appointment-date-df">
-                                <span class="date">{{ Carbon\Carbon::parse($appointment['date'])->format('d') }}</span>
-                                <span class="month">{{ Carbon\Carbon::parse($appointment['date'])->format('M') }}</span>
-                            </div>
-                            <div class="appointment-details-df">
-                                <span class="name">{{ $appointment['student']['last_name'] }}, {{ $appointment['student']['first_name'] }}</span>
-                                <span class="college">{{ $appointment['student']['college_department'] }}</span>
-                            </div>
-                            <div class="appointment-time-df">
-                                <span class="time">{{ Carbon\Carbon::parse($appointment['time'])->format('h:i A') }}</span>
-                                <span class="duration">{{ $appointment['duration'] }} Min</span>
-                            </div>
-                            <!-- <div class="purpose">
-                              <span class="purpose-apt">Purpose</span>
-                              <span class="purpose-text">Undergrad Theses Consultation</span>
+                      @forelse($appointments['approved'] as $appointment)
+                          <div class="appointment-wrapper-current" data-appointment-id="{{ $appointment['id'] }}">
+                              <div class="appointment-placeholder-df">
+                                  <div class="appointment-date-df">
+                                      <span class="date">{{ Carbon\Carbon::parse($appointment['date'])->format('d') }}</span>
+                                      <span class="month">{{ Carbon\Carbon::parse($appointment['date'])->format('M') }}</span>
+                                  </div>
+                                  <div class="appointment-details-df">
+                                      <span class="name">
+                                        {{ $appointment['student']['last_name'] }}, {{ $appointment['student']['first_name'] }} 
+                                        ({{ $appointment['student']['college_department'] }})
+                                    </span>
+                                      <span>{{ $appointment['appointment_category'] }}</span>
+
+                                  </div>
+                                  <div class="appointment-time-df">
+                                      <span class="time">{{ Carbon\Carbon::parse($appointment['time'])->format('h:i A') }}</span>
+                                      <span class="duration">{{ $appointment['duration'] }} Min</span>
+                                  </div>
+                              </div>
+                              <button class="cancel-apt" onclick="cancelAppointment(this)">&times;</button>
                           </div>
-                          <div class="notes">
-                              <span class="addtl-notes">Additional Notes</span>
-                              <span class="addtl-notes-text">bkla sinasabi q lng huh</span>
-                          </div> -->
-                        </div>
-                        </div>
-                        <button class="cancel-apt" onclick="cancelAppointment(this)">&times;</button>
-                    </div>
-                    @empty
-                    <div class="no-app-appointments">No approved appointments</div>
-                    @endforelse
+                      @empty
+                          <div class="no-app-appointments">No approved appointments</div>
+                      @endforelse
                   </div>
               </div>
+          </div>
           </div>
 
       <div class="appointment-list">
