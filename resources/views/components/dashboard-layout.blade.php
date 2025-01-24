@@ -22,7 +22,7 @@
           @endif
           @if (strtolower($user->role) === 'faculty')
             <a href="/faculty-setup" class="appointment">SET SCHEDULE</a>
-            <a href="/faculty-availability">SET AVAILABILITY</a>
+            <!-- <a href="/faculty-availability">SET AVAILABILITY</a> -->
           @endif
           @if (strtolower($user->role) === 'student')
             <a href="about.html">ABOUT</a>

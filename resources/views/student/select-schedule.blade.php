@@ -55,10 +55,11 @@
 
         /* New schedule selection styles */
       .schedule-section-ss {
-          position: absolute;
-          top: 600px;
-          left: 100px;
-          width: 5700px;  /* Fixed width instead of percentage */
+          position: relative;
+          top: 500px;
+          left: 430px;
+          width: 5000px;  /* Fixed width instead of percentage */
+          height: 3000px;
           padding: 20px;
       }
 
@@ -66,52 +67,58 @@
           position: relative;
           background: white;
           border-radius: 40px;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.1);
+          height: 2000px;
           padding: 40px;
           width: 100%;
       }
 
         /* Update only the date grid and buttons to use absolute positioning */
       .date-grid-ss {
+        position: relative;
+        top: 300px;
+        left: 150px;
         display: grid;
         grid-template-columns: repeat(7, 1fr);
-        gap: 15px;
-        margin-bottom: 30px;
+        gap: 55px;
+        margin-bottom: 70px;
         width: 100%;
     }
-
+/* 
     .time-duration-grid-ss {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 15px;
         width: 100%;
-    }
+    } */
 
       .date-button-ss {
           position: relative;
-          width: 550px;
-          height: 400px;
+          width: 400px;
+          height: 200px;
           padding: 12px;
-          border: 1px solid #ddd;
-          border-radius: 8px;
+          border: 2px solid #ddd;
+          border-radius: 20px;
           background: white;
           cursor: pointer;
           text-align: center;
           transition: all 0.2s;
-          font-family: "Inter-Regular", Helvetica;
+          font-family: "Futura Hv BT", Helvetica;
+          transition: all 0.3s ease;
       }
 
       .date-weekday-ss {
           position: absolute;
           width: 100%;
           left: 0;
-          font-size: 70px;
+          font-size: 50px;
           color: #666;
+          font-family: "Futura Hv BT", Helvetica;
       }
 
       /* Top weekday */
       .date-weekday-ss:first-child {
-          top: 8px;
+          top: 20px;
       }
 
       /* Bottom month */
@@ -125,44 +132,109 @@
           left: 0;
           top: 50%;
           transform: translateY(-50%);
-          font-size: 120px;
+          font-size: 80px;
           font-weight: bold;
           text-align: center;
       }
 
       /* Keep your original hover and selected states */
       .date-button-ss:hover {
-          background: #f0f0f0;
+          background: #ecf39e !important;
+          transform: scale(1.03);
+          box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+          /* border-color: #1c355e; Border color change on hover */
       }
 
       .date-button-ss.selected {
-          background: #1c355e;
-          color: white;
-          border-color: #1c355e;
+          background-color: #4f772d !important;
+          color: #ecf39e !important;
+          transform: scale(0.98);
       }
 
+        .date-button-ss.selected .date-weekday-ss {
+        color: rgba(255, 255, 255, 0.7); /* Lighter white for weekday text */
+    }
+
+        .date-button-ss.selected .date-day-ss {
+            color: white; /* White for day text */
+            font-weight: bold; /* Bolder font for emphasis */
+        }
+
         .time-duration-grid-ss {
+            position: relative;
+            top: 900px;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
         }
 
-        .section-title-ss {
-            font-size: 120px;
-            color: #333;
+        .select-date {
+            position: relative;
+            font-size: 100px;
+            color: #132a13;
             margin-bottom: 15px;
             font-weight: 600;
-            font-family: "Inter-Regular", Helvetica;
+            font-family: "Futura Hv BT", Helvetica;
         }
 
-        .form-control-ss {
-          width: 2500px;
-          padding: 10px;
-          border: 1px solid #ddd;
-          border-radius: 8px;
-          font-size: 70px;
-          box-sizing: border-box;
-      }
+        .date-selection {
+            position: relative;
+            top: 100px;
+        }
+
+        .select-time {
+            position: relative;
+            font-size: 100px;
+            color: #132a13;
+            top: -300px !important;
+            left: 80px !important;
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-family: "Futura Hv BT", Helvetica;
+        }
+
+        .select-duration {
+            position: relative;
+            font-size: 100px;
+            color: #132a13;
+            top: -300px !important;
+            left: 2550px !important;
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-family: "Futura Hv BT", Helvetica;
+        }
+
+
+
+.form-control-ss {
+    position: relative;
+    top: 55px;
+    width: 1500px;
+    padding: 25px;
+    border: 2px solid #4f772d;
+    border-radius: 15px;
+    font-size: 70px;
+    font-family: "Futura Hv BT", Helvetica;
+    appearance: none; /* Remove default dropdown styling */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%234f772d" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 20px center;
+    right: 520px;
+    height: 180px;
+}
+
+.dropdown-time {
+    position: relative;
+    left: 710px;
+    bottom: 200px;
+}
+
+.duration-time {
+    position: relative;
+    left: 670px;
+    bottom: 200px;
+}
+
 
         /* Alert positioning */
 .alert-ss {
@@ -171,16 +243,50 @@
     margin-bottom: 20px;
     box-sizing: border-box;
     font-size: 80px;
+    font-family: "Futura Book Font", Helvetica;
 }
 
 /* Toggle hours button positioning */
 .toggle-hours-ss {
-    position: relative;
+    /* position: relative;
     width: 700px;
     height: 150px;
     margin-bottom: 10px;
-    font-size: 75px;
+    font-size: 75px; */
+    position: relative;
+    width: auto; /* Full width of container */
+    min-width: 700px;
+    padding: 20px 40px;
+    background-color: #4f772d; /* Matching your green theme */
+    color: #ffffff !important; /* Light yellow text */
+    border: none;
+    border-radius: 20px;
+    font-size: 70px;
+    font-family: "Futura Hv BT", Helvetica;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 30px;
+    height: 150px;
+    left: 190px;
+    bottom: 150px;
+
 }
+
+.toggle-hours-ss:hover {
+    background-color: #132a13; /* Darker green on hover */
+    transform: scale(1.02);
+}
+
+.toggle-hours-ss.all-hours {
+    background-color: #4f772d; /* Green for Show All Hours */
+    color: #ecf39e;
+}
+
+.toggle-hours-ss.regular-hours {
+    background-color: #90a955; /* Dark red for Show Regular Hours */
+    color: #fff;
+}
+
 
         .alert-warning-ss {
             background-color: #fff3cd;
@@ -249,9 +355,9 @@
                         This day is not within the faculty member's availability. Toggle "Show All Hours" to schedule outside regular hours. This will require approval.
                     </div>
 
-<div id="outsideHoursAlert" class="alert-ss alert-warning-ss" style="display: none;">
-    This time is outside the faculty member's regular hours and will require approval.
-</div>
+                    <div id="outsideHoursAlert" class="alert-ss alert-warning-ss" style="display: none;">
+                        This time is outside the faculty member's regular hours and will require approval.
+                    </div>
                         <form action="{{ route('appointment.schedule.store') }}" method="POST" id="scheduleForm">
                             @csrf
                             
@@ -265,29 +371,33 @@
                                 </div>
                             @endif
 
-                            <div>
-                                <div class="section-title-ss">1. Select Date</div>
+                            <div class="date-selection">
+                                <div class="select-date">1. Select Date</div>
                                 <input type="hidden" name="date" id="selectedDate" required>
                                 <div class="date-grid-ss" id="dateGrid"></div>
                             </div>
 
                             <div class="time-duration-grid-ss">
                                 <div>
-                                    <div class="section-title-ss">2. Select Time</div>
+                                    <div class="select-time">2. Select Time</div>
                                     <button type="button" class="toggle-hours-ss" onclick="toggleTimeSlots()">
                                         Show All Hours
                                     </button>
+                                    <div class="dropdown-time">
                                     <select name="time" class="form-control-ss" required>
                                         <option value="">Choose time</option>
                                     </select>
+                                    </div>
                                 </div>
 
                                 <div>
-                                    <div class="section-title-ss">3. Select Duration</div>
+                                    <div class="select-duration">3. Select Duration</div>
+                                    <div class="duration-time">
                                     <select name="duration" class="form-control-ss" required>
                                         <option value="30">30 minutes</option>
                                         <option value="60">1 hour</option>
                                     </select>
+                                    </div>
                                 </div>
                             </div>
 
@@ -522,16 +632,29 @@
           updateDurationOptions();
       }
 
-          function toggleTimeSlots() {
-            showingAllHours = !showingAllHours;
-            
-            const toggleButton = document.querySelector('.toggle-hours-ss');
-            toggleButton.textContent = showingAllHours ? 'Show Regular Hours' : 'Show All Hours';
-            
-            const selectedDate = document.getElementById('selectedDate').value;
-            if (selectedDate) {
-                generateTimeSlots(showingAllHours);
-            }
+      function toggleTimeSlots() {
+    showingAllHours = !showingAllHours;
+    
+    const toggleButton = document.querySelector('.toggle-hours-ss');
+    
+    if (showingAllHours) {
+        toggleButton.textContent = 'Show Regular Hours';
+        toggleButton.classList.remove('all-hours');
+        toggleButton.classList.add('regular-hours');
+    } else {
+        toggleButton.textContent = 'Show All Hours';
+        toggleButton.classList.remove('regular-hours');
+        toggleButton.classList.add('all-hours');
+    }
+    
+    const selectedDate = document.getElementById('selectedDate').value;
+    if (selectedDate) {
+        generateTimeSlots(showingAllHours);
+    }
+}
+
+// Initialize with default class
+document.querySelector('.toggle-hours-ss').classList.add('all-hours');
             
             // Reset alerts based on current state
             const hasAvailability = checkDateAvailability(selectedDate);
@@ -541,7 +664,7 @@
                     resetTimeAndDurationDropdowns();
                 }
             }
-        }
+        
 
         function isTimeWithinRange(time, startTime, endTime) {
             const t = convertTimeToMinutes(time);

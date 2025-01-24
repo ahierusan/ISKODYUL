@@ -51,6 +51,12 @@ class AppointmentController extends Controller
 
         // Get faculty ID from session storage
         $facultyId = session('selected_faculty_id');
+
+        if (!$facultyId) {
+        // If no faculty ID in session, redirect back with an error
+        return redirect('/select-schedule')
+            ->with('error', 'Please select a faculty member first');
+        }
         
         // Get the day of week for the requested date
         $appointmentDate = Carbon::parse($request->date);
@@ -289,7 +295,8 @@ class AppointmentController extends Controller
                         'first_name' => $appointment->student->first_name,
                         'last_name' => $appointment->student->last_name,
                         'college_department' => $appointment->student->college_department,
-                        'program_year_section' => $appointment->student->program_year_section
+                        'program_year_section' => $appointment->student->program_year_section,
+                        'appointment_category' => $appointment->appointment_category,
                     ]
                 ];
             });
@@ -300,6 +307,8 @@ class AppointmentController extends Controller
             'pending' => $transformAppointments($pendingAppointments)
         ];
     }
+
+    
 
     public function approveAppointment(Request $request, Appointment $appointment)
     {
@@ -343,4 +352,206 @@ class AppointmentController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function getInformationForm()
+    {
+        $user = Auth::user();
+        
+        // Get the student's most recent information
+        $student = Student::where('user_id', $user->id)
+            ->orderBy('updated_at', 'desc')
+            ->first();
+        
+        // Get appointment schedule from session
+        $appointmentSchedule = session('appointment_schedule');
+        
+        // Retrieve faculty based on the stored faculty ID
+        $facultyId = session('selected_faculty_id');
+        $faculty = Faculty::findOrFail($facultyId);
+        
+        return view('student.information')
+            ->with('student', $student)
+            ->with('faculty', $faculty)
+            ->with('appointmentSchedule', $appointmentSchedule);
+    }
+
+    public function rejectAppointment(Appointment $appointment)
+    {
+        try {
+            // Update appointment status to rejected
+            $appointment->update([
+                'status' => 'rejected'
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Appointment rejected successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to reject appointment: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+public function cancelAppointment(Appointment $appointment)
+{
+    try {
+        DB::beginTransaction();
+
+        // Check if the appointment exists and can be cancelled
+        if (!$appointment) {
+            throw new \Exception('Appointment not found');
+        }
+
+        // Only allow cancellation of approved appointments
+        if ($appointment->status !== 'approved') {
+            throw new \Exception('Only approved appointments can be cancelled');
+        }
+
+        // Get the faculty and student users
+        $faculty = Faculty::with('user')->find($appointment->faculty_id);
+        $student = Student::with('user')->where('user_id', $appointment->student_id)->first();
+
+        if (!$faculty || !$student) {
+            throw new \Exception('Required user information not found');
+        }
+
+        // Delete faculty's calendar event if it exists
+        if ($appointment->google_event_id) {
+            try {
+                $facultyGoogleCalendar = new GoogleCalendarController($faculty->user);
+                $facultyGoogleCalendar->deleteEvent($appointment->google_event_id);
+            } catch (\Exception $e) {
+                \Log::error('Failed to delete faculty calendar event: ' . $e->getMessage());
+                // Continue with cancellation even if calendar deletion fails
+            }
+        }
+
+        // Delete student's calendar event if it exists
+        if ($appointment->student_google_event_id) {
+            try {
+                $studentGoogleCalendar = new GoogleCalendarController($student->user);
+                $studentGoogleCalendar->deleteEvent($appointment->student_google_event_id);
+            } catch (\Exception $e) {
+                \Log::error('Failed to delete student calendar event: ' . $e->getMessage());
+                // Continue with cancellation even if calendar deletion fails
+            }
+        }
+
+        $appointment->update([
+            'status' => 'cancelled',
+            'google_event_id' => null,
+            'student_google_event_id' => null
+        ]);
+
+        DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Appointment canceled successfully'
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollback();
+        \Log::error('Appointment cancellation failed: ' . $e->getMessage());
+        \Log::error('Stack trace: ' . $e->getTraceAsString());
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to cancel appointment: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
+    public function getFacultyAvailabilities(Faculty $faculty)
+    {
+        $availabilities = FacultyAvailability::where('faculty_id', $faculty->id)->get();
+        
+        // Get approved appointments
+        $approvedAppointments = Appointment::where('faculty_id', $faculty->id)
+            ->where('status', 'approved')
+            ->where('date', '>=', now()->format('Y-m-d'))
+            ->get();
+
+        $bookedSlots = [];
+        foreach ($approvedAppointments as $appointment) {
+            $startTime = Carbon::parse($appointment->time);
+            $endTime = $startTime->copy()->addMinutes($appointment->duration);
+            
+            $bookedSlots[$appointment->date][] = [
+                'start' => $appointment->time,
+                'end' => $endTime->format('H:i:s'),
+                'duration' => $appointment->duration
+            ];
+        }
+
+        return response()->json([
+            'availabilities' => $availabilities,
+            'bookedSlots' => $bookedSlots
+        ]);
+    }
+
+    public function getAvailableTimeSlots(Request $request, Faculty $faculty)
+    {
+        $date = $request->date;
+        $dayOfWeek = Carbon::parse($date)->format('l');
+        
+        // Get faculty's availability for this day
+        $availability = FacultyAvailability::where('faculty_id', $faculty->id)
+            ->where('day_of_week', $dayOfWeek)
+            ->first();
+
+        if (!$availability) {
+            return response()->json(['timeSlots' => []]);
+        }
+
+        // Get approved appointments for this date
+        $appointments = Appointment::where('faculty_id', $faculty->id)
+            ->where('date', $date)
+            ->where('status', 'approved')
+            ->get();
+
+        $bookedSlots = [];
+        foreach ($appointments as $appointment) {
+            $startTime = Carbon::parse($appointment->time);
+            $endTime = $startTime->copy()->addMinutes($appointment->duration);
+            $bookedSlots[] = [
+                'start' => $appointment->time,
+                'start_formatted' => $startTime->format('H:i:s'),
+                'end' => $endTime->format('H:i:s')
+            ];
+        }
+
+        // Generate available time slots
+        $availableSlots = [];
+        $startTime = Carbon::parse($availability->start_time);
+        $endTime = Carbon::parse($availability->end_time);
+
+        while ($startTime < $endTime) {
+            $slotEnd = $startTime->copy()->addMinutes(30);
+            $isAvailable = true;
+
+            foreach ($bookedSlots as $bookedSlot) {
+                $bookedStart = Carbon::parse($bookedSlot['start']);
+                $bookedEnd = Carbon::parse($bookedSlot['end']);
+
+                if ($startTime < $bookedEnd && $slotEnd > $bookedStart) {
+                    $isAvailable = false;
+                    break;
+                }
+            }
+            if ($isAvailable) {
+                $availableSlots[] = $startTime->format('H:i');
+            }
+
+            $startTime->addMinutes(30);
+        }
+
+        return response()->json(['timeSlots' => $availableSlots, 'bookedSlots' => $bookedSlots]);
+    }
+
+
+    
 }

@@ -28,6 +28,7 @@
                   @forelse($appointments['approved'] as $appointment)
                     <div class="appointment-wrapper-current">
                         <div class="appointment-placeholder-df">
+                          <div class="appointment-content">
                             <div class="appointment-date-df">
                                 <span class="date">{{ Carbon\Carbon::parse($appointment['date'])->format('d') }}</span>
                                 <span class="month">{{ Carbon\Carbon::parse($appointment['date'])->format('M') }}</span>
@@ -40,6 +41,15 @@
                                 <span class="time">{{ Carbon\Carbon::parse($appointment['time'])->format('h:i A') }}</span>
                                 <span class="duration">{{ $appointment['duration'] }} Min</span>
                             </div>
+                            <!-- <div class="purpose">
+                              <span class="purpose-apt">Purpose</span>
+                              <span class="purpose-text">Undergrad Theses Consultation</span>
+                          </div>
+                          <div class="notes">
+                              <span class="addtl-notes">Additional Notes</span>
+                              <span class="addtl-notes-text">bkla sinasabi q lng huh</span>
+                          </div> -->
+                        </div>
                         </div>
                         <button class="cancel-apt" onclick="cancelAppointment(this)">&times;</button>
                     </div>
@@ -125,6 +135,7 @@
             </div>
 
     <style>
+    
       .calendar-content {
         position: relative;
         /* height: 0%; */

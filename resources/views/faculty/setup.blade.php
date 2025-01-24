@@ -38,6 +38,13 @@
             top: 0;
             left: 0;
         }
+
+        .faculty-setup .category {
+            position: absolute;
+            top: 300px;
+
+        }
+
         .faculty-setup .form-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -49,7 +56,7 @@
             border-radius: 25px;
             position: absolute;
             top: 1200px; 
-            left: center; 
+            left: -550px;
         }
         .faculty-setup .form-container input[type="text"] {
             position: relative;
@@ -95,6 +102,27 @@
         .faculty-setup. .form-container select option[disabled] {
             color: #999;
 
+        }
+
+        .faculty-setup .dropdown-options {
+            position: relative;
+            top: 940px;
+            left: 3830px;
+            width: 85%;
+            height: 160px;
+            padding: 50px;
+            background-color: none;
+            border-radius: 25px;
+            font-size: 45px;
+            font-family: "FONTSPRING DEMO - Proxima Nova Regular", Helvetica;
+            color: #555;
+            padding: 20px;
+            padding: 10px;
+            border: none;
+            border-radius: 30px;
+            background-color: #ffffff;
+            box-shadow: 0px 10px 15px #31572c9d;
+            margin-bottom: 50px;
         }
         .faculty-setup .wavy-faculty-setup {
                 position: absolute;
@@ -209,7 +237,7 @@
             width: 455px;
             height: 123px;
             top: 900px;
-            left: 2630px;
+            left: 3300px;
             background-color: #31572c;
             border-radius: 50px;
             overflow: hidden; 
@@ -244,7 +272,7 @@
             width: 455px;
             height: 125px;
             top: 2260px;
-            left: 2630px;
+            left: 2750px;
             border-radius: 50px;
             overflow: hidden;
             border: 3px solid #31572c;
@@ -314,6 +342,7 @@
             left: 200px;
         }
 
+
     </style>
 </head>
 <body>
@@ -360,6 +389,30 @@
                         <input type="text" name="fb_link" id="fb-link" placeholder="{{ $faculty->fb_link ?? 'Facebook Link (Optional)' }}" value="{{ $faculty->fb_link }}">
                         <input type="text" name="bldg_no" id="bldg-no" placeholder="{{ $faculty->bldg_no }}" value="{{ $faculty->bldg_no }}">
 
+                                                <!-- Add new dropdowns here
+                        <select name="dropdown1" class="dropdown-options" required>
+                            <option value="" disabled selected style="color: #999;">Select Option</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+
+                        <select name="dropdown2" class="dropdown-options" required>
+                            <option value="" disabled selected style="color: #999;">Select Option</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select> -->
+
+                        <!-- <select name="dropdown3" class="dropdown-options" required>
+                            <option value="" disabled selected style="color: #999;">Select Option</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select> -->
                     @else
                         <!-- Placeholder text for when no data exists for the user -->
                         <input type="text" name="first_name" id="first-name" placeholder="First Name" required>
@@ -376,14 +429,70 @@
                         <input type="text" name="department" id="department" placeholder="Department (e.g. DIT)" required>
                         <input type="text" name="fb_link" id="fb-link" placeholder="Facebook Link (Optional)">
                         <input type="text" name="bldg_no" id="bldg-no" placeholder="Building Room No. (e.g. DIT CS UNIT)">
-                    @endif
+                            <!-- Add new dropdowns here for the else case as well
+                        <select name="dropdown1" class="dropdown-options" required>
+                            <option value="" disabled selected style="color: #999;">Select Option</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
 
+                        <select name="dropdown2" class="dropdown-options" required>
+                            <option value="" disabled selected style="color: #999;">Select Option</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+
+                        <select name="dropdown3" class="dropdown-options" required>
+                            <option value="" disabled selected style="color: #999;">Select Option</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select> -->
+                    @endif
                     <button class="confirm-button-faculty-setup" type="submit">
                         <div class="confirm-button">
                             Confirm
                         </div>
                     </button>
                 </form>
+
+                <form class="category">
+                <select name="dropdown1" class="dropdown-options" required>
+                        <option value="" disabled selected style="color: #999;">Advising</option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+            
+
+                    <select name="dropdown2" class="dropdown-options" required>
+                        <option value="" disabled selected style="color: #999;">Undergraduate Thesis Consultation</option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+
+                    <select name="dropdown3" class="dropdown-options" required>
+                        <option value="" disabled selected style="color: #999;">Grade Consultation</option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </form>
+                    <!-- <button class="confirm-button-faculty-setup" type="submit">
+                        <div class="confirm-button">
+                            Confirm
+                        </div>
+                    </button> -->
+    
                 @if ($faculty)
                     <a class="back-button-faculty-setup" href="/faculty-dashboard">
                         <div class="back-button">
