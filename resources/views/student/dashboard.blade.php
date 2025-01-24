@@ -6,7 +6,7 @@
         <div class="student-name">{{ $user->name }}</div>  
     </div>
 
-    <div class="dashboard-overview">APPOINTMENTS OVERVIEW</div>
+    <div class="dashboard-overview">APPROVED APPOINTMENTS</div>
     <div class="appointment-list-sd">
         <div class="appointment-scroll">
             <div class="placeholder-container-sd">
@@ -19,8 +19,13 @@
                                 <span class="month-sd">{{ \Carbon\Carbon::parse($appointment->date)->format('M') }}</span>
                             </div>
                             <div class="appointment-details-sd">
-                                <span class="prof-name">Prof. {{ $appointment->faculty->first_name }} {{ $appointment->faculty->last_name }}</span>
-                                <span class="prof-college">{{ $appointment->faculty->collegeDepartment->college_name }}</span>
+                                <span class="prof-name">
+                                    Prof. {{ $appointment->faculty->first_name }} {{ $appointment->faculty->last_name }} 
+                                    ({{ $appointment->faculty->collegeDepartment->acronym }})
+                                </span>
+                                <span class="prof-college">
+                                    {{ $appointment->appointment_category }}
+                                </span>
                             </div>
                             <div class="appointment-time-sd">
                                 <span class="prof-time">{{ \Carbon\Carbon::parse($appointment->time)->format('h:i A') }}</span>
@@ -49,8 +54,13 @@
                             <span class="month-sd">{{ \Carbon\Carbon::parse($pendingAppointment->date)->format('M') }}</span>
                         </div>
                         <div class="pending-details-sd">
-                            <span class="prof-name">Prof. {{ $pendingAppointment->faculty->first_name }} {{ $pendingAppointment->faculty->last_name }}</span>
-                            <span class="prof-college">{{ $pendingAppointment->faculty->collegeDepartment->college_name }}</span>
+                            <span class="prof-name">
+                                    Prof. {{ $pendingAppointment->faculty->first_name }} {{ $pendingAppointment->faculty->last_name }} 
+                                    ({{ $pendingAppointment->faculty->collegeDepartment->acronym }})
+                                </span>
+                                <span class="prof-college">
+                                    {{ $pendingAppointment->appointment_category }}
+                                </span>
                         </div>
                         <div class="pending-time-sd">
                             <span class="prof-time">{{ \Carbon\Carbon::parse($pendingAppointment->time)->format('h:i A') }}</span>

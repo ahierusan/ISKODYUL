@@ -33,8 +33,17 @@
                                       <span class="month">{{ Carbon\Carbon::parse($appointment['date'])->format('M') }}</span>
                                   </div>
                                   <div class="appointment-details-df">
+<<<<<<< HEAD
                                       <span class="name">{{ $appointment['student']['last_name'] }}, {{ $appointment['student']['first_name'] }}</span>
                                       <span class="college">{{ $appointment['student']['college_department'] }}</span>
+=======
+                                      <span class="name">
+                                        {{ $appointment['student']['last_name'] }}, {{ $appointment['student']['first_name'] }} 
+                                        ({{ $appointment['student']['college_department'] }})
+                                    </span>
+                                      <span>{{ $appointment['appointment_category'] }}</span>
+
+>>>>>>> 304d01260b5931fafde4c3bf919d84a604311cb8
                                   </div>
                                   <div class="appointment-time-df">
                                       <span class="time">{{ Carbon\Carbon::parse($appointment['time'])->format('h:i A') }}</span>

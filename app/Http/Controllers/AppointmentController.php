@@ -262,6 +262,8 @@ class AppointmentController extends Controller
 
     public function getFacultyAppointments(Faculty $faculty)
     {
+
+        \Log::info('Faculty ID: ' . $faculty->id);
         // Get approved appointments with proper student relationship
         $approvedAppointments = Appointment::with(['student.user'])
             ->where('faculty_id', $faculty->id)
@@ -289,6 +291,7 @@ class AppointmentController extends Controller
                     'time' => $appointment->time,
                     'duration' => $appointment->duration,
                     'status' => $appointment->status,
+                    'appointment_category' => $appointment->appointment_category,
                     'student' => [
                         'id' => $appointment->student->id,
                         'user_id' => $appointment->student->user_id,
@@ -296,13 +299,13 @@ class AppointmentController extends Controller
                         'last_name' => $appointment->student->last_name,
                         'college_department' => $appointment->student->college_department,
                         'program_year_section' => $appointment->student->program_year_section,
-                        'appointment_category' => $appointment->appointment_category,
                     ]
                 ];
             });
         };
 
         return [
+            
             'approved' => $transformAppointments($approvedAppointments),
             'pending' => $transformAppointments($pendingAppointments)
         ];
