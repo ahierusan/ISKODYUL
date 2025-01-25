@@ -27,6 +27,7 @@ Route::get('/logout', function () {
     return redirect('/');
 });
 
+
 // Other routes
 Route::get('/', function () {
     return view('landing-page');
@@ -36,111 +37,10 @@ Route::get('/video-tutorial', function () {
     return view('video-tutorial');
 });
 
-// Dashboard Routing
-Route::get('/dashboard', function () {
-    return match(auth()->user()->role) {
-        'student' => redirect('/student-dashboard'),
-        'faculty' => redirect('/faculty-dashboard'),
-        'admin' => redirect('/admin-dashboard'),
-        default => redirect('/')
-    };
-})->middleware('auth');
+// faculty
 
-// Student and Admin Routes
-Route::middleware(['auth', 'role:admin,student'])->group(function () {
-    // Student Dashboard
-    Route::get('/student-dashboard', function () {
-        $user = Auth::user();
-        $appointments = Appointment::where('student_id', $user->id)
-            ->where('status', 'approved')
-            ->with(['faculty', 'faculty.collegeDepartment'])
-            ->orderBy('date', 'asc')
-            ->get();
-
-        $pendingAppointments = Appointment::where('student_id', $user->id)
-            ->where('status', 'pending')
-            ->with(['faculty', 'faculty.collegeDepartment'])
-            ->orderBy('date', 'asc')
-            ->get();
-
-        return view('student.dashboard')
-            ->with('user', $user)
-            ->with('appointments', $appointments)
-            ->with('pendingAppointments', $pendingAppointments);
-    });
-
-    Route::get('/appointment', function () {
-        $collegeDepartments = CollegeDepartment::all();
-        return view('student.appointment')
-        ->with('user', Auth::user())
-        ->with('collegeDepartments', $collegeDepartments);
-    });
-
-    Route::get('/appointment/faculty-list/{departmentId}', [AppointmentController::class, 'getFacultyListAndDetails']);
-    Route::get('/appointment/faculty-availability/{faculty}', [AppointmentController::class, 'getFacultyAvailability']);
-
-    Route::get('/select-schedule', function () {
-        return view('student.select-schedule')->with('user', Auth::user());
-    });
-
-    Route::get('/faculty/{faculty}/availabilities', [FacultyAvailabilityController::class, 'getAvailabilities']);
-    Route::get('/api/faculty/{faculty}/availabilities', [FacultyAvailabilityController::class, 'getAvailabilities']);
-
-    Route::post('/appointment/schedule/store', [AppointmentController::class, 'storeScheduleInSession'])
-        ->name('appointment.schedule.store');
-
-    Route::post('/session/store-faculty', function (Request $request) {
-        session(['selected_faculty_id' => $request->faculty_id]);
-        return response()->json(['success' => true]);
-    });
-
-    Route::get('/information', [AppointmentController::class, 'getInformationForm']);
-
-    Route::post('/store-information', function (Request $request) {
-        $validated = $request->validate([
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'student_number' => 'required',
-            'program_year_section' => 'required',
-            'college_department' => 'required',
-            'status' => 'required',
-            'appointment_category' => 'required',
-            'additional_notes' => 'nullable'
-        ]);
-
-        $appointment_data = session('appointment_schedule');
-        $appointment_data['student_info'] = $validated;
-        
-        session(['appointment_schedule' => $appointment_data]);
-        
-        return redirect('/confirmation');
-    })->name('store.information');
-
-    Route::get('/confirmation', function () {
-        $appointmentData = session('appointment_schedule');
-        $faculty = Faculty::findOrFail($appointmentData['faculty_id']);
-        
-        return view('student.confirmation')
-            ->with('user', Auth::user())
-            ->with('faculty', $faculty);
-    });
-
-    Route::post('/appointment/store', [AppointmentController::class, 'storeAppointment'])
-        ->name('appointment.store');
-});
-
-// Faculty and Admin Routes
-Route::middleware(['auth', 'role:admin,faculty'])->group(function () {
-    // Faculty Dashboard
-    Route::get('/faculty-dashboard', function () {
+Route::get('/faculty-dashboard', function () {
     $faculty = App\Models\Faculty::where('user_id', auth()->user()->id)->first();
-    
-    // Add a null check
-    if (!$faculty) {
-        // Redirect to faculty setup or show an error
-        return redirect('/faculty-setup')->with('error', 'Please complete your faculty profile');
-    }
-
     $appointments = app(App\Http\Controllers\AppointmentController::class)->getFacultyAppointments($faculty);
     $availabilities = App\Models\FacultyAvailability::where('faculty_id', $faculty->id)->get();
     
@@ -150,45 +50,133 @@ Route::middleware(['auth', 'role:admin,faculty'])->group(function () {
         ->with('appointments', $appointments);
 })->middleware('auth');
 
-    Route::get('/faculty-setup', function () {
-        $collegeDepartments = CollegeDepartment::all(); 
-        return view('faculty.setup')
-            ->with('user', Auth::user())
-            ->with('collegeDepartments', $collegeDepartments);
-    });
+Route::get('/faculty-setup', function () {
+    $collegeDepartments = CollegeDepartment::all(); 
+    return view('faculty.setup')
+        ->with('user', Auth::user())
+        ->with('collegeDepartments', $collegeDepartments);
+})->middleware('auth');
 
-    Route::post('/faculty-setup', [FacultyController::class, 'store']);
+Route::post('/faculty-setup', [FacultyController::class, 'store'])
+    ->middleware('auth');
 
-    Route::get('/faculty-availability', [FacultyAvailabilityController::class, 'index'])
-        ->name('faculty.availability');
+Route::get('/faculty-availability', [FacultyAvailabilityController::class, 'index'])
+    ->name('faculty.availability')
+    ->middleware('auth');
+// Keep these routes as they are
+Route::post('/faculty-availability', [FacultyAvailabilityController::class, 'store'])
+    ->name('faculty.availability.store')
+    ->middleware('auth');
+Route::delete('/faculty-availability/{id}', [FacultyAvailabilityController::class, 'destroy'])
+    ->name('faculty.availability.destroy')
+    ->middleware('auth');
 
-    Route::post('/faculty-availability', [FacultyAvailabilityController::class, 'store'])
-        ->name('faculty.availability.store');
+Route::post('/appointment/{appointment}/approve', [AppointmentController::class, 'approveAppointment'])
+    ->name('appointment.approve')
+    ->middleware('auth');
 
-    Route::delete('/faculty-availability/{id}', [FacultyAvailabilityController::class, 'destroy'])
-        ->name('faculty.availability.destroy');
+Route::post('/appointment/{appointment}/reject', [AppointmentController::class, 'rejectAppointment'])
+    ->name('appointment.reject')
+    ->middleware('auth');
 
-    Route::post('/appointment/{appointment}/approve', [AppointmentController::class, 'approveAppointment'])
-        ->name('appointment.approve');
+Route::post('/appointment/{appointment}/cancel', [AppointmentController::class, 'cancelAppointment'])
+    ->name('appointment.cancel')
+    ->middleware('auth');
 
-    Route::post('/appointment/{appointment}/reject', [AppointmentController::class, 'rejectAppointment'])
-        ->name('appointment.reject');
+Route::get('/appointment/available-slots/{faculty}', [AppointmentController::class, 'getAvailableTimeSlots'])
+    ->name('appointment.available-slots');
 
-    Route::post('/appointment/{appointment}/cancel', [AppointmentController::class, 'cancelAppointment'])
-        ->name('appointment.cancel');
+// student
 
-    Route::get('/appointment/available-slots/{faculty}', [AppointmentController::class, 'getAvailableTimeSlots'])
-        ->name('appointment.available-slots');
-});
+Route::get('/student-dashboard', function () {
+    $user = Auth::user();
+    $appointments = Appointment::where('student_id', $user->id)
+        ->where('status', 'approved')
+        ->with(['faculty', 'faculty.collegeDepartment'])
+        ->orderBy('date', 'asc')
+        ->get();
 
-// Admin-only Routes
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin-dashboard', function () {
-        return view('sysad.dashboard')->with('user', Auth::user());
-    });
+    $pendingAppointments = Appointment::where('student_id', $user->id)
+        ->where('status', 'pending')
+        ->with(['faculty', 'faculty.collegeDepartment'])
+        ->orderBy('date', 'asc')
+        ->get();
 
-    // Additional admin-specific routes can be added here
-    // For example:
-    // Route::get('/manage-users', [AdminController::class, 'manageUsers']);
-    // Route::get('/view-all-appointments', [AdminController::class, 'viewAppointments']);
-});
+    return view('student.dashboard')
+        ->with('user', $user)
+        ->with('appointments', $appointments)
+        ->with('pendingAppointments', $pendingAppointments);
+})->middleware('auth');
+
+Route::get('/appointment', function () {
+    $collegeDepartments = CollegeDepartment::all();
+    return view('student.appointment')
+    ->with('user', Auth::user())
+    ->with('collegeDepartments', $collegeDepartments);;
+})->middleware('auth');
+
+Route::get('/appointment/faculty-list/{departmentId}', [AppointmentController::class, 'getFacultyListAndDetails']);
+Route::get('/appointment/faculty-availability/{faculty}', [AppointmentController::class, 'getFacultyAvailability']);
+
+Route::get('/select-schedule', function () {
+    return view('student.select-schedule')->with('user', Auth::user());
+})->middleware('auth');
+
+Route::get('/faculty/{faculty}/availabilities', [FacultyAvailabilityController::class, 'getAvailabilities']);
+Route::get('/api/faculty/{faculty}/availabilities', [FacultyAvailabilityController::class, 'getAvailabilities']);
+
+// Add this route for storing appointment schedule
+Route::post('/appointment/schedule/store', [AppointmentController::class, 'storeScheduleInSession'])
+    ->name('appointment.schedule.store')
+    ->middleware('auth');
+
+Route::post('/session/store-faculty', function (Request $request) {
+    session(['selected_faculty_id' => $request->faculty_id]);
+    return response()->json(['success' => true]);
+})->middleware('auth');
+
+Route::get('/information', [AppointmentController::class, 'getInformationForm'])
+    ->middleware('auth');
+
+
+Route::post('/store-information', function (Request $request) {
+    // Validate all required fields
+    $validated = $request->validate([
+        'first_name' => 'required',
+        'last_name' => 'required',
+        'student_number' => 'required',
+        'program_year_section' => 'required',
+        'college_department' => 'required',
+        'status' => 'required',
+        'appointment_category' => 'required',
+        'additional_notes' => 'nullable'
+    ]);
+
+    // Merge new information with existing schedule data
+    $appointment_data = session('appointment_schedule');
+    $appointment_data['student_info'] = $validated;
+    
+    session(['appointment_schedule' => $appointment_data]);
+    
+    return redirect('/confirmation');
+})->middleware('auth')->name('store.information');
+
+Route::get('/confirmation', function () {
+    $appointmentData = session('appointment_schedule');
+    $faculty = Faculty::findOrFail($appointmentData['faculty_id']);
+    
+    return view('student.confirmation')
+        ->with('user', Auth::user())
+        ->with('faculty', $faculty);
+})->middleware('auth');
+
+Route::post('/appointment/store', [AppointmentController::class, 'storeAppointment'])
+    ->name('appointment.store')
+    ->middleware('auth');
+
+
+// sysad
+
+Route::get('/admin-dashboard', function () {
+    return view('sysad.dashboard')->with('user', Auth::user());
+})->middleware('auth');

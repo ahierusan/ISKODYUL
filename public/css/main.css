@@ -1334,7 +1334,7 @@
 }
 .appointment-facultysearch .menu-group { /* REPOSITIONING NG DASHBOARD, APTMT, ABT, LOGOUT */
     position: absolute;
-    top: 1px;
+    top: 70px;
     left: 900px;
 }
 
